@@ -301,6 +301,82 @@
   .chart-card h3{margin:0 0 12px; font-size:14px; display:flex; align-items:center; gap:8px;}
   .chart-card .chart-wrap{position:relative; height:230px;}
   .chart-card .chart-note{font-size:11.5px; color:var(--muted); margin-top:8px;}
+
+  /* ---------- Greeting + Action Center ---------- */
+  .greeting-bar{
+    background:#fff; border:1px solid var(--line); border-radius:14px; padding:18px 22px; margin-bottom:18px;
+    display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
+  }
+  .greeting-bar h2{margin:0; font-size:18px;}
+  .greeting-bar p{margin:4px 0 0; font-size:12.5px; color:var(--muted);}
+  .greeting-time{font-family:'IBM Plex Mono'; font-size:12px; color:var(--muted);}
+
+  .action-center{background:var(--card); border:1px solid var(--line); border-radius:14px; margin-bottom:22px; overflow:hidden;}
+  .action-counts{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line);}
+  .action-count{background:#fff; padding:16px 18px; text-align:center;}
+  .action-count .n{font-family:'IBM Plex Mono'; font-size:26px; font-weight:700;}
+  .action-count .l{font-size:12px; color:var(--muted); margin-top:2px;}
+  .action-count.today .n{color:var(--danger);}
+  .action-count.week .n{color:var(--warn);}
+  .action-count.month .n{color:var(--safe);}
+  .action-list{padding:6px 0;}
+  .action-item{
+    display:flex; align-items:center; gap:12px; padding:12px 20px; border-bottom:1px solid var(--line);
+    transition:opacity .25s ease, transform .25s ease;
+  }
+  .action-item:last-child{border-bottom:none;}
+  .action-item.dismissed{opacity:0; transform:translateX(12px); height:0; padding:0; overflow:hidden; border:none;}
+  .action-item .a-dot{width:9px; height:9px; border-radius:50%; flex-shrink:0;}
+  .action-item.u-today .a-dot{background:var(--danger);}
+  .action-item.u-week .a-dot{background:var(--warn);}
+  .action-item.u-month .a-dot{background:var(--safe);}
+  .action-item .a-body{flex:1; min-width:0;}
+  .action-item .a-title{font-size:13.5px; font-weight:700;}
+  .action-item .a-sub{font-size:11.5px; color:var(--muted); margin-top:1px;}
+  .action-item .a-done{
+    background:var(--paper); border:1px solid var(--line); color:var(--navy-deep); font-size:12px; font-weight:700;
+    padding:6px 14px; border-radius:8px; flex-shrink:0;
+  }
+  .action-item .a-done:hover{background:var(--safe-bg); border-color:var(--safe); color:var(--safe);}
+
+  /* ---------- Global search ---------- */
+  .global-search-wrap{position:relative; padding:10px 26px; background:rgba(255,255,255,.04); border-bottom:1px solid rgba(255,255,255,.08);}
+  .global-search-input{
+    width:100%; max-width:520px; padding:9px 14px; border-radius:9px; border:1px solid rgba(255,255,255,.2);
+    background:rgba(255,255,255,.08); color:#fff; font-family:inherit; font-size:13.5px;
+  }
+  .global-search-input::placeholder{color:#9FB8B6;}
+  .global-search-results{
+    position:absolute; top:56px; inset-inline-start:26px; width:min(560px, calc(100% - 52px));
+    background:#fff; border-radius:12px; box-shadow:0 16px 40px rgba(0,0,0,.3); border:1px solid var(--line);
+    max-height:420px; overflow-y:auto; display:none; z-index:55;
+  }
+  .global-search-results.open{display:block;}
+  .gs-emp{border-bottom:1px solid var(--line); padding:14px 18px;}
+  .gs-emp:last-child{border-bottom:none;}
+  .gs-emp h4{margin:0 0 8px; font-size:14px; display:flex; align-items:center; gap:8px;}
+  .gs-emp h4 span{font-size:11px; color:var(--muted); font-weight:400;}
+  .gs-row{display:flex; justify-content:space-between; font-size:12.5px; padding:4px 0; color:var(--ink);}
+  .gs-row .gs-label{color:var(--muted);}
+  .gs-empty{padding:24px 18px; text-align:center; color:var(--muted); font-size:13px;}
+
+  /* ---------- Timeline groups ---------- */
+  .tl-group-label{
+    font-size:11.5px; font-weight:800; color:var(--muted); padding:12px 20px 4px; text-transform:uppercase; letter-spacing:.3px;
+  }
+
+  /* ---------- Pressure forecast ---------- */
+  .forecast-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; padding:16px 20px;}
+  .forecast-card{border:1px solid var(--line); border-radius:12px; padding:14px; text-align:center;}
+  .forecast-card .f-month{font-size:12.5px; font-weight:800; margin-bottom:8px;}
+  .forecast-card .f-total{font-family:'IBM Plex Mono'; font-size:24px; font-weight:700;}
+  .forecast-card .f-breakdown{font-size:11px; color:var(--muted); margin-top:4px; line-height:1.6;}
+  .forecast-card .f-level{
+    display:inline-block; margin-top:8px; font-size:11px; font-weight:700; padding:3px 10px; border-radius:999px;
+  }
+  .forecast-card.low{border-color:#CFE9DC;} .forecast-card .f-level.low{background:var(--safe-bg); color:var(--safe);}
+  .forecast-card.med{border-color:#F1DDAE;} .forecast-card .f-level.med{background:var(--warn-bg); color:var(--warn);}
+  .forecast-card.high{border-color:#F0C6C1;} .forecast-card .f-level.high{background:var(--danger-bg); color:var(--danger);}
 </style>
 </head>
 <body>
@@ -342,6 +418,10 @@
     <button class="tab-btn" data-tab="contracts">📄 العقود</button>
     <button class="tab-btn" data-tab="ids">🪪 الهويات</button>
   </div>
+  <div class="global-search-wrap">
+    <input type="text" class="global-search-input" id="globalSearch" placeholder="🔎 ابحث عن أي موظف بالاسم أو الرقم الوظيفي... (يبحث بالعقود والإجازات والهويات معًا)">
+    <div class="global-search-results" id="globalSearchResults"></div>
+  </div>
 </header>
 
 <div class="ticker-bar">
@@ -356,6 +436,25 @@
 
   <!-- ===================== OVERVIEW ===================== -->
   <section class="view active" id="view-overview">
+
+    <div class="greeting-bar">
+      <div>
+        <h2 id="greetingTitle">أهلًا 👋</h2>
+        <p id="greetingSub">جارٍ تجهيز ملخص اليوم…</p>
+      </div>
+      <div class="greeting-time" id="greetingTime">—</div>
+    </div>
+
+    <section class="action-center">
+      <div class="panel-head"><h2>✅ مركز الإجراءات اليومية <span class="badge-count" id="countActions">0</span></h2></div>
+      <div class="action-counts">
+        <div class="action-count today"><div class="n" id="actCountToday">0</div><div class="l">🔴 اليوم / غدًا</div></div>
+        <div class="action-count week"><div class="n" id="actCountWeek">0</div><div class="l">🟠 هذا الأسبوع</div></div>
+        <div class="action-count month"><div class="n" id="actCountMonth">0</div><div class="l">🟢 الشهر القادم</div></div>
+      </div>
+      <div class="action-list" id="actionList"></div>
+    </section>
+
     <div class="kpi-grid">
       <div class="kpi k-total">
         <div class="label">إجمالي الموظفين المتابَعين</div>
@@ -411,6 +510,11 @@
         <div class="chart-note">مجموع انتهاء العقود + الهويات/الإقامات المتوقع أسبوعيًا.</div>
       </div>
     </div>
+
+    <section class="panel">
+      <div class="panel-head"><h2>📈 توقع الضغط القادم <span class="badge-count" id="countForecast">0</span></h2></div>
+      <div class="forecast-grid" id="forecastGrid"></div>
+    </section>
 
     <section class="panel">
       <div class="panel-head"><h2>🧠 تنبيهات ذكية <span class="badge-count" id="countInsights">0</span></h2></div>
@@ -663,6 +767,9 @@ function render(){
   renderTimeline(today, contractSoon, idSoon, leavesWithDays);
   renderBell(contractSoon, idSoon);
   renderAnalytics(today, contractsData, idsData, contractSoon, idSoon, leavesData, onLeave);
+  renderGreeting(today, contractSoon, idSoon, onLeave);
+  renderActionCenter(today, contractsData, idsData, leavesData);
+  renderForecast(today, contractsData, idsData, leavesData);
 }
 
 function hasConflict(leaveRow){
@@ -763,21 +870,41 @@ function renderInsights(today, contractSoon, idSoon, onLeave){
   `).join('');
 }
 
+function relativeDayLabel(today, date){
+  const d = daysBetween(today, date);
+  if (d < 0) return `منذ ${Math.abs(d)} يوم`;
+  if (d === 0) return 'اليوم';
+  if (d === 1) return 'غدًا';
+  if (d <= 7) return `بعد ${d} أيام`;
+  return date.toLocaleDateString('ar-SA', {weekday:'long', day:'2-digit', month:'2-digit'});
+}
+
 function renderTimeline(today, contractSoon, idSoon, leavesWithDays){
   const events = [];
   contractSoon.forEach(r => events.push({date:r.contractEnd, cls:'c-contract', name:r.name, desc:'انتهاء عقد'}));
   idSoon.forEach(r => events.push({date:r.idExpiry, cls:'c-id', name:r.name, desc:'انتهاء إقامة/هوية'}));
   leavesWithDays.filter(r => r.leaveStart && r.leaveStart >= today).forEach(r => events.push({date:r.leaveStart, cls:'c-leave', name:r.name, desc:'بداية إجازة'}));
   events.sort((a,b) => a.date - b.date);
-  const next = events.slice(0,8);
+  const next = events.slice(0,12);
   document.getElementById('countTimeline').textContent = next.length;
-  document.getElementById('timelineList').innerHTML = next.length ? next.map(e => `
-    <div class="t-item ${e.cls}">
+
+  if (!next.length){
+    document.getElementById('timelineList').innerHTML = `<div class="empty"><b>لا توجد أحداث قادمة</b>ضمن البيانات الحالية.</div>`;
+    return;
+  }
+
+  let html = '';
+  let lastLabel = null;
+  next.forEach(e => {
+    const label = relativeDayLabel(today, e.date);
+    if (label !== lastLabel){ html += `<div class="tl-group-label">${label}</div>`; lastLabel = label; }
+    html += `<div class="t-item ${e.cls}">
       <div class="t-dot"></div>
       <div class="t-main"><div class="t-name">${e.name}</div><div class="t-desc">${e.desc}</div></div>
       <div class="t-date">${fmtDate(e.date)}</div>
-    </div>
-  `).join('') : `<div class="empty"><b>لا توجد أحداث قادمة</b>ضمن البيانات الحالية.</div>`;
+    </div>`;
+  });
+  document.getElementById('timelineList').innerHTML = html;
 }
 
 function renderBell(contractSoon, idSoon){
@@ -876,7 +1003,39 @@ function buildAnalystMessages(today, contractsAll, idsAll, contractSoon, idSoon,
     if (top && top[1] >= 2){
       msgs.push(`📌 قسم "${top[0]}" فيه ${top[1]} موظفين في إجازة بنفس الوقت — تأكد إن الشغل مغطّى.`);
     }
+
+    // Department short-staffing: compare on-leave count to total dept headcount (from contracts roster)
+    const deptSize = groupCount(contractsAll, r => r.dept);
+    Object.entries(byDept).forEach(([dept, leaveCount]) => {
+      const size = deptSize[dept];
+      if (!size || size < 3) return;
+      const remaining = size - leaveCount;
+      if (remaining <= 2 || remaining/size <= 0.4){
+        msgs.push(`⚠️ قسم "${dept}" سيتبقى فيه ${remaining} موظفين فقط على رأس العمل بسبب الإجازات (من أصل ${size}) — فكر بترتيب تغطية مؤقتة.`);
+      }
+    });
   }
+
+  // Same-week clustering: multiple contracts or IDs expiring in the same calendar week
+  const clusterCheck = (rows, dateField, label, icon) => {
+    const weekMap = {};
+    rows.forEach(r => {
+      if (!r[dateField]) return;
+      const d = daysBetween(today, r[dateField]);
+      if (d < 0 || d > 60) return;
+      const wk = Math.floor(d/7);
+      (weekMap[wk] ||= []).push(r);
+    });
+    Object.entries(weekMap).forEach(([wk, group]) => {
+      if (group.length >= 4){
+        const wkNum = parseInt(wk, 10);
+        const rangeLabel = wkNum === 0 ? 'هذا الأسبوع' : `خلال الأسبوع رقم ${wkNum+1} من الآن`;
+        msgs.push(`${icon} يوجد ${group.length} ${label} تنتهي ${rangeLabel} — قد يحتاج هذا تنسيقًا مسبقًا لتفادي الازدحام.`);
+      }
+    });
+  };
+  clusterCheck(contractsAll, 'contractEnd', 'عقود', '📄');
+  clusterCheck(idsAll, 'idExpiry', 'هويات/إقامات', '🪪');
 
   const next7 = weeklyBuckets(contractsAll, idsAll, 2).buckets[0];
   if (next7 > 0){
@@ -986,6 +1145,197 @@ function renderAnalytics(today, contractsAll, idsAll, contractSoon, idSoon, leav
   const weekly = weeklyBuckets(contractsAll, idsAll, 12);
   renderCharts(contractsAll, idsAll, onLeaveAll, weekly);
 }
+
+/* ---------------- greeting bar ---------------- */
+function renderGreeting(today, contractSoon, idSoon, onLeave){
+  const hour = today.getHours();
+  const greeting = hour < 12 ? 'صباح الخير ☀️' : (hour < 18 ? 'مساء الخير 🌤️' : 'مساء الخير 🌙');
+  document.getElementById('greetingTitle').textContent = greeting;
+  const urgentTotal = contractSoon.filter(r=>r.days<=7).length + idSoon.filter(r=>r.days<=7).length;
+  const parts = [];
+  parts.push(`${urgentTotal} إجراء عاجل خلال الأسبوع`);
+  parts.push(`${contractSoon.filter(r=>r.days<=7).length} عقود تنتهي هذا الأسبوع`);
+  parts.push(`${onLeave.length} موظفين في إجازة اليوم`);
+  parts.push(conflicts.length ? `${conflicts.length} تعارض إجازات يحتاج مراجعة` : 'لا توجد تعارضات إجازات');
+  document.getElementById('greetingSub').textContent = parts.join(' · ');
+  document.getElementById('greetingTime').textContent = 'آخر تحديث: ' + today.toLocaleTimeString('ar-SA', {hour:'2-digit', minute:'2-digit'});
+}
+
+/* ---------------- daily action center ---------------- */
+function getDismissed(){
+  try{ return JSON.parse(localStorage.getItem('hrDashDismissedActions') || '[]'); }catch(e){ return []; }
+}
+function dismissAction(id){
+  const list = getDismissed();
+  if (!list.includes(id)) list.push(id);
+  try{ localStorage.setItem('hrDashDismissedActions', JSON.stringify(list)); }catch(e){}
+}
+
+function buildActionList(today, contractsAll, idsAll, leavesAll){
+  const actions = [];
+  contractsAll.forEach(r => {
+    if (!r.contractEnd) return;
+    const d = daysBetween(today, r.contractEnd);
+    if (d >= -14 && d <= 30) actions.push({
+      id: `contract-${r.empId}-${r.contractEnd.getTime()}`, date: r.contractEnd, days: d,
+      icon:'📄', title:`تجديد عقد ${r.name}`, sub: d<0?`منتهي منذ ${Math.abs(d)} يوم`:(d===0?'ينتهي اليوم':`خلال ${d} يوم`)
+    });
+  });
+  idsAll.forEach(r => {
+    if (!r.idExpiry) return;
+    const d = daysBetween(today, r.idExpiry);
+    if (d >= -14 && d <= 30) actions.push({
+      id: `id-${r.empId}-${r.idExpiry.getTime()}`, date: r.idExpiry, days: d,
+      icon:'🪪', title:`تجديد إقامة ${r.name}`, sub: d<0?`منتهية منذ ${Math.abs(d)} يوم`:(d===0?'تنتهي اليوم':`خلال ${d} يوم`)
+    });
+  });
+  leavesAll.forEach(r => {
+    if (r.leaveStart){
+      const d = daysBetween(today, r.leaveStart);
+      if (d >= 0 && d <= 14) actions.push({
+        id:`leavestart-${r.empId}-${r.leaveStart.getTime()}`, date:r.leaveStart, days:d,
+        icon:'🧳', title:`بداية إجازة ${r.name}`, sub: d===0?'تبدأ اليوم':(d===1?'تبدأ غدًا':`بعد ${d} يوم`)
+      });
+    }
+    if (r.leaveEnd){
+      const d = daysBetween(today, r.leaveEnd);
+      if (d >= 0 && d <= 7) actions.push({
+        id:`leaveend-${r.empId}-${r.leaveEnd.getTime()}`, date:r.leaveEnd, days:d,
+        icon:'👋', title:`عودة ${r.name} من الإجازة`, sub: d===0?'يرجع اليوم':(d===1?'يرجع غدًا':`بعد ${d} يوم`)
+      });
+    }
+  });
+  actions.sort((a,b) => a.days - b.days);
+  return actions;
+}
+
+function renderActionCenter(today, contractsAll, idsAll, leavesAll){
+  const dismissed = getDismissed();
+  const all = buildActionList(today, contractsAll, idsAll, leavesAll).filter(a => !dismissed.includes(a.id));
+
+  const todayCount = all.filter(a => a.days <= 1).length;
+  const weekCount = all.filter(a => a.days > 1 && a.days <= 7).length;
+  const monthCount = all.filter(a => a.days > 7 && a.days <= 30).length;
+
+  document.getElementById('actCountToday').textContent = todayCount;
+  document.getElementById('actCountWeek').textContent = weekCount;
+  document.getElementById('actCountMonth').textContent = monthCount;
+  document.getElementById('countActions').textContent = all.length;
+
+  const list = document.getElementById('actionList');
+  if (!all.length){
+    list.innerHTML = `<div class="empty"><b>لا توجد إجراءات قريبة 🎉</b>كل شي تحت السيطرة حاليًا.</div>`;
+    return;
+  }
+  list.innerHTML = all.slice(0, 20).map(a => {
+    const uCls = a.days<=1?'u-today':(a.days<=7?'u-week':'u-month');
+    return `<div class="action-item ${uCls}" data-id="${a.id}">
+      <div class="a-dot"></div>
+      <div class="a-body"><div class="a-title">${a.icon} ${a.title}</div><div class="a-sub">${a.sub}</div></div>
+      <button class="a-done" data-id="${a.id}">✓ تم</button>
+    </div>`;
+  }).join('');
+
+  list.querySelectorAll('.a-done').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.id;
+      const item = list.querySelector(`.action-item[data-id="${CSS.escape(id)}"]`);
+      dismissAction(id);
+      if (item){
+        item.classList.add('dismissed');
+        setTimeout(() => render(), 300);
+      }
+    });
+  });
+}
+
+/* ---------------- monthly pressure forecast ---------------- */
+function renderForecast(today, contractsAll, idsAll, leavesAll){
+  const months = [];
+  for (let i=0;i<6;i++){
+    const d = new Date(today.getFullYear(), today.getMonth()+i, 1);
+    months.push({ key: d.getFullYear()+'-'+d.getMonth(), label: d.toLocaleDateString('ar-SA', {month:'long', year:'numeric'}), contracts:0, ids:0, leaves:0 });
+  }
+  const keyOf = (d) => d.getFullYear()+'-'+d.getMonth();
+  const findBucket = (d) => months.find(m => m.key === keyOf(d));
+
+  contractsAll.forEach(r => { if (r.contractEnd){ const b = findBucket(r.contractEnd); if (b) b.contracts++; } });
+  idsAll.forEach(r => { if (r.idExpiry){ const b = findBucket(r.idExpiry); if (b) b.ids++; } });
+  leavesAll.forEach(r => { if (r.leaveStart){ const b = findBucket(r.leaveStart); if (b) b.leaves++; } });
+
+  months.forEach(m => m.total = m.contracts + m.ids + m.leaves);
+  const avg = months.reduce((s,m)=>s+m.total,0) / months.length;
+
+  document.getElementById('countForecast').textContent = months.length;
+  document.getElementById('forecastGrid').innerHTML = months.map(m => {
+    let level = 'low', levelLabel = 'ضغط منخفض';
+    if (m.total > avg * 1.4 && m.total > 3){ level='high'; levelLabel='ضغط عالٍ'; }
+    else if (m.total > avg * 0.9 && m.total > 1){ level='med'; levelLabel='ضغط متوسط'; }
+    return `<div class="forecast-card ${level}">
+      <div class="f-month">${m.label}</div>
+      <div class="f-total mono">${m.total}</div>
+      <div class="f-breakdown">📄 ${m.contracts} عقد · 🪪 ${m.ids} إقامة · 🧳 ${m.leaves} إجازة</div>
+      <div class="f-level ${level}">${levelLabel}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ---------------- global search ---------------- */
+function runGlobalSearch(query){
+  const box = document.getElementById('globalSearchResults');
+  query = query.trim();
+  if (!query){ box.classList.remove('open'); box.innerHTML=''; return; }
+
+  const q = query.toLowerCase();
+  const keys = new Set();
+  [...contractsData, ...leavesData, ...idsData].forEach(r => {
+    const hay = ((r.name||'') + ' ' + (r.empId||'')).toString().toLowerCase();
+    if (hay.includes(q)) keys.add((r.empId || r.name).toString().trim());
+  });
+
+  const results = Array.from(keys).slice(0, 8).map(key => {
+    const contract = contractsData.find(r => (r.empId||r.name).toString().trim() === key);
+    const ids = idsData.filter(r => (r.empId||r.name).toString().trim() === key);
+    const leaves = leavesData.filter(r => (r.empId||r.name).toString().trim() === key);
+    const name = (contract && contract.name) || (ids[0] && ids[0].name) || (leaves[0] && leaves[0].name) || key;
+    const today = new Date();
+    return { key, name, dept: contract && contract.dept, contract, ids, leaves, today };
+  });
+
+  if (!results.length){
+    box.innerHTML = `<div class="gs-empty">لا توجد نتائج مطابقة لـ "${query}".</div>`;
+    box.classList.add('open');
+    return;
+  }
+
+  box.innerHTML = results.map(r => {
+    let rows = '';
+    if (r.dept) rows += `<div class="gs-row"><span class="gs-label">القسم</span><span>${r.dept}</span></div>`;
+    if (r.contract && r.contract.contractEnd){
+      const d = daysBetween(r.today, r.contract.contractEnd);
+      rows += `<div class="gs-row"><span class="gs-label">نهاية العقد</span><span>${fmtDate(r.contract.contractEnd)} (${d<0?'منتهي':'خلال '+d+' يوم'})</span></div>`;
+    }
+    r.ids.forEach(idr => {
+      if (!idr.idExpiry) return;
+      const d = daysBetween(r.today, idr.idExpiry);
+      rows += `<div class="gs-row"><span class="gs-label">نهاية الهوية/الإقامة</span><span>${fmtDate(idr.idExpiry)} (${d<0?'منتهية':'خلال '+d+' يوم'})</span></div>`;
+    });
+    if (r.leaves.length){
+      r.leaves.forEach(lv => {
+        rows += `<div class="gs-row"><span class="gs-label">إجازة</span><span>${fmtDate(lv.leaveStart)} → ${fmtDate(lv.leaveEnd)}</span></div>`;
+      });
+    } else {
+      rows += `<div class="gs-row"><span class="gs-label">إجازات</span><span>لا يوجد سجل إجازات</span></div>`;
+    }
+    return `<div class="gs-emp"><h4>${r.name} <span>#${r.key}</span></h4>${rows}</div>`;
+  }).join('');
+  box.classList.add('open');
+}
+
+document.getElementById('globalSearch').addEventListener('input', (e) => runGlobalSearch(e.target.value));
+document.getElementById('globalSearch').addEventListener('click', e => e.stopPropagation());
+document.getElementById('globalSearchResults').addEventListener('click', e => e.stopPropagation());
+document.addEventListener('click', () => document.getElementById('globalSearchResults').classList.remove('open'));
 
 
 function renderCalendar(){
