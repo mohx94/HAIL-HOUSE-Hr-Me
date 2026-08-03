@@ -11,132 +11,110 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.umd.min.js"></script>
 <style>
   :root{
-    --gray-900:#111827;
-    --gray-800:#1F2937;
-    --gray-600:#4B5563;
-    --gray-500:#6B7280;
-    --gray-400:#9CA3AF;
-    --gray-200:#E5E7EB;
-    --gray-100:#F1F5F9;
-    --bg:#F8FAFC;
-    --card:#FFFFFF;
-    --primary:#2563EB;
-    --primary-100:#DBEAFE;
-    --warn:#F59E0B;
-    --warn-100:#FEF3C7;
-    --danger:#DC2626;
-    --danger-100:#FEE2E2;
-    --success:#16A34A;
-    --success-100:#DCFCE7;
+    --gray-900:#111827; --gray-800:#1F2937; --gray-600:#4B5563; --gray-500:#6B7280; --gray-400:#9CA3AF;
+    --gray-200:#E5E7EB; --gray-100:#F1F5F9; --bg:#F8FAFC; --card:#FFFFFF;
+    --primary:#2563EB; --primary-100:#DBEAFE;
+    --warn:#F59E0B; --warn-100:#FEF3C7;
+    --danger:#DC2626; --danger-100:#FEE2E2;
+    --success:#16A34A; --success-100:#DCFCE7;
     --border:#E7EBF1;
+    --sidebar-w:216px;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
-    background:var(--bg);
-    color:var(--gray-800);
-    font-family:'Tajawal','Segoe UI',Tahoma,Arial,sans-serif;
-    font-weight:400;
-    min-height:100vh;
-    -webkit-font-smoothing:antialiased;
+    background:var(--bg); color:var(--gray-800);
+    font-family:'Tajawal','Segoe UI',Tahoma,Arial,sans-serif; font-weight:400;
+    min-height:100vh; -webkit-font-smoothing:antialiased;
   }
   .mono{font-family:'IBM Plex Mono','Courier New',monospace;}
   h1,h2,h3,h4{font-weight:600; color:var(--gray-900); margin:0;}
   ::-webkit-scrollbar{height:8px; width:8px;}
   ::-webkit-scrollbar-thumb{background:var(--gray-200); border-radius:8px;}
+  button{font-family:inherit; cursor:pointer;}
 
-  header.topbar{
-    background:#fff; border-bottom:1px solid var(--border);
-    position:sticky; top:0; z-index:40;
-  }
-  .topbar-inner{
-    max-width:1180px; margin:0 auto; padding:12px 22px;
-    display:flex; align-items:center; gap:18px;
-  }
-  .brand{font-size:15px; font-weight:600; color:var(--gray-900); white-space:nowrap; display:flex; align-items:center; gap:8px;}
-  .brand .brand-dot{width:8px; height:8px; border-radius:50%; background:var(--primary);}
+  .app-shell{display:flex; min-height:100vh;}
 
+  .sidebar{
+    width:var(--sidebar-w); flex-shrink:0; background:#fff; border-left:1px solid var(--border);
+    position:sticky; top:0; height:100vh; display:flex; flex-direction:column; z-index:45;
+  }
+  .sidebar-brand{padding:18px 18px; font-size:14.5px; font-weight:700; color:var(--gray-900); display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--border);}
+  .sidebar-brand .dot{width:8px;height:8px;border-radius:50%;background:var(--primary);}
+  .sidebar-nav{padding:10px; display:flex; flex-direction:column; gap:2px; flex:1;}
+  .nav-item{
+    display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:9px; border:none; background:none;
+    color:var(--gray-600); font-size:13px; text-align:right; width:100%;
+  }
+  .nav-item:hover{background:var(--gray-100); color:var(--gray-900);}
+  .nav-item.active{background:var(--primary-100); color:#1D4ED8; font-weight:600;}
+  .nav-item .ic{font-size:15px; width:18px; text-align:center;}
+  .sidebar-foot{padding:12px 18px; font-size:10.5px; color:var(--gray-400); border-top:1px solid var(--border);}
+
+  .main-col{flex:1; min-width:0;}
+
+  header.topbar{background:#fff; border-bottom:1px solid var(--border); position:sticky; top:0; z-index:40;}
+  .topbar-inner{padding:12px 22px; display:flex; align-items:center; gap:18px;}
+  .sidebar-toggle{display:none; background:var(--gray-100); border:1px solid var(--border); border-radius:8px; width:34px; height:34px; font-size:15px;}
   .header-search-wrap{position:relative; flex:1; max-width:420px;}
-  .header-search{
-    width:100%; padding:8px 14px; border-radius:9px; border:1px solid var(--border);
-    background:var(--gray-100); font-family:inherit; font-size:13px; color:var(--gray-800);
-  }
+  .header-search{width:100%; padding:8px 14px; border-radius:9px; border:1px solid var(--border); background:var(--gray-100); font-family:inherit; font-size:13px; color:var(--gray-800);}
   .header-search:focus{outline:none; border-color:var(--primary); background:#fff;}
   .header-search::placeholder{color:var(--gray-400);}
   .global-search-results{
-    position:absolute; top:42px; right:0; width:min(480px, 90vw);
-    background:#fff; border-radius:12px; box-shadow:0 16px 40px rgba(17,24,39,.14); border:1px solid var(--border);
-    max-height:420px; overflow-y:auto; display:none; z-index:55;
+    position:absolute; top:42px; right:0; width:min(480px, 90vw); background:#fff; border-radius:12px;
+    box-shadow:0 16px 40px rgba(17,24,39,.14); border:1px solid var(--border); max-height:420px; overflow-y:auto; display:none; z-index:55;
   }
   .global-search-results.open{display:block;}
-  .gs-emp{border-bottom:1px solid var(--border); padding:14px 16px;}
+  .gs-emp{border-bottom:1px solid var(--border); padding:14px 16px; cursor:pointer;}
   .gs-emp:last-child{border-bottom:none;}
   .gs-emp h4{margin:0 0 8px; font-size:13.5px; display:flex; align-items:center; gap:8px; font-weight:600;}
   .gs-emp h4 span{font-size:11px; color:var(--gray-400); font-weight:400;}
-  .gs-row{display:flex; justify-content:space-between; font-size:12.5px; padding:4px 0; color:var(--gray-800);}
+  .gs-row{display:flex; justify-content:space-between; font-size:12.5px; padding:4px 0;}
   .gs-row .gs-label{color:var(--gray-500);}
   .gs-empty{padding:24px 16px; text-align:center; color:var(--gray-500); font-size:13px;}
 
   .header-right{display:flex; align-items:center; gap:10px; margin-inline-start:auto; flex-shrink:0;}
   .header-time{font-family:'IBM Plex Mono'; font-size:12px; color:var(--gray-500); white-space:nowrap;}
-  .icon-btn{
-    width:34px; height:34px; border-radius:9px; border:1px solid var(--border); background:#fff;
-    display:flex; align-items:center; justify-content:center; font-size:14px; color:var(--gray-600); cursor:pointer; position:relative;
-    transition:background .15s;
-  }
+  .icon-btn{width:34px; height:34px; border-radius:9px; border:1px solid var(--border); background:#fff; display:flex; align-items:center; justify-content:center; font-size:14px; color:var(--gray-600); position:relative;}
   .icon-btn:hover{background:var(--gray-100);}
-  .bell-badge{
-    position:absolute; top:-5px; left:-5px; background:var(--danger); color:#fff; font-size:10px; font-weight:700;
-    min-width:16px; height:16px; border-radius:999px; display:flex; align-items:center; justify-content:center;
-    font-family:'IBM Plex Mono'; border:2px solid #fff;
-  }
-  .bell-panel{
-    position:absolute; inset-inline-end:0; top:44px; width:340px; max-height:400px; overflow-y:auto;
-    background:#fff; border-radius:12px; box-shadow:0 16px 40px rgba(17,24,39,.16); border:1px solid var(--border);
-    display:none; z-index:60;
-  }
+  .bell-badge{position:absolute; top:-5px; left:-5px; background:var(--danger); color:#fff; font-size:10px; font-weight:700; min-width:16px; height:16px; border-radius:999px; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono'; border:2px solid #fff;}
+  .bell-panel{position:absolute; inset-inline-end:0; top:44px; width:320px; max-height:400px; overflow-y:auto; background:#fff; border-radius:12px; box-shadow:0 16px 40px rgba(17,24,39,.16); border:1px solid var(--border); display:none; z-index:60; text-align:right;}
   .bell-panel.open{display:block;}
   .bell-panel h3{padding:12px 16px; font-size:13px; border-bottom:1px solid var(--border); font-weight:600;}
-  .bell-item{padding:11px 16px; border-bottom:1px solid var(--border); font-size:12.5px; display:flex; gap:10px; align-items:flex-start;}
+  .bell-item{padding:11px 16px; border-bottom:1px solid var(--border); font-size:12.5px;}
   .bell-item:last-child{border-bottom:none;}
-  .bell-item .txt b{display:block; font-size:12.5px; margin-bottom:2px; font-weight:600;}
-  .bell-item .txt span{color:var(--gray-500); font-size:11px;}
+  .bell-item b{display:block; font-size:12.5px; margin-bottom:2px; font-weight:600;}
+  .bell-item span{color:var(--gray-500); font-size:11px;}
   .bell-empty{padding:24px 16px; text-align:center; color:var(--gray-500); font-size:13px;}
-
-  .toolbar{background:var(--gray-100); border-bottom:1px solid var(--border);}
-  .toolbar-inner{
-    max-width:1180px; margin:0 auto; padding:7px 22px; display:flex; align-items:center; gap:14px;
-    font-size:11.5px; color:var(--gray-500); flex-wrap:wrap;
-  }
-  .toolbar button{
-    font-family:inherit; background:#fff; border:1px solid var(--border); color:var(--gray-600);
-    border-radius:7px; padding:4px 10px; font-size:11.5px; cursor:pointer;
-  }
-  .toolbar button:hover{background:#fff;}
-  .toolbar label{display:flex; align-items:center; gap:6px;}
-  .toolbar input[type=number]{
-    width:44px; border:1px solid var(--border); border-radius:7px; padding:3px 6px; font-family:'IBM Plex Mono'; font-size:11.5px; text-align:center;
-  }
-
-  .alert-strip{
-    background:var(--danger-100); color:#9A2323; border-bottom:1px solid #F3C7C2;
-    font-size:12.5px; font-weight:500; text-align:center; padding:8px 16px;
-  }
-  .alert-strip.ok{background:var(--success-100); color:#146534; border-bottom-color:#BFE6CE;}
+  .bell-footer{padding:10px 16px; text-align:center;}
+  .bell-footer a{font-size:12px; color:var(--primary); text-decoration:none; font-weight:600;}
 
   main{max-width:1180px; margin:0 auto; padding:26px 22px 60px;}
-  #errorBox .error-banner{
-    background:var(--danger-100); border:1px solid #F3C7C2; color:#9A2323;
-    border-radius:10px; padding:14px 18px; margin-bottom:20px; font-size:13px; line-height:1.7;
-  }
+  .page{display:none;}
+  .page.active{display:block; animation:fadeIn .2s ease;}
+  @keyframes fadeIn{from{opacity:0;} to{opacity:1;}}
+  .page-title{font-size:19px; margin-bottom:18px; display:flex; align-items:center; gap:10px;}
 
-  .stat-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px;}
-  @media(max-width:900px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
-  .stat-card{background:var(--card); border:1px solid var(--border); border-radius:14px; padding:20px 20px 18px;}
-  .stat-card .s-icon{font-size:17px; margin-bottom:14px; opacity:.8;}
-  .stat-card .s-num{font-family:'IBM Plex Mono'; font-size:38px; font-weight:700; color:var(--gray-900); line-height:1;}
-  .stat-card .s-label{font-size:12.5px; color:var(--gray-500); margin-top:8px;}
-  .stat-card .s-delta{font-size:11.5px; margin-top:6px; font-weight:500;}
+  #errorBox .error-banner{background:var(--danger-100); border:1px solid #F3C7C2; color:#9A2323; border-radius:10px; padding:14px 18px; margin-bottom:20px; font-size:13px; line-height:1.7;}
+
+  .stat-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px;}
+  .stat-grid.cols-6{grid-template-columns:repeat(6,1fr);}
+  .stat-grid.cols-3{grid-template-columns:repeat(3,1fr);}
+  @media(max-width:900px){.stat-grid, .stat-grid.cols-6, .stat-grid.cols-3{grid-template-columns:repeat(2,1fr);}}
+  .stat-card{background:var(--card); border:1px solid var(--border); border-radius:14px; padding:18px 18px 16px;}
+  .stat-card .s-icon{font-size:16px; margin-bottom:10px; opacity:.8;}
+  .stat-card .s-num{font-family:'IBM Plex Mono'; font-size:32px; font-weight:700; color:var(--gray-900); line-height:1;}
+  .stat-card .s-num.danger{color:var(--danger);}
+  .stat-card .s-label{font-size:12px; color:var(--gray-500); margin-top:7px;}
+  .stat-card .s-delta{font-size:11px; margin-top:5px; font-weight:500;}
+  .stat-card.na{opacity:.55;}
+
+  .ops-hero{background:var(--card); border:1px solid var(--border); border-radius:14px; padding:24px; margin-bottom:20px; text-align:center;}
+  .ops-hero .ops-num{font-family:'IBM Plex Mono'; font-size:52px; font-weight:700; color:var(--danger);}
+  .ops-hero .ops-label{font-size:13.5px; color:var(--gray-600); margin-top:4px;}
+  .ops-start-btn{margin-top:16px; background:var(--gray-900); color:#fff; border:none; border-radius:10px; padding:12px 28px; font-size:14px; font-weight:600;}
+  .ops-start-btn:hover{background:var(--gray-800);}
+  .ops-start-btn:disabled{background:var(--gray-400); cursor:default;}
 
   .panel{background:var(--card); border:1px solid var(--border); border-radius:14px; margin-bottom:20px; overflow:hidden;}
   .panel-head{padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;}
@@ -144,27 +122,31 @@
   .panel-body{padding:18px 20px;}
   .badge-count{background:var(--gray-100); border:1px solid var(--border); color:var(--gray-500); font-family:'IBM Plex Mono'; font-size:11.5px; padding:2px 9px; border-radius:999px;}
   .panel-controls{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
-  .search, select.filter{border:1px solid var(--border); border-radius:8px; padding:7px 11px; font-size:12.5px; font-family:inherit; min-width:150px; background:#fff;}
+  .search, select.filter{border:1px solid var(--border); border-radius:8px; padding:7px 11px; font-size:12.5px; font-family:inherit; min-width:140px; background:#fff;}
 
-  .suggestion-card{
-    background:var(--primary-100); border:1px solid #C4D9FA; border-radius:14px; padding:16px 20px; margin-bottom:20px;
-    display:flex; gap:12px; align-items:flex-start;
-  }
-  .suggestion-card .s-ic{font-size:18px;}
-  .suggestion-card .s-label{font-size:11px; font-weight:600; color:#1D4ED8; text-transform:uppercase; letter-spacing:.3px;}
-  .suggestion-card p{margin:4px 0 0; font-size:14px; color:var(--gray-800); line-height:1.6;}
+  table{width:100%; border-collapse:collapse; font-size:13px;}
+  thead th{text-align:right; padding:9px 20px; background:var(--gray-100); color:var(--gray-500); font-weight:600; font-size:11.5px; border-bottom:1px solid var(--border); white-space:nowrap; cursor:pointer; user-select:none;}
+  thead th:hover{color:var(--gray-900);}
+  thead th .arrow{font-size:9px; margin-inline-start:4px; opacity:.5;}
+  tbody td{padding:10px 20px; border-bottom:1px solid var(--border); white-space:nowrap;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:var(--gray-100);}
+  tbody tr.clickable{cursor:pointer;}
+  .name-cell{font-weight:500; color:var(--gray-900);}
+  .muted{color:var(--gray-500);}
+  .chip{display:inline-flex; align-items:center; gap:6px; padding:3px 9px; border-radius:999px; font-family:'IBM Plex Mono'; font-size:11.5px; font-weight:600;}
+  .chip.safe{background:var(--success-100); color:#146534;}
+  .chip.warn{background:var(--warn-100); color:#92620A;}
+  .chip.danger{background:var(--danger-100); color:#9A2323;}
+  .chip .d{width:6px;height:6px;border-radius:50%; background:currentColor;}
+  .chip.na{background:var(--gray-100); color:var(--gray-400);}
+  .conflict-tag{display:inline-flex; align-items:center; gap:4px; font-size:10.5px; font-weight:600; color:#9A2323; background:var(--danger-100); border-radius:999px; padding:2px 8px; margin-inline-start:6px;}
+  .mark-done-btn{background:var(--gray-100); border:1px solid var(--border); color:var(--gray-600); font-size:11px; font-weight:600; padding:5px 11px; border-radius:7px;}
+  .mark-done-btn:hover{background:var(--success-100); border-color:var(--success); color:#146534;}
+  .mark-done-btn.done{background:var(--success-100); border-color:var(--success); color:#146534;}
 
-  .progress-row{margin-bottom:16px;}
-  .progress-row:last-child{margin-bottom:0;}
-  .progress-top{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:7px;}
-  .progress-top .p-label{font-size:13px; font-weight:500; color:var(--gray-800);}
-  .progress-top .p-count{font-family:'IBM Plex Mono'; font-size:12.5px; color:var(--gray-500);}
-  .progress-track{height:8px; border-radius:999px; background:var(--gray-100); overflow:hidden;}
-  .progress-fill{height:100%; border-radius:999px; transition:width .5s ease;}
-  .progress-fill.danger{background:var(--danger);}
-  .progress-fill.warn{background:var(--warn);}
-  .progress-fill.primary{background:var(--primary);}
-  .progress-fill.success{background:var(--success);}
+  .empty{padding:32px 20px; text-align:center; color:var(--gray-500); font-size:13px;}
+  .empty b{display:block; color:var(--gray-800); font-size:14px; margin-bottom:5px; font-weight:600;}
 
   .tl-group-label{font-size:11.5px; font-weight:600; color:var(--gray-500); padding:14px 20px 6px; display:flex; align-items:center; gap:7px;}
   .tl-group-label .tl-dot{width:7px; height:7px; border-radius:50%;}
@@ -174,32 +156,24 @@
   .reminder-item{display:flex; align-items:center; gap:12px; padding:11px 20px; border-bottom:1px solid var(--border); transition:opacity .25s ease;}
   .reminder-item:last-child{border-bottom:none;}
   .reminder-item.dismissed{opacity:0; height:0; padding:0; overflow:hidden; border:none;}
-  .reminder-check{
-    width:19px; height:19px; border-radius:50%; border:1.5px solid var(--gray-400); flex-shrink:0; cursor:pointer;
-    display:flex; align-items:center; justify-content:center; font-size:11px; color:#fff; background:#fff;
-    transition:background .15s, border-color .15s;
-  }
+  .reminder-check{width:19px; height:19px; border-radius:50%; border:1.5px solid var(--gray-400); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:11px; color:#fff; background:#fff; transition:background .15s, border-color .15s; cursor:pointer;}
   .reminder-check:hover{border-color:var(--primary);}
   .reminder-body{flex:1; min-width:0;}
   .reminder-title{font-size:13.5px; color:var(--gray-800); font-weight:400;}
   .reminder-title b{font-weight:600;}
   .reminder-sub{font-size:11.5px; color:var(--gray-500); margin-top:1px;}
 
-  .chart-wrap{position:relative; height:220px;}
-
-  .forecast-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px;}
-  .forecast-card{border:1px solid var(--border); border-radius:12px; padding:13px; text-align:center;}
-  .forecast-card .f-month{font-size:12px; font-weight:600; margin-bottom:6px; color:var(--gray-800);}
-  .forecast-card .f-total{font-family:'IBM Plex Mono'; font-size:21px; font-weight:700; color:var(--gray-900);}
-  .forecast-card .f-breakdown{font-size:10.5px; color:var(--gray-500); margin-top:3px; line-height:1.5;}
-  .forecast-card .f-level{display:inline-block; margin-top:7px; font-size:10.5px; font-weight:600; padding:2px 9px; border-radius:999px;}
-  .forecast-card.low .f-level{background:var(--success-100); color:#146534;}
-  .forecast-card.med .f-level{background:var(--warn-100); color:#92620A;}
-  .forecast-card.high .f-level{background:var(--danger-100); color:#9A2323;}
+  .rank-list{padding:6px 20px 16px;}
+  .rank-row{display:flex; align-items:center; gap:12px; padding:8px 0; border-bottom:1px solid var(--border); font-size:13px;}
+  .rank-row:last-child{border-bottom:none;}
+  .rank-row .r-name{flex:1;}
+  .rank-row .r-bar{flex:2; height:7px; background:var(--gray-100); border-radius:999px; overflow:hidden;}
+  .rank-row .r-bar span{display:block; height:100%; background:var(--primary); border-radius:999px;}
+  .rank-row .r-count{font-family:'IBM Plex Mono'; font-size:12px; color:var(--gray-500); width:26px; text-align:left;}
 
   .cal-head{display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--border);}
   .cal-nav{display:flex; align-items:center; gap:10px;}
-  .cal-nav button{background:var(--gray-100); color:var(--gray-800); border:1px solid var(--border); width:30px; height:30px; padding:0; border-radius:8px; font-size:14px; cursor:pointer;}
+  .cal-nav button{background:var(--gray-100); color:var(--gray-800); border:1px solid var(--border); width:30px; height:30px; padding:0; border-radius:8px; font-size:14px;}
   .cal-title{font-weight:600; font-size:14px; min-width:120px; text-align:center;}
   .cal-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:1px; background:var(--border); padding:1px;}
   .cal-dow{background:var(--gray-100); text-align:center; padding:7px 0; font-size:11px; color:var(--gray-500); font-weight:600;}
@@ -216,31 +190,53 @@
   .day-detail .person{display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid var(--border); font-size:12.5px;}
   .day-detail .person:last-child{border-bottom:none;}
 
-  table{width:100%; border-collapse:collapse; font-size:13px;}
-  thead th{text-align:right; padding:9px 20px; background:var(--gray-100); color:var(--gray-500); font-weight:600; font-size:11.5px; border-bottom:1px solid var(--border); white-space:nowrap; cursor:pointer; user-select:none;}
-  thead th:hover{color:var(--gray-900);}
-  thead th .arrow{font-size:9px; margin-inline-start:4px; opacity:.5;}
-  tbody td{padding:10px 20px; border-bottom:1px solid var(--border); white-space:nowrap;}
-  tbody tr:last-child td{border-bottom:none;}
-  tbody tr:hover{background:var(--gray-100);}
-  .name-cell{font-weight:500; color:var(--gray-900);}
-  .muted{color:var(--gray-500);}
-  .chip{display:inline-flex; align-items:center; gap:6px; padding:3px 9px; border-radius:999px; font-family:'IBM Plex Mono'; font-size:11.5px; font-weight:600;}
-  .chip.safe{background:var(--success-100); color:#146534;}
-  .chip.warn{background:var(--warn-100); color:#92620A;}
-  .chip.danger{background:var(--danger-100); color:#9A2323;}
-  .chip .d{width:6px;height:6px;border-radius:50%; background:currentColor;}
-  .conflict-tag{display:inline-flex; align-items:center; gap:4px; font-size:10.5px; font-weight:600; color:#9A2323; background:var(--danger-100); border-radius:999px; padding:2px 8px; margin-inline-start:6px;}
+  .chart-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:16px;}
+  @media(max-width:900px){.chart-grid{grid-template-columns:1fr;}}
+  .chart-card{background:var(--card); border:1px solid var(--border); border-radius:14px; padding:16px 18px;}
+  .chart-card h3{margin:0 0 12px; font-size:13.5px;}
+  .chart-wrap{position:relative; height:220px;}
 
-  .empty{padding:32px 20px; text-align:center; color:var(--gray-500); font-size:13px;}
-  .empty b{display:block; color:var(--gray-800); font-size:14px; margin-bottom:5px; font-weight:600;}
+  .modal-overlay{position:fixed; inset:0; background:rgba(17,24,39,.45); z-index:100; display:none; align-items:flex-start; justify-content:center; padding:6vh 16px; overflow-y:auto;}
+  .modal-overlay.open{display:flex;}
+  .modal-box{background:#fff; border-radius:16px; width:min(560px, 100%); box-shadow:0 24px 60px rgba(0,0,0,.25);}
+  .modal-head{padding:18px 22px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;}
+  .modal-head h3{font-size:15.5px;}
+  .modal-close{background:var(--gray-100); border:1px solid var(--border); width:30px; height:30px; border-radius:8px; font-size:14px;}
+  .modal-body{padding:20px 22px; max-height:60vh; overflow-y:auto;}
 
-  .loading-screen{position:fixed; inset:0; background:var(--bg); z-index:50; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:14px;}
+  .emp-detail-row{display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px solid var(--border); font-size:13px;}
+  .emp-detail-row:last-child{border-bottom:none;}
+  .emp-detail-row .lbl{color:var(--gray-500);}
+  .emp-section-title{font-size:11.5px; font-weight:700; color:var(--gray-500); margin:16px 0 6px; text-transform:uppercase; letter-spacing:.3px;}
+  .emp-section-title:first-child{margin-top:0;}
+
+  .wizard-progress{font-size:12px; color:var(--gray-500); text-align:center; margin-bottom:14px;}
+  .wizard-card{background:var(--gray-100); border-radius:14px; padding:26px 20px; text-align:center;}
+  .wizard-icon{font-size:30px; margin-bottom:10px;}
+  .wizard-title{font-size:16px; font-weight:700; margin-bottom:6px;}
+  .wizard-sub{font-size:13px; color:var(--gray-600);}
+  .wizard-actions{display:flex; gap:10px; justify-content:center; margin-top:20px;}
+  .wizard-actions button{border-radius:10px; padding:11px 22px; font-size:13.5px; font-weight:600; border:none;}
+  .wizard-done-btn{background:var(--success); color:#fff;}
+  .wizard-skip-btn{background:var(--gray-200); color:var(--gray-800);}
+  .wizard-finish{text-align:center; padding:20px 0;}
+  .wizard-finish .wf-ic{font-size:38px; margin-bottom:10px;}
+
+  .empty-note{font-size:11px; color:var(--gray-400); margin-top:4px;}
+
+  .loading-screen{position:fixed; inset:0; background:var(--bg); z-index:150; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:14px;}
   .spinner{width:30px; height:30px; border-radius:50%; border:3px solid var(--border); border-top-color:var(--primary); animation:spin 0.9s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
   .loading-screen p{color:var(--gray-500); font-size:13px;}
 
   footer{text-align:center; color:var(--gray-400); font-size:11.5px; padding:20px 0 40px;}
+
+  @media(max-width:880px){
+    .sidebar{position:fixed; inset-inline-start:0; top:0; transform:translateX(105%); transition:transform .2s ease; box-shadow:0 0 40px rgba(0,0,0,.2);}
+    .sidebar.open{transform:translateX(0);}
+    .sidebar-toggle{display:flex; align-items:center; justify-content:center;}
+    .stat-grid, .stat-grid.cols-6, .stat-grid.cols-3{grid-template-columns:repeat(2,1fr);}
+  }
 </style>
 </head>
 <body>
@@ -250,158 +246,259 @@
   <p>جارِ تحميل ملف employees.xlsx …</p>
 </div>
 
-<header class="topbar">
-  <div class="topbar-inner">
-    <div class="brand"><span class="brand-dot"></span> HR Dashboard</div>
-    <div class="header-search-wrap">
-      <input type="text" class="header-search" id="globalSearch" placeholder="🔎 ابحث باسم الموظف أو رقمه الوظيفي...">
-      <div class="global-search-results" id="globalSearchResults"></div>
-    </div>
-    <div class="header-right">
-      <span class="header-time" id="lastUpdated">—</span>
-      <button class="icon-btn" id="bellBtn">🔔<span class="bell-badge" id="bellBadge" style="display:none;">0</span>
-        <div class="bell-panel" id="bellPanel">
-          <h3>الإشعارات</h3>
-          <div id="bellList"></div>
-        </div>
-      </button>
-      <span class="header-time mono" id="clockNow">—</span>
-    </div>
-  </div>
-</header>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand"><span class="dot"></span> HR Dashboard</div>
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-page="home"><span class="ic">🏠</span> الرئيسية</button>
+      <button class="nav-item" data-page="employees"><span class="ic">👥</span> الموظفون</button>
+      <button class="nav-item" data-page="contracts"><span class="ic">📄</span> العقود</button>
+      <button class="nav-item" data-page="ids"><span class="ic">🪪</span> الهويات</button>
+      <button class="nav-item" data-page="leaves"><span class="ic">🏖</span> الإجازات</button>
+      <button class="nav-item" data-page="notifications"><span class="ic">🔔</span> التنبيهات</button>
+      <button class="nav-item" data-page="reports"><span class="ic">📊</span> التقارير</button>
+      <button class="nav-item" data-page="settings"><span class="ic">⚙️</span> الإعدادات</button>
+    </nav>
+    <div class="sidebar-foot">يقرأ البيانات من employees.xlsx مباشرة</div>
+  </aside>
 
-<div class="toolbar">
-  <div class="toolbar-inner">
-    <label>حد التنبيه <input type="number" id="thresholdInput" value="90" min="1" max="365"> يوم</label>
-    <button id="refreshBtn">تحديث</button>
-    <label class="file-btn" for="fileInput" style="cursor:pointer;">تحميل ملف آخر</label>
-    <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none;">
+  <div class="main-col">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+        <div class="header-search-wrap">
+          <input type="text" class="header-search" id="globalSearch" placeholder="ابحث باسم الموظف أو رقمه الوظيفي...">
+          <div class="global-search-results" id="globalSearchResults"></div>
+        </div>
+        <div class="header-right">
+          <span class="header-time" id="lastUpdated">—</span>
+          <button class="icon-btn" id="bellBtn">🔔<span class="bell-badge" id="bellBadge" style="display:none;">0</span>
+            <div class="bell-panel" id="bellPanel">
+              <h3>آخر التنبيهات</h3>
+              <div id="bellList"></div>
+              <div class="bell-footer"><a href="#" data-goto="notifications">عرض كل التنبيهات ←</a></div>
+            </div>
+          </button>
+          <span class="header-time mono" id="clockNow">—</span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div id="errorBox"></div>
+
+      <section class="page active" id="page-home">
+        <h1 class="page-title">مركز العمليات</h1>
+
+        <div class="ops-hero">
+          <div class="ops-num mono" id="opsToday">0</div>
+          <div class="ops-label">يحتاج إجراء اليوم</div>
+          <button class="ops-start-btn" id="startWorkBtn">ابدأ العمل</button>
+        </div>
+
+        <div class="stat-grid cols-6">
+          <div class="stat-card"><div class="s-icon">📄</div><div class="s-num mono" id="opsContracts">0</div><div class="s-label">عقود</div></div>
+          <div class="stat-card"><div class="s-icon">🪪</div><div class="s-num mono" id="opsIds">0</div><div class="s-label">إقامات</div></div>
+          <div class="stat-card"><div class="s-icon">🏖</div><div class="s-num mono" id="opsReturns">0</div><div class="s-label">عائدون من الإجازة</div></div>
+          <div class="stat-card na"><div class="s-icon">🎂</div><div class="s-num mono">—</div><div class="s-label">أعياد ميلاد</div><div class="empty-note">يحتاج عمود تاريخ الميلاد</div></div>
+          <div class="stat-card na"><div class="s-icon">⚠️</div><div class="s-num mono">—</div><div class="s-label">مخالفات</div><div class="empty-note">يحتاج بيانات إضافية</div></div>
+          <div class="stat-card"><div class="s-icon">👥</div><div class="s-num mono" id="opsTotal">0</div><div class="s-label">إجمالي الموظفين</div></div>
+        </div>
+
+        <section class="panel">
+          <div class="panel-head"><h2>العقود</h2><span class="badge-count" id="homeContractCount">0</span></div>
+          <div class="panel-body" style="padding:14px 20px;">
+            <div style="font-size:13px;">إجمالي <b class="mono" id="homeContractTotal">0</b> · تنتهي خلال شهر <b class="mono" id="homeContractMonth">0</b> · منتهية <b class="mono" id="homeContractExpired">0</b></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>آخر التنبيهات <span class="badge-count" id="countHomeNotif">0</span></h2>
+            <a href="#" data-goto="notifications" style="font-size:12px; color:var(--primary); text-decoration:none; font-weight:600;">عرض الكل ←</a>
+          </div>
+          <div id="homeNotifList"></div>
+        </section>
+      </section>
+
+      <section class="page" id="page-employees">
+        <h1 class="page-title">الموظفون</h1>
+        <section class="panel">
+          <div class="panel-head">
+            <h2>القائمة الكاملة <span class="badge-count" id="countEmployees">0</span></h2>
+            <div class="panel-controls">
+              <select class="filter" id="empDeptFilter"><option value="">كل الأقسام</option></select>
+              <input class="search" data-target="tblEmployees" placeholder="بحث بالاسم...">
+            </div>
+          </div>
+          <div class="table-wrap"><table id="tblEmployees">
+            <thead><tr><th data-sort="name">الاسم</th><th data-sort="empId">الرقم الوظيفي</th><th data-sort="dept">القسم</th><th>حالة العقد</th><th>حالة الهوية</th><th>الإجازة</th></tr></thead>
+            <tbody></tbody>
+          </table></div>
+        </section>
+      </section>
+
+      <section class="page" id="page-contracts">
+        <h1 class="page-title">العقود</h1>
+        <div class="stat-grid cols-3">
+          <div class="stat-card"><div class="s-label">إجمالي العقود</div><div class="s-num mono" id="cStatTotal">0</div></div>
+          <div class="stat-card"><div class="s-label">تنتهي خلال شهر</div><div class="s-num mono" id="cStatMonth">0</div></div>
+          <div class="stat-card"><div class="s-label">منتهية</div><div class="s-num mono danger" id="cStatExpired">0</div></div>
+        </div>
+        <section class="panel">
+          <div class="panel-head">
+            <h2>كل العقود <span class="badge-count" id="countContract">0</span></h2>
+            <div class="panel-controls">
+              <select class="filter" id="contractDeptFilter"><option value="">كل الأقسام</option></select>
+              <select class="filter" id="contractStatusFilter"><option value="">كل الحالات</option><option value="expired">منتهية</option><option value="soon">تنتهي قريبًا</option><option value="safe">آمنة</option></select>
+              <input class="search" data-target="tblContract" placeholder="بحث بالاسم...">
+            </div>
+          </div>
+          <div class="table-wrap"><table id="tblContract">
+            <thead><tr><th data-sort="name">الاسم</th><th data-sort="empId">الرقم الوظيفي</th><th data-sort="dept">القسم</th><th data-sort="contractEnd">تاريخ انتهاء العقد</th><th data-sort="days">الأيام المتبقية</th><th>—</th></tr></thead>
+            <tbody></tbody>
+          </table></div>
+        </section>
+      </section>
+
+      <section class="page" id="page-ids">
+        <h1 class="page-title">الهويات والإقامات</h1>
+        <div class="stat-grid cols-3">
+          <div class="stat-card"><div class="s-label">إجمالي</div><div class="s-num mono" id="iStatTotal">0</div></div>
+          <div class="stat-card"><div class="s-label">تنتهي قريبًا</div><div class="s-num mono" id="iStatMonth">0</div></div>
+          <div class="stat-card"><div class="s-label">منتهية</div><div class="s-num mono danger" id="iStatExpired">0</div></div>
+        </div>
+        <section class="panel">
+          <div class="panel-head">
+            <h2>كل الهويات <span class="badge-count" id="countId">0</span></h2>
+            <div class="panel-controls">
+              <select class="filter" id="idDeptFilter"><option value="">كل الأقسام</option></select>
+              <select class="filter" id="idStatusFilter"><option value="">كل الحالات</option><option value="expired">منتهية</option><option value="soon">تجديد قريب</option><option value="safe">صالحة</option></select>
+              <input class="search" data-target="tblId" placeholder="بحث بالاسم...">
+            </div>
+          </div>
+          <div class="table-wrap"><table id="tblId">
+            <thead><tr><th data-sort="name">الاسم</th><th data-sort="empId">الرقم الوظيفي</th><th data-sort="dept">القسم</th><th data-sort="natId">رقم الهوية / الإقامة</th><th data-sort="idExpiry">تاريخ الانتهاء</th><th data-sort="days">الأيام المتبقية</th><th>—</th></tr></thead>
+            <tbody></tbody>
+          </table></div>
+        </section>
+        <p class="empty-note" style="text-align:center;">تصنيف "حسب الجنسية" غير متوفر حاليًا — يحتاج إضافة عمود الجنسية بالملف.</p>
+      </section>
+
+      <section class="page" id="page-leaves">
+        <h1 class="page-title">الإجازات</h1>
+
+        <section class="panel">
+          <div class="cal-head">
+            <div class="cal-nav"><button id="calPrev">‹</button><div class="cal-title" id="calTitle">—</div><button id="calNext">›</button></div>
+            <button id="calToday" style="background:var(--gray-100); color:var(--gray-800); border:1px solid var(--border); border-radius:8px; padding:6px 12px; font-size:12px;">اليوم</button>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+          <div class="day-detail" id="dayDetail" style="display:none;"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>الإجازات الحالية <span class="badge-count" id="countActiveLeave">0</span></h2></div>
+          <div class="table-wrap"><table id="tblActiveLeave">
+            <thead><tr><th>الاسم</th><th>القسم</th><th>بداية</th><th>نهاية</th><th>يعود بعد</th></tr></thead>
+            <tbody></tbody>
+          </table></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>الإجازات القادمة <span class="badge-count" id="countUpcomingLeave">0</span></h2>
+            <div class="panel-controls">
+              <select class="filter" id="leaveDeptFilter"><option value="">كل الأقسام</option></select>
+              <input class="search" data-target="tblUpcomingLeave" placeholder="بحث بالاسم...">
+            </div>
+          </div>
+          <div class="table-wrap"><table id="tblUpcomingLeave">
+            <thead><tr><th data-sort="name">الاسم</th><th data-sort="dept">القسم</th><th data-sort="leaveStart">بداية الإجازة</th><th data-sort="leaveEnd">نهاية الإجازة</th><th data-sort="days">تبدأ بعد</th></tr></thead>
+            <tbody></tbody>
+          </table></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>تعارضات الإجازات <span class="badge-count" id="countConflicts">0</span></h2></div>
+          <div id="conflictList" style="padding:6px 0;"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>أكثر الأقسام إجازات (هذا الشهر)</h2></div>
+          <div class="rank-list" id="deptRankList"></div>
+        </section>
+      </section>
+
+      <section class="page" id="page-notifications">
+        <h1 class="page-title">التنبيهات</h1>
+        <section class="panel">
+          <div class="panel-head"><h2>كل التنبيهات <span class="badge-count" id="countNotifPage">0</span></h2></div>
+          <div id="notifFullList"></div>
+        </section>
+      </section>
+
+      <section class="page" id="page-reports">
+        <h1 class="page-title">التقارير</h1>
+        <div class="chart-grid">
+          <div class="chart-card"><h3>حالة العقود</h3><div class="chart-wrap"><canvas id="chartContractStatus"></canvas></div></div>
+          <div class="chart-card"><h3>حالة الهويات / الإقامات</h3><div class="chart-wrap"><canvas id="chartIdStatus"></canvas></div></div>
+          <div class="chart-card"><h3>الأقسام الأكثر إجازات</h3><div class="chart-wrap"><canvas id="chartDeptLeaves"></canvas></div></div>
+          <div class="chart-card"><h3>الاستحقاقات القادمة (12 أسبوع)</h3><div class="chart-wrap"><canvas id="chartWeekly"></canvas></div></div>
+        </div>
+        <section class="panel" style="margin-top:16px;">
+          <div class="panel-head"><h2>توقع الضغط القادم</h2></div>
+          <div class="panel-body"><div class="forecast-grid" id="forecastGrid" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px;"></div></div>
+        </section>
+        <p class="empty-note" style="text-align:center; margin-top:10px;">تقرير "السعوديين وغير السعوديين" غير متوفر حاليًا — يحتاج إضافة عمود الجنسية بالملف.</p>
+      </section>
+
+      <section class="page" id="page-settings">
+        <h1 class="page-title">الإعدادات</h1>
+        <section class="panel">
+          <div class="panel-head"><h2>مصدر البيانات</h2></div>
+          <div class="panel-body" style="display:flex; flex-direction:column; gap:14px;">
+            <div>آخر تحديث: <b id="settingsLastUpdated">—</b></div>
+            <div><button id="refreshBtn" style="background:var(--gray-100); border:1px solid var(--border); border-radius:8px; padding:8px 16px; font-size:13px;">تحديث من GitHub</button></div>
+            <div>
+              <label for="fileInput" style="cursor:pointer; background:var(--gray-100); border:1px solid var(--border); border-radius:8px; padding:8px 16px; font-size:13px;">معاينة ملف آخر محليًا</label>
+              <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none;">
+            </div>
+            <label style="display:flex; align-items:center; gap:8px; font-size:13px;">حد التنبيه (كم يوم يُعتبر "قريب الانتهاء")
+              <input type="number" id="thresholdInput" value="90" min="1" max="365" style="width:60px; border:1px solid var(--border); border-radius:7px; padding:6px 8px; font-family:'IBM Plex Mono'; text-align:center;">
+              يوم
+            </label>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><h2>حقول غير متوفرة حاليًا</h2></div>
+          <div class="panel-body" style="font-size:13px; line-height:2;">
+            لتفعيل هذي الميزات، أضف الأعمدة التالية بالملف: الفرع، المدير المباشر، تاريخ المباشرة، الجنسية، تاريخ الميلاد.
+            <br><span class="empty-note">ملاحظة: هذا الموقع لا يمكنه الكتابة رجوعًا إلى ملف Excel — أي إجراء "تم" هنا يُخفي التنبيه من متصفحك فقط، ولا يعدّل الملف نفسه.</span>
+          </div>
+        </section>
+      </section>
+
+      <footer>البيانات تُقرأ مباشرة من ملف employees.xlsx — لتحديثها عدّل الملف وارفعه على GitHub بنفس الاسم.</footer>
+    </main>
   </div>
 </div>
 
-<div class="alert-strip" id="alertStrip">—</div>
+<div class="modal-overlay" id="empModalOverlay">
+  <div class="modal-box">
+    <div class="modal-head"><h3 id="empModalName">—</h3><button class="modal-close" data-close="empModalOverlay">✕</button></div>
+    <div class="modal-body" id="empModalBody"></div>
+  </div>
+</div>
 
-<main>
-  <div id="errorBox"></div>
-
-  <section class="stat-grid" id="statGrid">
-    <div class="stat-card">
-      <div class="s-icon">📄</div>
-      <div class="s-num mono" id="kpiContract">0</div>
-      <div class="s-label">عقود تنتهي قريبًا</div>
-      <div class="s-delta" id="kpiContractDelta"></div>
-    </div>
-    <div class="stat-card">
-      <div class="s-icon">🧳</div>
-      <div class="s-num mono" id="kpiLeave">0</div>
-      <div class="s-label">في إجازة اليوم</div>
-      <div class="s-delta" id="kpiLeaveDelta"></div>
-    </div>
-    <div class="stat-card">
-      <div class="s-icon">🪪</div>
-      <div class="s-num mono" id="kpiId">0</div>
-      <div class="s-label">هويات / إقامات قريبة</div>
-      <div class="s-delta" id="kpiIdDelta"></div>
-    </div>
-    <div class="stat-card">
-      <div class="s-icon">👥</div>
-      <div class="s-num mono" id="kpiTotal">0</div>
-      <div class="s-label">إجمالي الموظفين المتابَعين</div>
-      <div class="s-delta" style="color:var(--gray-400);">عبر 3 شيتات</div>
-    </div>
-  </section>
-
-  <div class="suggestion-card">
-    <div class="s-ic">💡</div>
-    <div>
-      <div class="s-label">اقتراح اليوم</div>
-      <p id="suggestionText">جارٍ التحليل…</p>
+<div class="modal-overlay" id="wizardOverlay">
+  <div class="modal-box">
+    <div class="modal-head"><h3>ابدأ العمل</h3><button class="modal-close" data-close="wizardOverlay">✕</button></div>
+    <div class="modal-body">
+      <div class="wizard-progress" id="wizardProgress">—</div>
+      <div id="wizardContent"></div>
     </div>
   </div>
-
-  <section class="panel">
-    <div class="panel-head"><h2>نظرة سريعة</h2></div>
-    <div class="panel-body" id="progressBody"></div>
-  </section>
-
-  <section class="panel">
-    <div class="panel-head"><h2>📅 القادم <span class="badge-count" id="countTimeline">0</span></h2></div>
-    <div id="timelineList"></div>
-  </section>
-
-  <section class="panel">
-    <div class="panel-head"><h2>📈 الاستحقاقات القادمة (12 أسبوع)</h2></div>
-    <div class="panel-body"><div class="chart-wrap"><canvas id="chartWeekly"></canvas></div></div>
-  </section>
-
-  <section class="panel">
-    <div class="panel-head"><h2>توقع الضغط القادم</h2></div>
-    <div class="panel-body"><div class="forecast-grid" id="forecastGrid"></div></div>
-  </section>
-
-  <section class="panel">
-    <div class="cal-head">
-      <div class="cal-nav">
-        <button id="calPrev">‹</button>
-        <div class="cal-title" id="calTitle">—</div>
-        <button id="calNext">›</button>
-      </div>
-      <button id="calToday" style="background:var(--gray-100); color:var(--gray-800); border:1px solid var(--border); border-radius:8px; padding:6px 12px; font-size:12px; cursor:pointer;">اليوم</button>
-    </div>
-    <div class="cal-grid" id="calGrid"></div>
-    <div class="day-detail" id="dayDetail" style="display:none;"></div>
-  </section>
-
-  <section class="panel">
-    <div class="panel-head">
-      <h2>🗓️ الإجازات <span class="badge-count" id="countLeave">0</span></h2>
-      <div class="panel-controls">
-        <select class="filter" id="leaveDeptFilter"><option value="">كل الأقسام</option></select>
-        <input class="search" data-target="tblLeave" placeholder="بحث بالاسم...">
-      </div>
-    </div>
-    <div class="table-wrap"><table id="tblLeave">
-      <thead><tr>
-        <th data-sort="name">الاسم</th><th data-sort="empId">الرقم الوظيفي</th><th data-sort="dept">القسم</th>
-        <th data-sort="leaveStart">بداية الإجازة</th><th data-sort="leaveEnd">نهاية الإجازة</th><th data-sort="days">الأيام المتبقية</th>
-      </tr></thead>
-      <tbody></tbody>
-    </table></div>
-  </section>
-
-  <section class="panel">
-    <div class="panel-head">
-      <h2>📄 العقود <span class="badge-count" id="countContract">0</span></h2>
-      <div class="panel-controls">
-        <select class="filter" id="contractDeptFilter"><option value="">كل الأقسام</option></select>
-        <input class="search" data-target="tblContract" placeholder="بحث بالاسم...">
-      </div>
-    </div>
-    <div class="table-wrap"><table id="tblContract">
-      <thead><tr>
-        <th data-sort="name">الاسم</th><th data-sort="empId">الرقم الوظيفي</th><th data-sort="dept">القسم</th>
-        <th data-sort="contractEnd">تاريخ انتهاء العقد</th><th data-sort="days">الأيام المتبقية</th>
-      </tr></thead>
-      <tbody></tbody>
-    </table></div>
-  </section>
-
-  <section class="panel">
-    <div class="panel-head">
-      <h2>🪪 الهويات <span class="badge-count" id="countId">0</span></h2>
-      <input class="search" data-target="tblId" placeholder="بحث بالاسم...">
-    </div>
-    <div class="table-wrap"><table id="tblId">
-      <thead><tr>
-        <th data-sort="name">الاسم</th><th data-sort="empId">الرقم الوظيفي</th><th data-sort="natId">رقم الهوية / الإقامة</th>
-        <th data-sort="idExpiry">تاريخ الانتهاء</th><th data-sort="days">الأيام المتبقية</th>
-      </tr></thead>
-      <tbody></tbody>
-    </table></div>
-  </section>
-
-  <footer>البيانات تُقرأ مباشرة من ملف employees.xlsx — لتحديثها عدّل الملف وارفعه على GitHub بنفس الاسم.</footer>
-</main>
+</div>
 
 <script>
 const SHEETS = { contracts: "العقود", leaves: "الإجازات", ids: "الهويات" };
@@ -411,17 +508,14 @@ let leavesData = [];
 let idsData = [];
 let threshold = 90;
 let conflicts = [];
-
 let calYear, calMonth, calSelectedDate = null;
+let wizardQueue = [];
+let wizardIndex = 0;
 
 function excelDateToJS(val){
   if (val === undefined || val === null || val === "") return null;
   if (val instanceof Date) return val;
-  if (typeof val === "number") {
-    const d = XLSX.SSF.parse_date_code(val);
-    if (!d) return null;
-    return new Date(d.y, d.m - 1, d.d);
-  }
+  if (typeof val === "number") { const d = XLSX.SSF.parse_date_code(val); if (!d) return null; return new Date(d.y, d.m - 1, d.d); }
   const parsed = new Date(val);
   return isNaN(parsed) ? null : parsed;
 }
@@ -432,10 +526,7 @@ function daysBetween(a, b){
   return Math.round((db - da) / ms);
 }
 function sameDay(a,b){ return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate(); }
-function fmtDate(d){
-  if (!d) return "—";
-  return d.toLocaleDateString('ar-SA-u-nu-latn', {year:'numeric', month:'2-digit', day:'2-digit'});
-}
+function fmtDate(d){ if (!d) return "—"; return d.toLocaleDateString('ar-SA-u-nu-latn', {year:'numeric', month:'2-digit', day:'2-digit'}); }
 function firstName(name){ return (name||"").trim().split(/\s+/)[0] || name; }
 function chipFor(days){
   let cls = "safe", label = days + " يوم";
@@ -444,19 +535,13 @@ function chipFor(days){
   else if (days <= threshold){ cls = "warn"; }
   return `<span class="chip ${cls}"><span class="d"></span>${label}</span>`;
 }
+function statusOf(days){ if (days < 0) return 'expired'; if (days <= threshold) return 'soon'; return 'safe'; }
 function intervalsOverlap(s1,e1,s2,e2){ return s1 <= e2 && s2 <= e1; }
-function groupCount(arr, keyFn){
-  const map = {};
-  arr.forEach(item => { const k = keyFn(item); if (!k) return; map[k] = (map[k]||0)+1; });
-  return map;
-}
-function pct(n, d){ return d ? Math.round((n/d)*100) : 0; }
+function groupCount(arr, keyFn){ const map = {}; arr.forEach(item => { const k = keyFn(item); if (!k) return; map[k] = (map[k]||0)+1; }); return map; }
+function keyOf(r){ return (r.empId || r.name).toString().trim(); }
 
 function findSheet(workbook, wanted){ return workbook.SheetNames.find(n => n.trim() === wanted); }
-function sheetToRows(workbook, sheetName){
-  if (!sheetName) return null;
-  return XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: "" });
-}
+function sheetToRows(workbook, sheetName){ if (!sheetName) return null; return XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: "" }); }
 
 function parseWorkbook(workbook){
   const missing = [];
@@ -482,6 +567,10 @@ function parseWorkbook(workbook){
     idExpiry: excelDateToJS(r["تاريخ انتهاء الهوية / الإقامة"]),
   })).filter(r => r.name);
 
+  const deptByKey = {};
+  contractsData.forEach(r => { deptByKey[keyOf(r)] = r.dept; });
+  idsData.forEach(r => { r.dept = deptByKey[keyOf(r)] || ''; });
+
   if (missing.length){
     document.getElementById('errorBox').innerHTML =
       `<div class="error-banner"><b>تنبيه: بعض الشيتات غير موجودة بالاسم المتوقع.</b><br>
@@ -499,18 +588,13 @@ function parseWorkbook(workbook){
 function computeConflicts(){
   conflicts = [];
   const byDept = {};
-  leavesData.forEach(l => {
-    if (!l.leaveStart || !l.leaveEnd) return;
-    (byDept[l.dept] ||= []).push(l);
-  });
+  leavesData.forEach(l => { if (!l.leaveStart || !l.leaveEnd) return; (byDept[l.dept] ||= []).push(l); });
   Object.entries(byDept).forEach(([dept, list]) => {
     for (let i=0;i<list.length;i++){
       for (let j=i+1;j<list.length;j++){
         const a=list[i], b=list[j];
         if (a.empId === b.empId) continue;
-        if (intervalsOverlap(a.leaveStart,a.leaveEnd,b.leaveStart,b.leaveEnd)){
-          conflicts.push({dept, a, b});
-        }
+        if (intervalsOverlap(a.leaveStart,a.leaveEnd,b.leaveStart,b.leaveEnd)) conflicts.push({dept, a, b});
       }
     }
   });
@@ -518,12 +602,47 @@ function computeConflicts(){
 
 function populateDeptFilters(){
   const depts = Array.from(new Set([...contractsData, ...leavesData].map(r => r.dept).filter(Boolean))).sort();
-  ['leaveDeptFilter','contractDeptFilter'].forEach(id => {
+  ['leaveDeptFilter','contractDeptFilter','idDeptFilter','empDeptFilter'].forEach(id => {
     const sel = document.getElementById(id);
+    if (!sel) return;
     const current = sel.value;
     sel.innerHTML = '<option value="">كل الأقسام</option>' + depts.map(d => `<option value="${d}">${d}</option>`).join('');
     sel.value = current;
   });
+}
+
+function getDismissed(){ try{ return JSON.parse(localStorage.getItem('hrDashDismissedActions') || '[]'); }catch(e){ return []; } }
+function dismissAction(id){ const list = getDismissed(); if (!list.includes(id)) list.push(id); try{ localStorage.setItem('hrDashDismissedActions', JSON.stringify(list)); }catch(e){} }
+function isDismissed(id){ return getDismissed().includes(id); }
+
+function buildActionList(today, contractsAll, idsAll, leavesAll){
+  const actions = [];
+  contractsAll.forEach(r => {
+    if (!r.contractEnd) return;
+    const d = daysBetween(today, r.contractEnd);
+    if (d >= -14 && d <= 30) actions.push({ id:`contract-${r.empId}-${r.contractEnd.getTime()}`, date:r.contractEnd, days:d, icon:'📄',
+      title:`تجديد عقد <b>${r.name}</b>`, sub: d<0?`منتهي منذ ${Math.abs(d)} يوم`:(d===0?'ينتهي اليوم':`خلال ${d} يوم`) });
+  });
+  idsAll.forEach(r => {
+    if (!r.idExpiry) return;
+    const d = daysBetween(today, r.idExpiry);
+    if (d >= -14 && d <= 30) actions.push({ id:`id-${r.empId}-${r.idExpiry.getTime()}`, date:r.idExpiry, days:d, icon:'🪪',
+      title:`تجديد إقامة <b>${r.name}</b>`, sub: d<0?`منتهية منذ ${Math.abs(d)} يوم`:(d===0?'تنتهي اليوم':`خلال ${d} يوم`) });
+  });
+  leavesAll.forEach(r => {
+    if (r.leaveStart){
+      const d = daysBetween(today, r.leaveStart);
+      if (d >= 0 && d <= 14) actions.push({ id:`leavestart-${r.empId}-${r.leaveStart.getTime()}`, date:r.leaveStart, days:d, icon:'🧳',
+        title:`بداية إجازة <b>${r.name}</b>`, sub: d===0?'تبدأ اليوم':(d===1?'تبدأ غدًا':`بعد ${d} يوم`) });
+    }
+    if (r.leaveEnd){
+      const d = daysBetween(today, r.leaveEnd);
+      if (d >= 0 && d <= 7) actions.push({ id:`leaveend-${r.empId}-${r.leaveEnd.getTime()}`, date:r.leaveEnd, days:d, icon:'👋',
+        title:`عودة <b>${r.name}</b> من الإجازة`, sub: d===0?'يرجع اليوم':(d===1?'يرجع غدًا':`بعد ${d} يوم`) });
+    }
+  });
+  actions.sort((a,b) => a.days - b.days);
+  return actions;
 }
 
 function render(){
@@ -531,64 +650,115 @@ function render(){
   threshold = parseInt(document.getElementById('thresholdInput').value, 10) || 90;
 
   const onLeave = leavesData.filter(r => r.leaveStart && r.leaveEnd && today >= r.leaveStart && today <= r.leaveEnd);
-  const contractSoon = contractsData.filter(r => r.contractEnd)
-    .map(r => ({...r, days: daysBetween(today, r.contractEnd)}))
-    .filter(r => r.days <= threshold).sort((a,b) => a.days - b.days);
-  const idSoon = idsData.filter(r => r.idExpiry)
-    .map(r => ({...r, days: daysBetween(today, r.idExpiry)}))
-    .filter(r => r.days <= threshold).sort((a,b) => a.days - b.days);
-  const leavesWithDays = leavesData.map(r => ({...r, days: r.leaveEnd ? daysBetween(today, r.leaveEnd) : null}));
+  const upcomingLeave = leavesData.filter(r => r.leaveStart && r.leaveStart > today).map(r => ({...r, days: daysBetween(today, r.leaveStart)})).sort((a,b)=>a.days-b.days);
+  const contractSoon = contractsData.filter(r => r.contractEnd).map(r => ({...r, days: daysBetween(today, r.contractEnd)})).filter(r => r.days <= threshold).sort((a,b) => a.days - b.days);
+  const idSoon = idsData.filter(r => r.idExpiry).map(r => ({...r, days: daysBetween(today, r.idExpiry)})).filter(r => r.days <= threshold).sort((a,b) => a.days - b.days);
 
   const trackedKeys = new Set();
-  [...contractsData, ...leavesData, ...idsData].forEach(r => trackedKeys.add((r.empId || r.name).toString().trim()));
+  [...contractsData, ...leavesData, ...idsData].forEach(r => trackedKeys.add(keyOf(r)));
 
-  document.getElementById('kpiTotal').textContent = trackedKeys.size;
-  document.getElementById('kpiLeave').textContent = onLeave.length;
-  document.getElementById('kpiContract').textContent = contractSoon.length;
-  document.getElementById('kpiId').textContent = idSoon.length;
-  document.getElementById('countLeave').textContent = leavesData.length;
+  const dismissed = getDismissed();
+  const allActions = buildActionList(today, contractsData, idsData, leavesData).filter(a => !dismissed.includes(a.id));
+  const todayActions = allActions.filter(a => a.days <= 0);
+
+  document.getElementById('opsToday').textContent = todayActions.length;
+  document.getElementById('opsContracts').textContent = contractSoon.filter(r=>r.days<=7).length;
+  document.getElementById('opsIds').textContent = idSoon.filter(r=>r.days<=7).length;
+  document.getElementById('opsReturns').textContent = leavesData.filter(r => r.leaveEnd && daysBetween(today, r.leaveEnd) >= 0 && daysBetween(today, r.leaveEnd) <= 3).length;
+  document.getElementById('opsTotal').textContent = trackedKeys.size;
+  document.getElementById('startWorkBtn').disabled = allActions.length === 0;
+  document.getElementById('startWorkBtn').textContent = allActions.length ? 'ابدأ العمل' : 'لا يوجد إجراءات الآن';
+
+  const contractExpired = contractsData.filter(r => r.contractEnd && daysBetween(today, r.contractEnd) < 0).length;
+  const contractMonth = contractsData.filter(r => r.contractEnd && daysBetween(today, r.contractEnd) >= 0 && daysBetween(today, r.contractEnd) <= 30).length;
+  document.getElementById('homeContractTotal').textContent = contractsData.length;
+  document.getElementById('homeContractMonth').textContent = contractMonth;
+  document.getElementById('homeContractExpired').textContent = contractExpired;
+  document.getElementById('homeContractCount').textContent = contractsData.length;
+
+  renderNotifList('homeNotifList', 'countHomeNotif', allActions.slice(0, 10));
+  renderNotifList('notifFullList', 'countNotifPage', allActions, true);
+
+  document.getElementById('cStatTotal').textContent = contractsData.length;
+  document.getElementById('cStatMonth').textContent = contractMonth;
+  document.getElementById('cStatExpired').textContent = contractExpired;
   document.getElementById('countContract').textContent = contractSoon.length;
-  document.getElementById('countId').textContent = idSoon.length;
 
-  const contractWeek = contractSoon.filter(r => r.days>=0 && r.days<=7).length;
-  const idWeek = idSoon.filter(r => r.days>=0 && r.days<=7).length;
-  document.getElementById('kpiContractDelta').innerHTML = contractWeek ? `<span style="color:var(--danger)">+${contractWeek} هذا الأسبوع</span>` : `<span style="color:var(--success)">لا شيء هذا الأسبوع</span>`;
-  document.getElementById('kpiIdDelta').innerHTML = idWeek ? `<span style="color:var(--danger)">+${idWeek} هذا الأسبوع</span>` : `<span style="color:var(--success)">لا شيء هذا الأسبوع</span>`;
-  document.getElementById('kpiLeaveDelta').innerHTML = conflicts.length ? `<span style="color:var(--warn)">${conflicts.length} تعارض</span>` : `<span style="color:var(--gray-400)">لا تعارضات</span>`;
-
-  renderTable('tblLeave', filterByDept(leavesWithDays, 'leaveDeptFilter'), r => `
-    <td class="name-cell">${r.name}${hasConflict(r) ? '<span class="conflict-tag">⚠️ تعارض</span>' : ''}</td>
-    <td class="muted">${r.empId}</td><td class="muted">${r.dept}</td>
-    <td>${fmtDate(r.leaveStart)}</td><td>${fmtDate(r.leaveEnd)}</td>
-    <td>${r.leaveEnd ? chipFor(r.days) : '—'}</td>
-  `, "لا يوجد سجلات إجازة", "أضف صفوفًا في شيت الإجازات.");
-
-  renderTable('tblContract', filterByDept(contractSoon, 'contractDeptFilter'), r => `
+  let contractRows = contractsData.filter(r => r.contractEnd).map(r => ({...r, days: daysBetween(today, r.contractEnd)}));
+  contractRows = filterByDept(contractRows, 'contractDeptFilter');
+  contractRows = filterByStatus(contractRows, 'contractStatusFilter');
+  renderTable('tblContract', contractRows, r => `
     <td class="name-cell">${r.name}</td><td class="muted">${r.empId}</td><td class="muted">${r.dept}</td>
     <td>${fmtDate(r.contractEnd)}</td><td>${chipFor(r.days)}</td>
-  `, "لا توجد عقود قريبة من الانتهاء", `لا يوجد عقود تنتهي خلال ${threshold} يوم.`);
+    <td>${markDoneButton('contract-'+r.empId+'-'+r.contractEnd.getTime())}</td>
+  `, "لا توجد عقود مطابقة", "جرّب تغيير الفلاتر.");
 
-  renderTable('tblId', idSoon, r => `
-    <td class="name-cell">${r.name}</td><td class="muted">${r.empId}</td><td class="muted">${r.natId}</td>
-    <td>${fmtDate(r.idExpiry)}</td><td>${chipFor(r.days)}</td>
-  `, "لا توجد هويات/إقامات قريبة من الانتهاء", `لا يوجد هويات تنتهي خلال ${threshold} يوم.`);
+  const idExpired = idsData.filter(r => r.idExpiry && daysBetween(today, r.idExpiry) < 0).length;
+  document.getElementById('iStatTotal').textContent = idsData.length;
+  document.getElementById('iStatMonth').textContent = idSoon.length;
+  document.getElementById('iStatExpired').textContent = idExpired;
+  document.getElementById('countId').textContent = idSoon.length;
 
-  renderAlertStrip(contractSoon, idSoon);
-  renderSuggestion(today, contractsData, idsData, contractSoon, idSoon);
-  renderProgress(contractsData, idsData, onLeave, trackedKeys.size);
-  renderTimeline(today, contractsData, idsData, leavesData);
+  let idRows = idsData.filter(r => r.idExpiry).map(r => ({...r, days: daysBetween(today, r.idExpiry)}));
+  idRows = filterByDept(idRows, 'idDeptFilter');
+  idRows = filterByStatus(idRows, 'idStatusFilter');
+  renderTable('tblId', idRows, r => `
+    <td class="name-cell">${r.name}</td><td class="muted">${r.empId}</td><td class="muted">${r.dept||'—'}</td>
+    <td class="muted">${r.natId}</td><td>${fmtDate(r.idExpiry)}</td><td>${chipFor(r.days)}</td>
+    <td>${markDoneButton('id-'+r.empId+'-'+r.idExpiry.getTime())}</td>
+  `, "لا توجد هويات مطابقة", "جرّب تغيير الفلاتر.");
+
+  document.getElementById('countActiveLeave').textContent = onLeave.length;
+  renderTable('tblActiveLeave', onLeave, r => `
+    <td class="name-cell">${r.name}${hasConflict(r) ? '<span class="conflict-tag">تعارض</span>' : ''}</td>
+    <td class="muted">${r.dept}</td><td>${fmtDate(r.leaveStart)}</td><td>${fmtDate(r.leaveEnd)}</td>
+    <td>${chipFor(daysBetween(today, r.leaveEnd))}</td>
+  `, "لا يوجد أحد في إجازة الآن", "");
+
+  document.getElementById('countUpcomingLeave').textContent = upcomingLeave.length;
+  renderTable('tblUpcomingLeave', filterByDept(upcomingLeave, 'leaveDeptFilter'), r => `
+    <td class="name-cell">${r.name}</td><td class="muted">${r.dept}</td>
+    <td>${fmtDate(r.leaveStart)}</td><td>${fmtDate(r.leaveEnd)}</td><td>${chipFor(r.days)}</td>
+  `, "لا توجد إجازات قادمة", "");
+
+  document.getElementById('countConflicts').textContent = conflicts.length;
+  document.getElementById('conflictList').innerHTML = conflicts.length ? conflicts.map(c => `
+    <div class="reminder-item"><div class="reminder-body">
+      <div class="reminder-title"><b>${c.a.name}</b> و<b>${c.b.name}</b> — قسم ${c.dept}</div>
+      <div class="reminder-sub">${fmtDate(c.a.leaveStart)}→${fmtDate(c.a.leaveEnd)} · ${fmtDate(c.b.leaveStart)}→${fmtDate(c.b.leaveEnd)}</div>
+    </div></div>
+  `).join('') : `<div class="empty"><b>لا توجد تعارضات إجازات حاليًا</b></div>`;
+
+  const monthLeaves = leavesData.filter(r => r.leaveStart && r.leaveStart.getMonth() === today.getMonth() && r.leaveStart.getFullYear() === today.getFullYear());
+  const deptLeaveCounts = groupCount(monthLeaves.length ? monthLeaves : leavesData, r => r.dept);
+  const rankEntries = Object.entries(deptLeaveCounts).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const maxCount = rankEntries.length ? rankEntries[0][1] : 1;
+  document.getElementById('deptRankList').innerHTML = rankEntries.length ? rankEntries.map(([dept,count]) => `
+    <div class="rank-row"><span class="r-name">${dept}</span><div class="r-bar"><span style="width:${Math.round(count/maxCount*100)}%"></span></div><span class="r-count mono">${count}</span></div>
+  `).join('') : `<div class="empty"><b>لا توجد بيانات إجازات كافية</b></div>`;
+
+  renderEmployeesTable(today, onLeave);
+  renderBell(allActions);
+  renderCharts(contractsData, idsData, onLeave);
   renderForecast(today, contractsData, idsData, leavesData);
-  renderBell(contractSoon, idSoon);
-  renderWeeklyChart(contractsData, idsData);
 }
 
 function hasConflict(leaveRow){
   return conflicts.some(c => (c.a.empId===leaveRow.empId && c.a.leaveStart===leaveRow.leaveStart) || (c.b.empId===leaveRow.empId && c.b.leaveStart===leaveRow.leaveStart));
 }
-function filterByDept(rows, selectId){
-  const val = document.getElementById(selectId)?.value;
-  return val ? rows.filter(r => r.dept === val) : rows;
+function filterByDept(rows, selectId){ const val = document.getElementById(selectId)?.value; return val ? rows.filter(r => r.dept === val) : rows; }
+function filterByStatus(rows, selectId){ const val = document.getElementById(selectId)?.value; if (!val) return rows; return rows.filter(r => statusOf(r.days) === val); }
+
+function markDoneButton(id){
+  const done = isDismissed(id);
+  return `<button class="mark-done-btn ${done?'done':''}" data-mark="${id}">${done?'تم':'تعليم كمُعالَج'}</button>`;
 }
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.mark-done-btn');
+  if (!btn) return;
+  dismissAction(btn.dataset.mark);
+  render();
+});
 
 let sortState = {};
 function renderTable(tableId, rows, rowTpl, emptyTitle, emptySub){
@@ -599,20 +769,15 @@ function renderTable(tableId, rows, rowTpl, emptyTitle, emptySub){
     sorted = [...rows].sort((a,b) => {
       let va = a[state.key], vb = b[state.key];
       if (va instanceof Date) va = va.getTime(); if (vb instanceof Date) vb = vb.getTime();
-      if (va === undefined || va === null) va = '';
-      if (vb === undefined || vb === null) vb = '';
+      if (va === undefined || va === null) va = ''; if (vb === undefined || vb === null) vb = '';
       if (va < vb) return state.dir === 'asc' ? -1 : 1;
       if (va > vb) return state.dir === 'asc' ? 1 : -1;
       return 0;
     });
   }
-  if (!sorted.length){
-    tbody.innerHTML = `<tr><td colspan="8"><div class="empty"><b>${emptyTitle}</b>${emptySub}</div></td></tr>`;
-    return;
-  }
+  if (!sorted.length){ tbody.innerHTML = `<tr><td colspan="8"><div class="empty"><b>${emptyTitle}</b>${emptySub}</div></td></tr>`; return; }
   tbody.innerHTML = sorted.map(r => `<tr>${rowTpl(r)}</tr>`).join('');
 }
-
 document.querySelectorAll('table thead th[data-sort]').forEach(th => {
   th.addEventListener('click', () => {
     const table = th.closest('table');
@@ -626,231 +791,114 @@ document.querySelectorAll('table thead th[data-sort]').forEach(th => {
   });
 });
 
-function renderAlertStrip(contractSoon, idSoon){
-  const urgentCount = contractSoon.filter(r=>r.days<=7).length + idSoon.filter(r=>r.days<=7).length;
-  const strip = document.getElementById('alertStrip');
-  if (urgentCount > 0){
-    strip.classList.remove('ok');
-    strip.textContent = `لديك اليوم ${urgentCount} إجراء يحتاج متابعة خلال 7 أيام`;
-  } else {
-    strip.classList.add('ok');
-    strip.textContent = `لا توجد إجراءات عاجلة هذا الأسبوع`;
-  }
-}
-
-function renderSuggestion(today, contractsAll, idsAll, contractSoon, idSoon){
-  const el = document.getElementById('suggestionText');
-  const urgentId = idSoon.find(r => r.days >= 0) || idSoon[0];
-  const urgentContract = contractSoon.find(r => r.days >= 0) || contractSoon[0];
-  const topConflict = conflicts[0];
-
-  let candidates = [];
-  if (urgentId) candidates.push({priority: urgentId.days, text: `ينصح بالبدء بتجديد إقامة ${urgentId.name}${urgentId.days>=0 ? ` — تنتهي خلال ${urgentId.days} يوم.` : ` — منتهية منذ ${Math.abs(urgentId.days)} يوم.`}`});
-  if (urgentContract) candidates.push({priority: urgentContract.days, text: `عقد ${urgentContract.name}${urgentContract.days>=0 ? ` ينتهي خلال ${urgentContract.days} يوم — يستحسن البدء بإجراءات التجديد.` : ` منتهٍ منذ ${Math.abs(urgentContract.days)} يوم — يحتاج معالجة فورية.`}`});
-  if (topConflict) candidates.push({priority: 999, text: `${topConflict.a.name} و${topConflict.b.name} في إجازة متزامنة بقسم ${topConflict.dept} — راجع تغطية العمل.`});
-
-  if (!candidates.length){
-    el.textContent = 'لا توجد إجراءات عاجلة اليوم — كل شي تحت السيطرة.';
-    return;
-  }
-  candidates.sort((a,b) => a.priority - b.priority);
-  el.textContent = candidates[0].text;
-}
-
-function renderProgress(contractsAll, idsAll, onLeaveAll, totalTracked){
-  const today = new Date();
-  const contractNeed = contractsAll.filter(r => r.contractEnd && daysBetween(today, r.contractEnd) <= threshold).length;
-  const idNeed = idsAll.filter(r => r.idExpiry && daysBetween(today, r.idExpiry) <= threshold).length;
-
-  const rows = [
-    { label:'العقود', need: contractNeed, total: contractsAll.length },
-    { label:'الإقامات', need: idNeed, total: idsAll.length },
-    { label:'الإجازات (نشطة اليوم)', need: onLeaveAll.length, total: totalTracked },
-  ];
-
-  document.getElementById('progressBody').innerHTML = rows.map(r => {
-    const p = r.total ? Math.round((r.need/r.total)*100) : 0;
-    let cls = 'primary';
-    if (p >= 50) cls = 'danger'; else if (p >= 25) cls = 'warn'; else if (p === 0) cls = 'success';
-    return `<div class="progress-row">
-      <div class="progress-top"><span class="p-label">${r.label}</span><span class="p-count mono">${r.need} من ${r.total}</span></div>
-      <div class="progress-track"><div class="progress-fill ${cls}" style="width:${Math.min(p,100)}%"></div></div>
-    </div>`;
-  }).join('');
-}
-
-function getDismissed(){
-  try{ return JSON.parse(localStorage.getItem('hrDashDismissedActions') || '[]'); }catch(e){ return []; }
-}
-function dismissAction(id){
-  const list = getDismissed();
-  if (!list.includes(id)) list.push(id);
-  try{ localStorage.setItem('hrDashDismissedActions', JSON.stringify(list)); }catch(e){}
-}
-
-function buildActionList(today, contractsAll, idsAll, leavesAll){
-  const actions = [];
-  contractsAll.forEach(r => {
-    if (!r.contractEnd) return;
-    const d = daysBetween(today, r.contractEnd);
-    if (d >= -14 && d <= 30) actions.push({
-      id: `contract-${r.empId}-${r.contractEnd.getTime()}`, date: r.contractEnd, days: d,
-      title:`تجديد عقد <b>${r.name}</b>`, sub: d<0?`منتهي منذ ${Math.abs(d)} يوم`:(d===0?'ينتهي اليوم':`خلال ${d} يوم`)
-    });
-  });
-  idsAll.forEach(r => {
-    if (!r.idExpiry) return;
-    const d = daysBetween(today, r.idExpiry);
-    if (d >= -14 && d <= 30) actions.push({
-      id: `id-${r.empId}-${r.idExpiry.getTime()}`, date: r.idExpiry, days: d,
-      title:`تجديد إقامة <b>${r.name}</b>`, sub: d<0?`منتهية منذ ${Math.abs(d)} يوم`:(d===0?'تنتهي اليوم':`خلال ${d} يوم`)
-    });
-  });
-  leavesAll.forEach(r => {
-    if (r.leaveStart){
-      const d = daysBetween(today, r.leaveStart);
-      if (d >= 0 && d <= 14) actions.push({
-        id:`leavestart-${r.empId}-${r.leaveStart.getTime()}`, date:r.leaveStart, days:d,
-        title:`بداية إجازة <b>${r.name}</b>`, sub: d===0?'تبدأ اليوم':(d===1?'تبدأ غدًا':`بعد ${d} يوم`)
-      });
-    }
-    if (r.leaveEnd){
-      const d = daysBetween(today, r.leaveEnd);
-      if (d >= 0 && d <= 7) actions.push({
-        id:`leaveend-${r.empId}-${r.leaveEnd.getTime()}`, date:r.leaveEnd, days:d,
-        title:`عودة <b>${r.name}</b> من الإجازة`, sub: d===0?'يرجع اليوم':(d===1?'يرجع غدًا':`بعد ${d} يوم`)
-      });
-    }
-  });
-  actions.sort((a,b) => a.days - b.days);
-  return actions;
-}
-
 function groupLabel(days, date){
   if (days <= 0) return {cls:'g-today', text:'اليوم'};
   if (days === 1) return {cls:'g-today', text:'غدًا'};
   if (days <= 7) return {cls:'g-week', text: date.toLocaleDateString('ar-SA', {weekday:'long'})};
   return {cls:'g-later', text: date.toLocaleDateString('ar-SA', {day:'2-digit', month:'2-digit'})};
 }
-
-function renderTimeline(today, contractsAll, idsAll, leavesAll){
-  const dismissed = getDismissed();
-  const all = buildActionList(today, contractsAll, idsAll, leavesAll).filter(a => !dismissed.includes(a.id));
-  document.getElementById('countTimeline').textContent = all.length;
-  const list = document.getElementById('timelineList');
-
-  if (!all.length){
-    list.innerHTML = `<div class="empty"><b>لا توجد إجراءات قريبة</b>كل شي تحت السيطرة حاليًا.</div>`;
-    return;
-  }
-
-  let html = '';
-  let lastGroup = null;
-  all.slice(0, 25).forEach(a => {
+function renderNotifList(containerId, countId, actions, showDismiss){
+  document.getElementById(countId).textContent = actions.length;
+  const el = document.getElementById(containerId);
+  if (!actions.length){ el.innerHTML = `<div class="empty"><b>لا توجد تنبيهات حاليًا</b></div>`; return; }
+  let html = ''; let lastGroup = null;
+  actions.forEach(a => {
     const g = groupLabel(a.days, a.date);
-    if (g.text !== lastGroup){
-      html += `<div class="tl-group-label ${g.cls}"><span class="tl-dot"></span>${g.text}</div>`;
-      lastGroup = g.text;
-    }
+    if (g.text !== lastGroup){ html += `<div class="tl-group-label ${g.cls}"><span class="tl-dot"></span>${g.text}</div>`; lastGroup = g.text; }
     html += `<div class="reminder-item" data-id="${a.id}">
-      <div class="reminder-check" data-id="${a.id}"></div>
+      ${showDismiss ? `<div class="reminder-check" data-id="${a.id}"></div>` : `<div style="width:19px;text-align:center;">${a.icon}</div>`}
       <div class="reminder-body"><div class="reminder-title">${a.title}</div><div class="reminder-sub">${a.sub}</div></div>
     </div>`;
   });
-  list.innerHTML = html;
-
-  list.querySelectorAll('.reminder-check').forEach(chk => {
-    chk.addEventListener('click', () => {
-      const id = chk.dataset.id;
-      chk.style.background = 'var(--success)';
-      chk.style.borderColor = 'var(--success)';
-      chk.textContent = '✓';
-      const item = list.querySelector(`.reminder-item[data-id="${CSS.escape(id)}"]`);
-      dismissAction(id);
-      if (item){
-        setTimeout(() => { item.classList.add('dismissed'); setTimeout(() => render(), 300); }, 180);
-      }
+  el.innerHTML = html;
+  if (showDismiss){
+    el.querySelectorAll('.reminder-check').forEach(chk => {
+      chk.addEventListener('click', () => {
+        const id = chk.dataset.id;
+        chk.style.background = 'var(--success)'; chk.style.borderColor = 'var(--success)'; chk.textContent = '✓';
+        const item = el.querySelector(`.reminder-item[data-id="${CSS.escape(id)}"]`);
+        dismissAction(id);
+        if (item) setTimeout(() => { item.classList.add('dismissed'); setTimeout(() => render(), 280); }, 150);
+      });
     });
+  }
+}
+
+function renderEmployeesTable(today, onLeave){
+  const contractByKey = {}; contractsData.forEach(r => contractByKey[keyOf(r)] = r);
+  const idByKey = {}; idsData.forEach(r => idByKey[keyOf(r)] = r);
+  const onLeaveKeys = new Set(onLeave.map(keyOf));
+
+  const keys = Array.from(new Set([...contractsData, ...leavesData, ...idsData].map(keyOf)));
+  let rows = keys.map(k => {
+    const c = contractByKey[k]; const idr = idByKey[k];
+    return {
+      key:k, name: (c&&c.name)||(idr&&idr.name)||k, empId: (c&&c.empId)||(idr&&idr.empId)||k, dept:(c&&c.dept)||(idr&&idr.dept)||'',
+      contractEnd: c && c.contractEnd, idExpiry: idr && idr.idExpiry, onLeave: onLeaveKeys.has(k),
+    };
+  });
+  document.getElementById('countEmployees').textContent = rows.length;
+  rows = filterByDept(rows, 'empDeptFilter');
+
+  renderTable('tblEmployees', rows, r => `
+    <td class="name-cell" data-emp="${r.key}">${r.name}</td><td class="muted">${r.empId}</td><td class="muted">${r.dept||'—'}</td>
+    <td>${r.contractEnd ? chipFor(daysBetween(today, r.contractEnd)) : '<span class="chip na">لا يوجد</span>'}</td>
+    <td>${r.idExpiry ? chipFor(daysBetween(today, r.idExpiry)) : '<span class="chip na">لا يوجد</span>'}</td>
+    <td>${r.onLeave ? '<span class="chip warn"><span class="d"></span>في إجازة</span>' : '<span class="chip safe"><span class="d"></span>على رأس العمل</span>'}</td>
+  `, "لا يوجد موظفون", "");
+
+  document.querySelectorAll('#tblEmployees tbody tr').forEach(tr => {
+    tr.classList.add('clickable');
+    tr.addEventListener('click', () => { const td = tr.querySelector('[data-emp]'); if (td) openEmployeeModal(td.dataset.emp); });
   });
 }
 
-function renderForecast(today, contractsAll, idsAll, leavesAll){
-  const months = [];
-  for (let i=0;i<6;i++){
-    const d = new Date(today.getFullYear(), today.getMonth()+i, 1);
-    months.push({ key: d.getFullYear()+'-'+d.getMonth(), label: d.toLocaleDateString('ar-SA', {month:'long', year:'numeric'}), contracts:0, ids:0, leaves:0 });
-  }
-  const keyOf = (d) => d.getFullYear()+'-'+d.getMonth();
-  const findBucket = (d) => months.find(m => m.key === keyOf(d));
-
-  contractsAll.forEach(r => { if (r.contractEnd){ const b = findBucket(r.contractEnd); if (b) b.contracts++; } });
-  idsAll.forEach(r => { if (r.idExpiry){ const b = findBucket(r.idExpiry); if (b) b.ids++; } });
-  leavesAll.forEach(r => { if (r.leaveStart){ const b = findBucket(r.leaveStart); if (b) b.leaves++; } });
-
-  months.forEach(m => m.total = m.contracts + m.ids + m.leaves);
-  const avg = months.reduce((s,m)=>s+m.total,0) / months.length;
-
-  document.getElementById('forecastGrid').innerHTML = months.map(m => {
-    let level = 'low', levelLabel = 'ضغط منخفض';
-    if (m.total > avg * 1.4 && m.total > 3){ level='high'; levelLabel='ضغط عالٍ'; }
-    else if (m.total > avg * 0.9 && m.total > 1){ level='med'; levelLabel='ضغط متوسط'; }
-    return `<div class="forecast-card ${level}">
-      <div class="f-month">${m.label}</div>
-      <div class="f-total mono">${m.total}</div>
-      <div class="f-breakdown">📄 ${m.contracts} · 🪪 ${m.ids} · 🧳 ${m.leaves}</div>
-      <div class="f-level">${levelLabel}</div>
-    </div>`;
-  }).join('');
-}
-
-let weeklyChartInstance = null;
-function weeklyBuckets(contractsAll, idsAll, weeks){
-  weeks = weeks || 12;
+function openEmployeeModal(key){
   const today = new Date();
-  const buckets = Array.from({length: weeks}, () => 0);
-  const labels = [];
-  for (let i=0;i<weeks;i++){
-    const start = new Date(today); start.setDate(start.getDate() + i*7);
-    labels.push(start.toLocaleDateString('ar-SA-u-nu-latn', {day:'2-digit', month:'2-digit'}));
-  }
-  const bucketOf = (date) => { const d = daysBetween(today, date); if (d < 0) return -1; return Math.floor(d/7); };
-  contractsAll.forEach(r => { if (!r.contractEnd) return; const b = bucketOf(r.contractEnd); if (b>=0 && b<weeks) buckets[b]++; });
-  idsAll.forEach(r => { if (!r.idExpiry) return; const b = bucketOf(r.idExpiry); if (b>=0 && b<weeks) buckets[b]++; });
-  return {labels, buckets};
+  const contract = contractsData.find(r => keyOf(r) === key);
+  const ids = idsData.filter(r => keyOf(r) === key);
+  const leaves = leavesData.filter(r => keyOf(r) === key);
+  const name = (contract && contract.name) || (ids[0] && ids[0].name) || (leaves[0] && leaves[0].name) || key;
+
+  document.getElementById('empModalName').textContent = name;
+  let html = '';
+  html += `<div class="emp-section-title">معلومات عامة</div>`;
+  html += `<div class="emp-detail-row"><span class="lbl">الرقم الوظيفي</span><span>${key}</span></div>`;
+  html += `<div class="emp-detail-row"><span class="lbl">القسم</span><span>${(contract&&contract.dept)||'—'}</span></div>`;
+  html += `<div class="emp-detail-row"><span class="lbl">الفرع / المدير / تاريخ المباشرة</span><span class="muted">غير متوفر</span></div>`;
+
+  html += `<div class="emp-section-title">العقد</div>`;
+  if (contract && contract.contractEnd){
+    html += `<div class="emp-detail-row"><span class="lbl">تاريخ البداية</span><span>${fmtDate(contract.contractStart)}</span></div>`;
+    html += `<div class="emp-detail-row"><span class="lbl">تاريخ الانتهاء</span><span>${fmtDate(contract.contractEnd)} ${chipFor(daysBetween(today, contract.contractEnd))}</span></div>`;
+  } else { html += `<div class="emp-detail-row"><span class="lbl">لا يوجد سجل عقد</span></div>`; }
+
+  html += `<div class="emp-section-title">الهوية / الإقامة</div>`;
+  if (ids.length){
+    ids.forEach(idr => { html += `<div class="emp-detail-row"><span class="lbl">${idr.natId}</span><span>${fmtDate(idr.idExpiry)} ${chipFor(daysBetween(today, idr.idExpiry))}</span></div>`; });
+  } else { html += `<div class="emp-detail-row"><span class="lbl">لا يوجد سجل هوية</span></div>`; }
+
+  html += `<div class="emp-section-title">الإجازات</div>`;
+  if (leaves.length){
+    leaves.forEach(lv => { html += `<div class="emp-detail-row"><span class="lbl">${fmtDate(lv.leaveStart)} → ${fmtDate(lv.leaveEnd)}</span></div>`; });
+  } else { html += `<div class="emp-detail-row"><span class="lbl">لا يوجد سجل إجازات</span></div>`; }
+
+  html += `<div class="emp-section-title">سجل الإجراءات</div>`;
+  html += `<div class="emp-detail-row"><span class="lbl muted">غير متوفر — يحتاج نظام يحفظ تاريخ الإجراءات بدل ملف Excel ثابت.</span></div>`;
+
+  document.getElementById('empModalBody').innerHTML = html;
+  document.getElementById('empModalOverlay').classList.add('open');
 }
 
-function renderWeeklyChart(contractsAll, idsAll){
-  if (typeof Chart === 'undefined'){
-    document.querySelector('.chart-wrap').innerHTML = '<div class="empty"><b>تعذّر تحميل مكتبة الرسوم البيانية</b>تأكد من اتصال الإنترنت وأعد تحميل الصفحة.</div>';
-    return;
-  }
-  Chart.defaults.font.family = "'Tajawal', sans-serif";
-  Chart.defaults.color = '#6B7280';
-  const weekly = weeklyBuckets(contractsAll, idsAll, 12);
-  if (weeklyChartInstance) weeklyChartInstance.destroy();
-  const ctx = document.getElementById('chartWeekly').getContext('2d');
-  weeklyChartInstance = new Chart(ctx, {
-    type:'bar',
-    data:{ labels: weekly.labels, datasets:[{ data: weekly.buckets, backgroundColor:'#2563EB', borderRadius:5, maxBarThickness:26 }] },
-    options:{ plugins:{legend:{display:false}}, scales:{ y:{ ticks:{stepSize:1, precision:0}, grid:{color:'#F1F5F9'} }, x:{grid:{display:false}} }, maintainAspectRatio:false }
-  });
-}
-
-function renderBell(contractSoon, idSoon){
-  const urgent = [...contractSoon.filter(r=>r.days<=14).map(r=>({title:`عقد ${r.name}`, sub: r.days<0?`منتهي منذ ${Math.abs(r.days)} يوم`:`خلال ${r.days} يوم`})),
-                  ...idSoon.filter(r=>r.days<=14).map(r=>({title:`إقامة ${r.name}`, sub: r.days<0?`منتهية منذ ${Math.abs(r.days)} يوم`:`خلال ${r.days} يوم`})),
-                  ...conflicts.map(c=>({title:`تعارض إجازات — ${c.dept}`, sub:`${c.a.name} و${c.b.name}`}))];
+function renderBell(allActions){
+  const urgent = allActions.filter(a => a.days <= 14).slice(0, 10);
   const badge = document.getElementById('bellBadge');
-  if (urgent.length){ badge.style.display='flex'; badge.textContent = urgent.length; }
-  else { badge.style.display='none'; }
+  if (urgent.length){ badge.style.display='flex'; badge.textContent = urgent.length; } else { badge.style.display='none'; }
   document.getElementById('bellList').innerHTML = urgent.length ? urgent.map(u => `
-    <div class="bell-item"><div class="txt"><b>${u.title}</b><span>${u.sub}</span></div></div>
+    <div class="bell-item"><b>${u.icon} ${u.title.replace(/<\/?b>/g,'')}</b><span>${u.sub}</span></div>
   `).join('') : `<div class="bell-empty">لا توجد تنبيهات عاجلة حاليًا</div>`;
 }
-document.getElementById('bellBtn').addEventListener('click', (e) => {
-  e.stopPropagation();
-  document.getElementById('bellPanel').classList.toggle('open');
-});
+document.getElementById('bellBtn').addEventListener('click', (e) => { e.stopPropagation(); document.getElementById('bellPanel').classList.toggle('open'); });
 document.addEventListener('click', () => document.getElementById('bellPanel').classList.remove('open'));
 document.getElementById('bellPanel').addEventListener('click', e => e.stopPropagation());
 
@@ -862,45 +910,24 @@ function runGlobalSearch(query){
   const keys = new Set();
   [...contractsData, ...leavesData, ...idsData].forEach(r => {
     const hay = ((r.name||'') + ' ' + (r.empId||'')).toString().toLowerCase();
-    if (hay.includes(q)) keys.add((r.empId || r.name).toString().trim());
+    if (hay.includes(q)) keys.add(keyOf(r));
   });
-  const results = Array.from(keys).slice(0, 8).map(key => {
-    const contract = contractsData.find(r => (r.empId||r.name).toString().trim() === key);
-    const ids = idsData.filter(r => (r.empId||r.name).toString().trim() === key);
-    const leaves = leavesData.filter(r => (r.empId||r.name).toString().trim() === key);
-    const name = (contract && contract.name) || (ids[0] && ids[0].name) || (leaves[0] && leaves[0].name) || key;
-    const today = new Date();
-    return { key, name, dept: contract && contract.dept, contract, ids, leaves, today };
-  });
-  if (!results.length){
-    box.innerHTML = `<div class="gs-empty">لا توجد نتائج مطابقة لـ "${query}".</div>`;
-    box.classList.add('open');
-    return;
-  }
-  box.innerHTML = results.map(r => {
-    let rows = '';
-    if (r.dept) rows += `<div class="gs-row"><span class="gs-label">القسم</span><span>${r.dept}</span></div>`;
-    if (r.contract && r.contract.contractEnd){
-      const d = daysBetween(r.today, r.contract.contractEnd);
-      rows += `<div class="gs-row"><span class="gs-label">نهاية العقد</span><span>${fmtDate(r.contract.contractEnd)} (${d<0?'منتهي':'خلال '+d+' يوم'})</span></div>`;
-    }
-    r.ids.forEach(idr => {
-      if (!idr.idExpiry) return;
-      const d = daysBetween(r.today, idr.idExpiry);
-      rows += `<div class="gs-row"><span class="gs-label">نهاية الهوية/الإقامة</span><span>${fmtDate(idr.idExpiry)} (${d<0?'منتهية':'خلال '+d+' يوم'})</span></div>`;
-    });
-    if (r.leaves.length){
-      r.leaves.forEach(lv => { rows += `<div class="gs-row"><span class="gs-label">إجازة</span><span>${fmtDate(lv.leaveStart)} → ${fmtDate(lv.leaveEnd)}</span></div>`; });
-    } else {
-      rows += `<div class="gs-row"><span class="gs-label">إجازات</span><span>لا يوجد سجل إجازات</span></div>`;
-    }
-    return `<div class="gs-emp"><h4>${r.name} <span>#${r.key}</span></h4>${rows}</div>`;
+  const results = Array.from(keys).slice(0, 8);
+  if (!results.length){ box.innerHTML = `<div class="gs-empty">لا توجد نتائج مطابقة لـ "${query}".</div>`; box.classList.add('open'); return; }
+  box.innerHTML = results.map(key => {
+    const contract = contractsData.find(r => keyOf(r) === key);
+    const name = (contract && contract.name) || key;
+    return `<div class="gs-emp" data-goto-emp="${key}"><h4>${name} <span>#${key}</span></h4><div class="gs-row"><span class="gs-label">اضغط لعرض التفاصيل الكاملة</span></div></div>`;
   }).join('');
   box.classList.add('open');
 }
 document.getElementById('globalSearch').addEventListener('input', (e) => runGlobalSearch(e.target.value));
 document.getElementById('globalSearch').addEventListener('click', e => e.stopPropagation());
-document.getElementById('globalSearchResults').addEventListener('click', e => e.stopPropagation());
+document.getElementById('globalSearchResults').addEventListener('click', e => {
+  e.stopPropagation();
+  const emp = e.target.closest('[data-goto-emp]');
+  if (emp){ document.getElementById('globalSearchResults').classList.remove('open'); openEmployeeModal(emp.dataset.gotoEmp); }
+});
 document.addEventListener('click', () => document.getElementById('globalSearchResults').classList.remove('open'));
 
 function renderCalendar(){
@@ -911,76 +938,169 @@ function renderCalendar(){
   const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
   const daysInPrevMonth = new Date(calYear, calMonth, 0).getDate();
   const today = new Date();
-
   document.getElementById('calTitle').textContent = first.toLocaleDateString('ar-SA', {month:'long', year:'numeric'});
-
   let cellsHtml = dows.map(d => `<div class="cal-dow">${d}</div>`).join('');
   const totalCells = Math.ceil((startOffset + daysInMonth) / 7) * 7;
-
   for (let i=0;i<totalCells;i++){
     let dayNum, dateObj, otherMonth = false;
-    if (i < startOffset){
-      dayNum = daysInPrevMonth - startOffset + i + 1;
-      dateObj = new Date(calYear, calMonth-1, dayNum); otherMonth = true;
-    } else if (i >= startOffset + daysInMonth){
-      dayNum = i - startOffset - daysInMonth + 1;
-      dateObj = new Date(calYear, calMonth+1, dayNum); otherMonth = true;
-    } else {
-      dayNum = i - startOffset + 1;
-      dateObj = new Date(calYear, calMonth, dayNum);
-    }
+    if (i < startOffset){ dayNum = daysInPrevMonth - startOffset + i + 1; dateObj = new Date(calYear, calMonth-1, dayNum); otherMonth = true; }
+    else if (i >= startOffset + daysInMonth){ dayNum = i - startOffset - daysInMonth + 1; dateObj = new Date(calYear, calMonth+1, dayNum); otherMonth = true; }
+    else { dayNum = i - startOffset + 1; dateObj = new Date(calYear, calMonth, dayNum); }
     const onThisDay = leavesData.filter(l => l.leaveStart && l.leaveEnd && dateObj >= l.leaveStart && dateObj <= l.leaveEnd);
     const isToday = sameDay(dateObj, today);
     const isSelected = calSelectedDate && sameDay(dateObj, calSelectedDate);
     let chipsHtml = onThisDay.slice(0,2).map(l => `<div class="cal-chip">${firstName(l.name)}</div>`).join('');
     if (onThisDay.length > 2) chipsHtml += `<div class="cal-more">+${onThisDay.length-2} آخرين</div>`;
-    cellsHtml += `<div class="cal-cell ${otherMonth?'other-month':''} ${isToday?'today':''} ${isSelected?'cal-selected':''}" data-date="${dateObj.toISOString()}">
-      <div class="cal-daynum">${dayNum}</div>${chipsHtml}
-    </div>`;
+    cellsHtml += `<div class="cal-cell ${otherMonth?'other-month':''} ${isToday?'today':''} ${isSelected?'cal-selected':''}" data-date="${dateObj.toISOString()}"><div class="cal-daynum">${dayNum}</div>${chipsHtml}</div>`;
   }
   grid.innerHTML = cellsHtml;
-
   grid.querySelectorAll('.cal-cell').forEach(cell => {
-    cell.addEventListener('click', () => {
-      calSelectedDate = new Date(cell.dataset.date);
-      renderCalendar();
-      showDayDetail(calSelectedDate);
-    });
+    cell.addEventListener('click', () => { calSelectedDate = new Date(cell.dataset.date); renderCalendar(); showDayDetail(calSelectedDate); });
   });
 }
-
 function showDayDetail(date){
   const box = document.getElementById('dayDetail');
   const onThisDay = leavesData.filter(l => l.leaveStart && l.leaveEnd && date >= l.leaveStart && date <= l.leaveEnd);
   box.style.display = 'block';
-  box.innerHTML = `<h4>📅 ${fmtDate(date)} — ${onThisDay.length ? onThisDay.length + ' موظف في إجازة' : 'لا يوجد أحد في إجازة'}</h4>` +
+  box.innerHTML = `<h4>${fmtDate(date)} — ${onThisDay.length ? onThisDay.length + ' موظف في إجازة' : 'لا يوجد أحد في إجازة'}</h4>` +
     onThisDay.map(l => `<div class="person"><span>${l.name} <span class="muted">— ${l.dept}</span></span><span class="muted mono">${fmtDate(l.leaveStart)} → ${fmtDate(l.leaveEnd)}</span></div>`).join('');
 }
-
 document.getElementById('calPrev').addEventListener('click', () => { calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCalendar(); });
 document.getElementById('calNext').addEventListener('click', () => { calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderCalendar(); });
 document.getElementById('calToday').addEventListener('click', () => { const t=new Date(); calYear=t.getFullYear(); calMonth=t.getMonth(); calSelectedDate=null; renderCalendar(); document.getElementById('dayDetail').style.display='none'; });
 
+const chartInstances = {};
+function upsertChart(id, config){
+  if (chartInstances[id]) chartInstances[id].destroy();
+  const canvas = document.getElementById(id);
+  if (!canvas) return;
+  chartInstances[id] = new Chart(canvas.getContext('2d'), config);
+}
+function statusBuckets(rows, dateField){
+  const today = new Date(); let danger=0, warn=0, safe=0;
+  rows.forEach(r => { if (!r[dateField]) return; const d = daysBetween(today, r[dateField]); if (d <= 30) danger++; else if (d <= 90) warn++; else safe++; });
+  return {danger, warn, safe};
+}
+function weeklyBuckets(contractsAll, idsAll, weeks){
+  weeks = weeks || 12;
+  const today = new Date();
+  const buckets = Array.from({length: weeks}, () => 0);
+  const labels = [];
+  for (let i=0;i<weeks;i++){ const start = new Date(today); start.setDate(start.getDate() + i*7); labels.push(start.toLocaleDateString('ar-SA-u-nu-latn', {day:'2-digit', month:'2-digit'})); }
+  const bucketOf = (date) => { const d = daysBetween(today, date); if (d < 0) return -1; return Math.floor(d/7); };
+  contractsAll.forEach(r => { if (!r.contractEnd) return; const b = bucketOf(r.contractEnd); if (b>=0 && b<weeks) buckets[b]++; });
+  idsAll.forEach(r => { if (!r.idExpiry) return; const b = bucketOf(r.idExpiry); if (b>=0 && b<weeks) buckets[b]++; });
+  return {labels, buckets};
+}
+function renderCharts(contractsAll, idsAll, onLeaveAll){
+  if (typeof Chart === 'undefined') return;
+  Chart.defaults.font.family = "'Tajawal', sans-serif";
+  Chart.defaults.color = '#6B7280';
+
+  const cStatus = statusBuckets(contractsAll, 'contractEnd');
+  upsertChart('chartContractStatus', { type:'doughnut',
+    data:{ labels:['خلال 30 يوم','31-90 يوم','آمن (90+)'], datasets:[{ data:[cStatus.danger, cStatus.warn, cStatus.safe], backgroundColor:['#DC2626','#F59E0B','#16A34A'], borderWidth:0 }] },
+    options:{ plugins:{legend:{position:'bottom', labels:{boxWidth:10, padding:12, font:{size:11}}}}, cutout:'62%', maintainAspectRatio:false } });
+
+  const iStatus = statusBuckets(idsAll, 'idExpiry');
+  upsertChart('chartIdStatus', { type:'doughnut',
+    data:{ labels:['خلال 30 يوم','31-90 يوم','آمن (90+)'], datasets:[{ data:[iStatus.danger, iStatus.warn, iStatus.safe], backgroundColor:['#DC2626','#F59E0B','#16A34A'], borderWidth:0 }] },
+    options:{ plugins:{legend:{position:'bottom', labels:{boxWidth:10, padding:12, font:{size:11}}}}, cutout:'62%', maintainAspectRatio:false } });
+
+  const deptLeaveCounts = groupCount(onLeaveAll.length ? onLeaveAll : leavesData, r => r.dept);
+  const topDepts = Object.entries(deptLeaveCounts).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  upsertChart('chartDeptLeaves', { type:'bar',
+    data:{ labels: topDepts.map(d=>d[0]), datasets:[{ data: topDepts.map(d=>d[1]), backgroundColor:'#2563EB', borderRadius:6, maxBarThickness:22 }] },
+    options:{ indexAxis:'y', plugins:{legend:{display:false}}, scales:{ x:{ ticks:{stepSize:1, precision:0}, grid:{color:'#F1F5F9'} }, y:{grid:{display:false}} }, maintainAspectRatio:false } });
+
+  const weekly = weeklyBuckets(contractsAll, idsAll, 12);
+  upsertChart('chartWeekly', { type:'bar',
+    data:{ labels: weekly.labels, datasets:[{ data: weekly.buckets, backgroundColor:'#2563EB', borderRadius:5, maxBarThickness:26 }] },
+    options:{ plugins:{legend:{display:false}}, scales:{ y:{ ticks:{stepSize:1, precision:0}, grid:{color:'#F1F5F9'} }, x:{grid:{display:false}} }, maintainAspectRatio:false } });
+}
+function renderForecast(today, contractsAll, idsAll, leavesAll){
+  const months = [];
+  for (let i=0;i<6;i++){ const d = new Date(today.getFullYear(), today.getMonth()+i, 1); months.push({ key: d.getFullYear()+'-'+d.getMonth(), label: d.toLocaleDateString('ar-SA', {month:'long', year:'numeric'}), contracts:0, ids:0, leaves:0 }); }
+  const keyF = (d) => d.getFullYear()+'-'+d.getMonth();
+  const findBucket = (d) => months.find(m => m.key === keyF(d));
+  contractsAll.forEach(r => { if (r.contractEnd){ const b = findBucket(r.contractEnd); if (b) b.contracts++; } });
+  idsAll.forEach(r => { if (r.idExpiry){ const b = findBucket(r.idExpiry); if (b) b.ids++; } });
+  leavesAll.forEach(r => { if (r.leaveStart){ const b = findBucket(r.leaveStart); if (b) b.leaves++; } });
+  months.forEach(m => m.total = m.contracts + m.ids + m.leaves);
+  const avg = months.reduce((s,m)=>s+m.total,0) / months.length;
+  document.getElementById('forecastGrid').innerHTML = months.map(m => {
+    let levelLabel = 'ضغط منخفض', bg='var(--success-100)', col='#146534';
+    if (m.total > avg * 1.4 && m.total > 3){ levelLabel='ضغط عالٍ'; bg='var(--danger-100)'; col='#9A2323'; }
+    else if (m.total > avg * 0.9 && m.total > 1){ levelLabel='ضغط متوسط'; bg='var(--warn-100)'; col='#92620A'; }
+    return `<div class="stat-card" style="text-align:center;">
+      <div class="s-label">${m.label}</div><div class="s-num mono">${m.total}</div>
+      <div class="empty-note">${m.contracts} عقد · ${m.ids} إقامة · ${m.leaves} إجازة</div>
+      <div style="display:inline-block; margin-top:7px; font-size:10.5px; font-weight:600; padding:2px 9px; border-radius:999px; background:${bg}; color:${col};">${levelLabel}</div>
+    </div>`;
+  }).join('');
+}
+
+function openWizard(){
+  const today = new Date();
+  const dismissed = getDismissed();
+  wizardQueue = buildActionList(today, contractsData, idsData, leavesData).filter(a => !dismissed.includes(a.id) && a.days <= 7);
+  wizardIndex = 0;
+  document.getElementById('wizardOverlay').classList.add('open');
+  renderWizardStep();
+}
+function renderWizardStep(){
+  const content = document.getElementById('wizardContent');
+  const progress = document.getElementById('wizardProgress');
+  if (wizardIndex >= wizardQueue.length){
+    progress.textContent = '';
+    content.innerHTML = `<div class="wizard-finish"><div class="wf-ic">✅</div><h3>انتهيت من كل الإجراءات</h3><p class="muted" style="font-size:13px;">ما تبقى إجراءات عاجلة الآن.</p></div>`;
+    return;
+  }
+  const a = wizardQueue[wizardIndex];
+  progress.textContent = `${wizardIndex+1} من ${wizardQueue.length}`;
+  content.innerHTML = `<div class="wizard-card">
+    <div class="wizard-icon">${a.icon}</div>
+    <div class="wizard-title">${a.title.replace(/<\/?b>/g,'')}</div>
+    <div class="wizard-sub">${a.sub}</div>
+    <div class="wizard-actions">
+      <button class="wizard-done-btn" id="wizDone">تم</button>
+      <button class="wizard-skip-btn" id="wizSkip">تخطي</button>
+    </div>
+  </div>`;
+  document.getElementById('wizDone').addEventListener('click', () => { dismissAction(a.id); wizardIndex++; renderWizardStep(); render(); });
+  document.getElementById('wizSkip').addEventListener('click', () => { wizardIndex++; renderWizardStep(); });
+}
+document.getElementById('startWorkBtn').addEventListener('click', openWizard);
+
+document.querySelectorAll('[data-close]').forEach(btn => { btn.addEventListener('click', () => document.getElementById(btn.dataset.close).classList.remove('open')); });
+document.querySelectorAll('.modal-overlay').forEach(ov => { ov.addEventListener('click', (e) => { if (e.target === ov) ov.classList.remove('open'); }); });
+
+function gotoPage(page){
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.page === page));
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + page));
+  document.getElementById('sidebar').classList.remove('open');
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('.nav-item').forEach(btn => btn.addEventListener('click', () => gotoPage(btn.dataset.page)));
+document.querySelectorAll('[data-goto]').forEach(a => a.addEventListener('click', (e) => { e.preventDefault(); gotoPage(a.dataset.goto); document.getElementById('bellPanel').classList.remove('open'); }));
+document.getElementById('sidebarToggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('open'));
+
 document.querySelectorAll('.search').forEach(input => {
   input.addEventListener('input', () => {
     const q = input.value.trim();
-    document.querySelectorAll('#' + input.dataset.target + ' tbody tr').forEach(tr => {
-      tr.style.display = tr.textContent.includes(q) ? '' : 'none';
-    });
+    document.querySelectorAll('#' + input.dataset.target + ' tbody tr').forEach(tr => { tr.style.display = tr.textContent.includes(q) ? '' : 'none'; });
   });
 });
-document.getElementById('leaveDeptFilter').addEventListener('change', render);
-document.getElementById('contractDeptFilter').addEventListener('change', render);
-document.getElementById('thresholdInput').addEventListener('change', render);
+['leaveDeptFilter','contractDeptFilter','contractStatusFilter','idDeptFilter','idStatusFilter','empDeptFilter','thresholdInput'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('change', render);
+});
 document.getElementById('refreshBtn').addEventListener('click', () => loadFromRepo(true));
 
-function tickClock(){
-  document.getElementById('clockNow').textContent = new Date().toLocaleTimeString('ar-SA-u-nu-latn', {hour:'2-digit', minute:'2-digit'});
-}
+function tickClock(){ document.getElementById('clockNow').textContent = new Date().toLocaleTimeString('ar-SA-u-nu-latn', {hour:'2-digit', minute:'2-digit'}); }
 setInterval(tickClock, 30000);
 
 let loadToken = 0;
-
 document.getElementById('fileInput').addEventListener('change', (e) => {
   const file = e.target.files[0];
   if (!file) return;
@@ -995,15 +1115,12 @@ document.getElementById('fileInput').addEventListener('change', (e) => {
   };
   reader.readAsArrayBuffer(file);
 });
-
-function setLastUpdated(text){ document.getElementById('lastUpdated').textContent = text; }
+function setLastUpdated(text){ document.getElementById('lastUpdated').textContent = text; document.getElementById('settingsLastUpdated').textContent = text; }
 function hideLoading(){ document.getElementById('loadingScreen').style.display = 'none'; }
 function showError(msg){
-  document.getElementById('errorBox').innerHTML =
-    `<div class="error-banner"><b>تعذّر تحميل employees.xlsx تلقائيًا.</b><br>${msg}<br>يمكنك استخدام زر "تحميل ملف آخر" أعلى الصفحة لعرض ملفك يدويًا.</div>`;
+  document.getElementById('errorBox').innerHTML = `<div class="error-banner"><b>تعذّر تحميل employees.xlsx تلقائيًا.</b><br>${msg}<br>استخدم "معاينة ملف آخر محليًا" بصفحة الإعدادات.</div>`;
   hideLoading();
 }
-
 async function loadFromRepo(isManualRefresh){
   const myToken = ++loadToken;
   try{
