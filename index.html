@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
 <style>
   :root{
     --ink:#0E1B23;
@@ -238,6 +239,68 @@
 
   .error-banner{background:var(--danger-bg); border:1px solid var(--danger); color:var(--danger); border-radius:10px; padding:14px 18px; margin-bottom:20px; font-size:13.5px; line-height:1.7;}
   footer{text-align:center; color:var(--muted); font-size:12px; padding:20px 0 40px;}
+
+  /* ---------- News ticker ---------- */
+  .ticker-bar{
+    background:var(--navy-deep); border-top:1px solid rgba(255,255,255,.1);
+    display:flex; align-items:center; overflow:hidden; height:38px;
+  }
+  .ticker-tag{
+    background:var(--danger); color:#fff; font-size:11.5px; font-weight:800;
+    padding:0 16px; height:100%; display:flex; align-items:center; gap:6px; flex-shrink:0; z-index:2;
+    box-shadow:6px 0 10px -4px rgba(0,0,0,.4);
+  }
+  .ticker-track-wrap{flex:1; overflow:hidden; position:relative; height:100%;}
+  .ticker-track{
+    display:flex; align-items:center; gap:46px; position:absolute; white-space:nowrap;
+    animation:tickerScroll 38s linear infinite; height:100%;
+  }
+  .ticker-track span{color:#DCE9E8; font-size:12.5px;}
+  .ticker-track span b{color:#fff;}
+  @keyframes tickerScroll{
+    from{ transform:translateX(0); }
+    to{ transform:translateX(-50%); }
+  }
+
+  /* ---------- AI analyst card ---------- */
+  .analyst-card{
+    background:linear-gradient(135deg, var(--navy-deep), var(--navy));
+    border-radius:14px; padding:18px 20px; margin-bottom:22px; color:#fff;
+    display:flex; gap:16px; align-items:flex-start; position:relative; overflow:hidden;
+  }
+  .analyst-card::after{
+    content:""; position:absolute; inset:0; background:radial-gradient(circle at 90% -10%, rgba(217,164,65,.25), transparent 55%);
+    pointer-events:none;
+  }
+  .analyst-avatar{
+    width:46px; height:46px; border-radius:12px; background:rgba(255,255,255,.12);
+    display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0;
+    border:1px solid rgba(255,255,255,.2);
+  }
+  .analyst-body{flex:1; min-width:0;}
+  .analyst-name{font-size:12.5px; color:var(--accent); font-weight:800; display:flex; align-items:center; gap:8px;}
+  .analyst-name .live-dot{background:#39D98A;}
+  .analyst-msg{
+    font-size:15px; font-weight:700; margin-top:6px; line-height:1.7; min-height:48px;
+    animation:msgFade .4s ease;
+  }
+  @keyframes msgFade{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
+  .analyst-controls{display:flex; align-items:center; gap:8px; margin-top:10px;}
+  .analyst-controls button{
+    background:rgba(255,255,255,.12); color:#fff; border:1px solid rgba(255,255,255,.2);
+    width:28px; height:28px; padding:0; border-radius:8px; font-size:13px;
+  }
+  .analyst-dots{display:flex; gap:5px; margin-inline-start:4px;}
+  .analyst-dots i{width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.25); display:block;}
+  .analyst-dots i.on{background:var(--accent);}
+
+  /* ---------- Charts ---------- */
+  .chart-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-bottom:22px;}
+  @media(max-width:900px){.chart-grid{grid-template-columns:1fr;}}
+  .chart-card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 18px;}
+  .chart-card h3{margin:0 0 12px; font-size:14px; display:flex; align-items:center; gap:8px;}
+  .chart-card .chart-wrap{position:relative; height:230px;}
+  .chart-card .chart-note{font-size:11.5px; color:var(--muted); margin-top:8px;}
 </style>
 </head>
 <body>
@@ -281,6 +344,13 @@
   </div>
 </header>
 
+<div class="ticker-bar">
+  <div class="ticker-tag">🔴 عاجل</div>
+  <div class="ticker-track-wrap">
+    <div class="ticker-track" id="tickerTrack"></div>
+  </div>
+</div>
+
 <main>
   <div id="errorBox"></div>
 
@@ -306,6 +376,39 @@
         <div class="label">هويات / إقامات تنتهي قريبًا</div>
         <div class="value mono" id="kpiId">0</div>
         <div class="sub" id="kpiIdSub">خلال 90 يوم</div>
+      </div>
+    </div>
+
+    <div class="analyst-card">
+      <div class="analyst-avatar">🧠</div>
+      <div class="analyst-body">
+        <div class="analyst-name"><span class="live-dot"></span> المحلل الذكي — تحليل تلقائي مباشر</div>
+        <div class="analyst-msg" id="analystMsg">جارٍ تحليل البيانات…</div>
+        <div class="analyst-controls">
+          <button id="analystPrev">‹</button>
+          <button id="analystNext">›</button>
+          <div class="analyst-dots" id="analystDots"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <h3>🩺 الحالة العامة — العقود</h3>
+        <div class="chart-wrap"><canvas id="chartContractStatus"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>🩺 الحالة العامة — الهويات / الإقامات</h3>
+        <div class="chart-wrap"><canvas id="chartIdStatus"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>🏢 الأقسام الأكثر إجازات</h3>
+        <div class="chart-wrap"><canvas id="chartDeptLeaves"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>📆 الاستحقاقات القادمة (12 أسبوع)</h3>
+        <div class="chart-wrap"><canvas id="chartWeekly"></canvas></div>
+        <div class="chart-note">مجموع انتهاء العقود + الهويات/الإقامات المتوقع أسبوعيًا.</div>
       </div>
     </div>
 
@@ -559,6 +662,7 @@ function render(){
   renderInsights(today, contractSoon, idSoon, onLeave);
   renderTimeline(today, contractSoon, idSoon, leavesWithDays);
   renderBell(contractSoon, idSoon);
+  renderAnalytics(today, contractsData, idsData, contractSoon, idSoon, leavesData, onLeave);
 }
 
 function hasConflict(leaveRow){
@@ -688,7 +792,196 @@ function renderBell(contractSoon, idSoon){
   `).join('') : `<div class="bell-empty">لا توجد تنبيهات عاجلة حاليًا 👍</div>`;
 }
 
-/* ---------------- calendar ---------------- */
+/* ---------------- analytics: ticker + AI analyst + charts ---------------- */
+let analystMessages = [];
+let analystIndex = 0;
+let analystTimer = null;
+const chartInstances = {};
+
+function pct(n, d){ return d ? Math.round((n/d)*100) : 0; }
+
+function groupCount(arr, keyFn){
+  const map = {};
+  arr.forEach(item => { const k = keyFn(item); if (!k) return; map[k] = (map[k]||0)+1; });
+  return map;
+}
+
+function statusBuckets(rows, dateField){
+  const today = new Date();
+  let danger=0, warn=0, safe=0;
+  rows.forEach(r => {
+    if (!r[dateField]) return;
+    const d = daysBetween(today, r[dateField]);
+    if (d <= 30) danger++; else if (d <= 90) warn++; else safe++;
+  });
+  return {danger, warn, safe};
+}
+
+function weeklyBuckets(contractsAll, idsAll, weeks){
+  const today = new Date();
+  const buckets = Array.from({length: weeks}, () => 0);
+  const labels = [];
+  for (let i=0;i<weeks;i++){
+    const start = new Date(today); start.setDate(start.getDate() + i*7);
+    labels.push(start.toLocaleDateString('ar-SA-u-nu-latn', {day:'2-digit', month:'2-digit'}));
+  }
+  const bucketOf = (date) => {
+    const d = daysBetween(today, date);
+    if (d < 0) return -1;
+    return Math.floor(d/7);
+  };
+  contractsAll.forEach(r => { if (!r.contractEnd) return; const b = bucketOf(r.contractEnd); if (b>=0 && b<weeks) buckets[b]++; });
+  idsAll.forEach(r => { if (!r.idExpiry) return; const b = bucketOf(r.idExpiry); if (b>=0 && b<weeks) buckets[b]++; });
+  return {labels, buckets};
+}
+
+function buildAnalystMessages(today, contractsAll, idsAll, contractSoon, idSoon, leavesAll, onLeave){
+  const msgs = [];
+  const totalTracked = new Set([...contractsAll, ...idsAll, ...leavesAll].map(r => (r.empId||r.name).toString().trim())).size;
+
+  msgs.push(`👋 عندك حاليًا ${totalTracked} موظف تحت المتابعة، منهم ${onLeave.length} في إجازة اليوم.`);
+
+  if (contractSoon.length){
+    const byDept = groupCount(contractSoon, r => r.dept);
+    const top = Object.entries(byDept).sort((a,b)=>b[1]-a[1])[0];
+    if (top){
+      msgs.push(`📄 قسم "${top[0]}" عنده أكبر عدد عقود قريبة الانتهاء (${top[1]} عقد) — خطط للتجديد بدري عشان ما يصير ضغط آخر لحظة.`);
+    }
+    const pctUrgent = pct(contractSoon.filter(r=>r.days<=14).length, contractsAll.length);
+    if (pctUrgent > 0){
+      msgs.push(`⏳ ${pctUrgent}% من إجمالي العقود بتنتهي خلال أسبوعين فقط — يفضل تجهيز قرارات التجديد الآن.`);
+    }
+  } else {
+    msgs.push(`✅ ما فيه عقود قريبة من الانتهاء حاليًا — الوضع مستقر.`);
+  }
+
+  if (idSoon.length){
+    const expired = idSoon.filter(r => r.days < 0).length;
+    if (expired){
+      msgs.push(`🚨 عندك ${expired} إقامة/هوية منتهية فعليًا — هذي أولوية قصوى قبل أي شي ثاني.`);
+    }
+    const pctIdUrgent = pct(idSoon.filter(r=>r.days<=30).length, idsAll.length);
+    msgs.push(`🪪 ${pctIdUrgent}% من الهويات/الإقامات المتابَعة تنتهي خلال 30 يوم — راجع قائمة التجديدات بصفحة الهويات.`);
+  } else {
+    msgs.push(`✅ كل الهويات والإقامات ضمن الوضع الآمن حاليًا.`);
+  }
+
+  if (conflicts.length){
+    msgs.push(`👥 رصدت ${conflicts.length} حالة تعارض إجازات بين موظفين من نفس القسم بنفس الفترة — راجع تغطية العمل بهالأقسام.`);
+  }
+
+  if (onLeave.length){
+    const byDept = groupCount(onLeave, r => r.dept);
+    const top = Object.entries(byDept).sort((a,b)=>b[1]-a[1])[0];
+    if (top && top[1] >= 2){
+      msgs.push(`📌 قسم "${top[0]}" فيه ${top[1]} موظفين في إجازة بنفس الوقت — تأكد إن الشغل مغطّى.`);
+    }
+  }
+
+  const next7 = weeklyBuckets(contractsAll, idsAll, 2).buckets[0];
+  if (next7 > 0){
+    msgs.push(`📅 الأسبوع الجاري فيه ${next7} استحقاق (عقود + هويات) لازم تتابعها.`);
+  }
+
+  return msgs;
+}
+
+function renderTicker(msgs){
+  const track = document.getElementById('tickerTrack');
+  const content = msgs.map(m => `<span>${m}</span>`).join('<span style="opacity:.3">●</span>');
+  track.innerHTML = content + '<span style="opacity:.3">●</span>' + content;
+}
+
+function showAnalystMessage(i){
+  const el = document.getElementById('analystMsg');
+  el.style.animation = 'none'; void el.offsetWidth; el.style.animation = '';
+  el.textContent = analystMessages[i] || '—';
+  document.querySelectorAll('#analystDots i').forEach((d, idx) => d.classList.toggle('on', idx===i));
+}
+
+function renderAnalystDots(){
+  document.getElementById('analystDots').innerHTML = analystMessages.map(() => '<i></i>').join('');
+}
+
+function startAnalystRotation(){
+  if (analystTimer) clearInterval(analystTimer);
+  analystTimer = setInterval(() => {
+    analystIndex = (analystIndex + 1) % analystMessages.length;
+    showAnalystMessage(analystIndex);
+  }, 6000);
+}
+
+document.getElementById('analystPrev').addEventListener('click', () => {
+  analystIndex = (analystIndex - 1 + analystMessages.length) % analystMessages.length;
+  showAnalystMessage(analystIndex); startAnalystRotation();
+});
+document.getElementById('analystNext').addEventListener('click', () => {
+  analystIndex = (analystIndex + 1) % analystMessages.length;
+  showAnalystMessage(analystIndex); startAnalystRotation();
+});
+
+function upsertChart(id, config){
+  if (chartInstances[id]) chartInstances[id].destroy();
+  const ctx = document.getElementById(id).getContext('2d');
+  chartInstances[id] = new Chart(ctx, config);
+}
+
+function renderCharts(contractsAll, idsAll, onLeaveAll, weekly){
+  const fontFamily = "'Tajawal', sans-serif";
+  Chart.defaults.font.family = fontFamily;
+  Chart.defaults.color = '#5B6B69';
+
+  const cStatus = statusBuckets(contractsAll, 'contractEnd');
+  upsertChart('chartContractStatus', {
+    type:'doughnut',
+    data:{ labels:['خلال 30 يوم','31-90 يوم','آمن (90+)'], datasets:[{ data:[cStatus.danger, cStatus.warn, cStatus.safe],
+      backgroundColor:['#C23B33','#B8790C','#1E8E5A'], borderWidth:0 }] },
+    options:{ plugins:{legend:{position:'bottom', labels:{boxWidth:10, padding:14, font:{size:11.5}}}}, cutout:'62%', maintainAspectRatio:false }
+  });
+
+  const iStatus = statusBuckets(idsAll, 'idExpiry');
+  upsertChart('chartIdStatus', {
+    type:'doughnut',
+    data:{ labels:['خلال 30 يوم','31-90 يوم','آمن (90+)'], datasets:[{ data:[iStatus.danger, iStatus.warn, iStatus.safe],
+      backgroundColor:['#C23B33','#B8790C','#1E8E5A'], borderWidth:0 }] },
+    options:{ plugins:{legend:{position:'bottom', labels:{boxWidth:10, padding:14, font:{size:11.5}}}}, cutout:'62%', maintainAspectRatio:false }
+  });
+
+  const deptLeaveCounts = groupCount(onLeaveAll.length ? onLeaveAll : leavesData, r => r.dept);
+  const topDepts = Object.entries(deptLeaveCounts).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  upsertChart('chartDeptLeaves', {
+    type:'bar',
+    data:{ labels: topDepts.map(d=>d[0]), datasets:[{ data: topDepts.map(d=>d[1]), backgroundColor:'#3E6FB0', borderRadius:6, maxBarThickness:22 }] },
+    options:{ indexAxis:'y', plugins:{legend:{display:false}}, scales:{ x:{ ticks:{stepSize:1, precision:0} } }, maintainAspectRatio:false }
+  });
+
+  upsertChart('chartWeekly', {
+    type:'bar',
+    data:{ labels: weekly.labels, datasets:[{ data: weekly.buckets, backgroundColor:'#D9A441', borderRadius:5, maxBarThickness:26 }] },
+    options:{ plugins:{legend:{display:false}}, scales:{ y:{ ticks:{stepSize:1, precision:0} } }, maintainAspectRatio:false }
+  });
+}
+
+function renderAnalytics(today, contractsAll, idsAll, contractSoon, idSoon, leavesAll, onLeaveAll){
+  analystMessages = buildAnalystMessages(today, contractsAll, idsAll, contractSoon, idSoon, leavesAll, onLeaveAll);
+  analystIndex = 0;
+  renderAnalystDots();
+  showAnalystMessage(0);
+  startAnalystRotation();
+
+  const tickerItems = [
+    ...idSoon.filter(r=>r.days<=14).map(r => `🪪 <b>${r.name}</b> — إقامة ${r.days<0?'منتهية منذ '+Math.abs(r.days)+' يوم':'تنتهي خلال '+r.days+' يوم'}`),
+    ...contractSoon.filter(r=>r.days<=14).map(r => `📄 <b>${r.name}</b> — عقد ${r.days<0?'منتهي منذ '+Math.abs(r.days)+' يوم':'ينتهي خلال '+r.days+' يوم'}`),
+    ...conflicts.map(c => `👥 تعارض إجازات في <b>${c.dept}</b>: ${c.a.name} و${c.b.name}`),
+  ];
+  if (!tickerItems.length) tickerItems.push('✅ لا توجد تنبيهات عاجلة حاليًا — كل شي تحت السيطرة.');
+  renderTicker(tickerItems);
+
+  const weekly = weeklyBuckets(contractsAll, idsAll, 12);
+  renderCharts(contractsAll, idsAll, onLeaveAll, weekly);
+}
+
+
 function renderCalendar(){
   const grid = document.getElementById('calGrid');
   const dows = ['أحد','اثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'];
