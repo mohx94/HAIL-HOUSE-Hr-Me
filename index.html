@@ -814,8 +814,8 @@ function buildRenewalMailUrl(kind, employeeName, expiryDate){
   const to = s.recipientEmail || '';
   // Outlook Web compose deep link — opens the browser-based Outlook directly,
   // bypassing the OS/browser "default mail app" setting entirely.
-  const params = new URLSearchParams({ to, subject, body });
-  return `https://outlook.office.com/mail/deeplink/compose?${params.toString()}`;
+  const query = `to=${encodeURIComponent(to)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  return `https://outlook.office.com/mail/deeplink/compose?${query}`;
 }
 function mailButton(kind, employeeName, expiryDate){
   if (!expiryDate) return '';
