@@ -202,9 +202,9 @@
 
   <section class="kpi-grid">
     <div class="kpi k-total">
-      <div class="label">إجمالي الموظفين</div>
+      <div class="label">إجمالي الموظفين المتابَعين</div>
       <div class="value mono" id="kpiTotal">0</div>
-      <div class="sub">في الملف الحالي</div>
+      <div class="sub">عبر الشيتات الثلاثة</div>
     </div>
     <div class="kpi k-leave">
       <div class="label">في إجازة الآن</div>
@@ -269,20 +269,15 @@
 </main>
 
 <script>
-const COLS = {
-  name: "الاسم",
-  empId: "الرقم الوظيفي",
-  dept: "القسم",
-  natId: "رقم الهوية / الإقامة",
-  idExpiry: "تاريخ انتهاء الهوية / الإقامة",
-  contractStart: "تاريخ بداية العقد",
-  contractEnd: "تاريخ انتهاء العقد",
-  status: "حالة الموظف",
-  leaveStart: "تاريخ بداية الإجازة",
-  leaveEnd: "تاريخ نهاية الإجازة",
+const SHEETS = {
+  contracts: "العقود",
+  leaves: "الإجازات",
+  ids: "الهويات",
 };
 
-let rawRows = [];
+let contractsData = [];
+let leavesData = [];
+let idsData = [];
 let threshold = 90;
 
 function excelDateToJS(val){
@@ -317,22 +312,61 @@ function chipFor(days){
   return `<span class="chip ${cls}"><span class="d"></span>${label}</span>`;
 }
 
-function parseWorkbook(workbook){
-  const sheetName = workbook.SheetNames.find(n => n.trim() === "الموظفين") || workbook.SheetNames[0];
+function findSheet(workbook, wanted){
+  return workbook.SheetNames.find(n => n.trim() === wanted);
+}
+
+function sheetToRows(workbook, sheetName){
+  if (!sheetName) return null;
   const sheet = workbook.Sheets[sheetName];
-  const json = XLSX.utils.sheet_to_json(sheet, { defval: "" });
-  rawRows = json.map(r => ({
-    name: r[COLS.name] || "",
-    empId: r[COLS.empId] || "",
-    dept: r[COLS.dept] || "",
-    natId: r[COLS.natId] || "",
-    idExpiry: excelDateToJS(r[COLS.idExpiry]),
-    contractStart: excelDateToJS(r[COLS.contractStart]),
-    contractEnd: excelDateToJS(r[COLS.contractEnd]),
-    status: (r[COLS.status] || "").toString().trim(),
-    leaveStart: excelDateToJS(r[COLS.leaveStart]),
-    leaveEnd: excelDateToJS(r[COLS.leaveEnd]),
+  return XLSX.utils.sheet_to_json(sheet, { defval: "" });
+}
+
+function parseWorkbook(workbook){
+  const missing = [];
+
+  const contractSheet = findSheet(workbook, SHEETS.contracts);
+  const leaveSheet = findSheet(workbook, SHEETS.leaves);
+  const idSheet = findSheet(workbook, SHEETS.ids);
+
+  if (!contractSheet) missing.push(SHEETS.contracts);
+  if (!leaveSheet) missing.push(SHEETS.leaves);
+  if (!idSheet) missing.push(SHEETS.ids);
+
+  const cJson = sheetToRows(workbook, contractSheet) || [];
+  contractsData = cJson.map(r => ({
+    name: r["الاسم"] || "",
+    empId: r["الرقم الوظيفي"] || "",
+    dept: r["القسم"] || "",
+    contractStart: excelDateToJS(r["تاريخ بداية العقد"]),
+    contractEnd: excelDateToJS(r["تاريخ انتهاء العقد"]),
   })).filter(r => r.name);
+
+  const lJson = sheetToRows(workbook, leaveSheet) || [];
+  leavesData = lJson.map(r => ({
+    name: r["الاسم"] || "",
+    empId: r["الرقم الوظيفي"] || "",
+    dept: r["القسم"] || "",
+    leaveStart: excelDateToJS(r["تاريخ بداية الإجازة"]),
+    leaveEnd: excelDateToJS(r["تاريخ نهاية الإجازة"]),
+  })).filter(r => r.name);
+
+  const iJson = sheetToRows(workbook, idSheet) || [];
+  idsData = iJson.map(r => ({
+    name: r["الاسم"] || "",
+    empId: r["الرقم الوظيفي"] || "",
+    natId: r["رقم الهوية / الإقامة"] || "",
+    idExpiry: excelDateToJS(r["تاريخ انتهاء الهوية / الإقامة"]),
+  })).filter(r => r.name);
+
+  if (missing.length){
+    document.getElementById('errorBox').innerHTML =
+      `<div class="error-banner"><b>تنبيه: بعض الشيتات غير موجودة بالاسم المتوقع.</b><br>
+      لم يتم العثور على: ${missing.join('، ')}. تأكد أن أسماء الشيتات بالملف مطابقة تمامًا لهذه الأسماء.</div>`;
+  } else {
+    document.getElementById('errorBox').innerHTML = '';
+  }
+
   render();
 }
 
@@ -342,21 +376,26 @@ function render(){
   document.getElementById('kpiContractSub').textContent = `خلال ${threshold} يوم`;
   document.getElementById('kpiIdSub').textContent = `خلال ${threshold} يوم`;
 
-  const onLeave = rawRows.filter(r =>
-    r.status === "في إجازة" || (r.leaveStart && r.leaveEnd && today >= r.leaveStart && today <= r.leaveEnd)
+  const onLeave = leavesData.filter(r =>
+    r.leaveStart && r.leaveEnd && today >= r.leaveStart && today <= r.leaveEnd
   );
-  const contractSoon = rawRows
+  const contractSoon = contractsData
     .filter(r => r.contractEnd)
     .map(r => ({...r, days: daysBetween(today, r.contractEnd)}))
     .filter(r => r.days <= threshold)
     .sort((a,b) => a.days - b.days);
-  const idSoon = rawRows
+  const idSoon = idsData
     .filter(r => r.idExpiry)
     .map(r => ({...r, days: daysBetween(today, r.idExpiry)}))
     .filter(r => r.days <= threshold)
     .sort((a,b) => a.days - b.days);
 
-  document.getElementById('kpiTotal').textContent = rawRows.length;
+  const trackedKeys = new Set();
+  [...contractsData, ...leavesData, ...idsData].forEach(r => {
+    trackedKeys.add((r.empId || r.name).toString().trim());
+  });
+
+  document.getElementById('kpiTotal').textContent = trackedKeys.size;
   document.getElementById('kpiLeave').textContent = onLeave.length;
   document.getElementById('kpiContract').textContent = contractSoon.length;
   document.getElementById('kpiId').textContent = idSoon.length;
