@@ -354,7 +354,7 @@
             </div>
           </div>
           <div class="table-wrap"><table id="tblContract">
-            <thead><tr><th data-sort="name">الاسم</th><th data-sort="empId">الرقم الوظيفي</th><th data-sort="dept">القسم</th><th data-sort="contractEnd">تاريخ انتهاء العقد</th><th data-sort="days">الأيام المتبقية</th><th>—</th></tr></thead>
+            <thead><tr><th data-sort="name">الاسم</th><th data-sort="empId">الرقم الوظيفي</th><th data-sort="dept">القسم</th><th data-sort="contractEnd">تاريخ انتهاء العقد</th><th data-sort="days">الأيام المتبقية</th><th>الإجراءات</th></tr></thead>
             <tbody></tbody>
           </table></div>
         </section>
@@ -377,7 +377,7 @@
             </div>
           </div>
           <div class="table-wrap"><table id="tblId">
-            <thead><tr><th data-sort="name">الاسم</th><th data-sort="empId">الرقم الوظيفي</th><th data-sort="dept">القسم</th><th data-sort="natId">رقم الهوية / الإقامة</th><th data-sort="idExpiry">تاريخ الانتهاء</th><th data-sort="days">الأيام المتبقية</th><th>—</th></tr></thead>
+            <thead><tr><th data-sort="name">الاسم</th><th data-sort="empId">الرقم الوظيفي</th><th data-sort="dept">القسم</th><th data-sort="natId">رقم الهوية / الإقامة</th><th data-sort="idExpiry">تاريخ الانتهاء</th><th data-sort="days">الأيام المتبقية</th><th>الإجراءات</th></tr></thead>
             <tbody></tbody>
           </table></div>
         </section>
@@ -467,6 +467,18 @@
               <input type="number" id="thresholdInput" value="90" min="1" max="365" style="width:60px; border:1px solid var(--border); border-radius:7px; padding:6px 8px; font-family:'IBM Plex Mono'; text-align:center;">
               يوم
             </label>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><h2>إعدادات خطاب التجديد (بريد إلكتروني)</h2></div>
+          <div class="panel-body" style="display:flex; flex-direction:column; gap:14px;">
+            <label style="display:flex; flex-direction:column; gap:6px; font-size:13px;">اسم المستلم (يظهر في "السيد ... المحترم")
+              <input type="text" id="mailRecipientName" placeholder="مثال: أحمد" style="border:1px solid var(--border); border-radius:8px; padding:8px 12px; font-size:13px;">
+            </label>
+            <label style="display:flex; flex-direction:column; gap:6px; font-size:13px;">البريد الإلكتروني للمستلم (اختياري — لو تركته فاضي تقدر تكتبه يدويًا وقت الإرسال)
+              <input type="email" id="mailRecipientEmail" placeholder="name@company.com" style="border:1px solid var(--border); border-radius:8px; padding:8px 12px; font-size:13px;">
+            </label>
+            <span class="empty-note">هذي البيانات تُحفظ بمتصفحك فقط، وتُستخدم بزر "✉️ خطاب تجديد" بصفحتي العقود والهويات — تفتح مسودة بريد جاهزة ببرنامجك الافتراضي (Outlook مثلًا) بعدد أيام التجديد الفعلي وتاريخ الانتهاء الحقيقي، وتقدر تراجعها وتعدّلها قبل الإرسال.</span>
           </div>
         </section>
         <section class="panel">
@@ -690,7 +702,7 @@ function render(){
   renderTable('tblContract', contractRows, r => `
     <td class="name-cell">${r.name}</td><td class="muted">${r.empId}</td><td class="muted">${r.dept}</td>
     <td>${fmtDate(r.contractEnd)}</td><td>${chipFor(r.days)}</td>
-    <td>${markDoneButton('contract-'+r.empId+'-'+r.contractEnd.getTime())}</td>
+    <td style="display:flex; gap:6px;">${markDoneButton('contract-'+r.empId+'-'+r.contractEnd.getTime())}${mailButton('contract', r.name, r.contractEnd)}</td>
   `, "لا توجد عقود مطابقة", "جرّب تغيير الفلاتر.");
 
   const idExpired = idsData.filter(r => r.idExpiry && daysBetween(today, r.idExpiry) < 0).length;
@@ -705,7 +717,7 @@ function render(){
   renderTable('tblId', idRows, r => `
     <td class="name-cell">${r.name}</td><td class="muted">${r.empId}</td><td class="muted">${r.dept||'—'}</td>
     <td class="muted">${r.natId}</td><td>${fmtDate(r.idExpiry)}</td><td>${chipFor(r.days)}</td>
-    <td>${markDoneButton('id-'+r.empId+'-'+r.idExpiry.getTime())}</td>
+    <td style="display:flex; gap:6px;">${markDoneButton('id-'+r.empId+'-'+r.idExpiry.getTime())}${mailButton('id', r.name, r.idExpiry)}</td>
   `, "لا توجد هويات مطابقة", "جرّب تغيير الفلاتر.");
 
   document.getElementById('countActiveLeave').textContent = onLeave.length;
@@ -755,10 +767,58 @@ function markDoneButton(id){
 }
 document.addEventListener('click', (e) => {
   const btn = e.target.closest('.mark-done-btn');
-  if (!btn) return;
+  if (!btn || !btn.dataset.mark) return;
   dismissAction(btn.dataset.mark);
   render();
 });
+
+/* ---------------- renewal email letters (mailto:) ---------------- */
+function getMailSettings(){
+  try{ return JSON.parse(localStorage.getItem('hrDashMailSettings') || '{}'); }catch(e){ return {}; }
+}
+function saveMailSettings(){
+  const settings = {
+    recipientName: document.getElementById('mailRecipientName').value.trim(),
+    recipientEmail: document.getElementById('mailRecipientEmail').value.trim(),
+  };
+  try{ localStorage.setItem('hrDashMailSettings', JSON.stringify(settings)); }catch(e){}
+}
+function loadMailSettingsIntoInputs(){
+  const s = getMailSettings();
+  document.getElementById('mailRecipientName').value = s.recipientName || '';
+  document.getElementById('mailRecipientEmail').value = s.recipientEmail || '';
+}
+document.getElementById('mailRecipientName').addEventListener('input', saveMailSettings);
+document.getElementById('mailRecipientEmail').addEventListener('input', saveMailSettings);
+
+function buildRenewalMailto(kind, employeeName, expiryDate){
+  const today = new Date();
+  const daysLeft = daysBetween(today, expiryDate);
+  const s = getMailSettings();
+  const recipient = s.recipientName || '...............';
+  const subjectLabel = kind === 'contract' ? 'تجديد عقد' : 'تجديد إقامة';
+  const itemLabel = kind === 'contract' ? 'عقد' : 'إقامة';
+  const daysPhrase = daysLeft >= 0 ? `أي بعد ${daysLeft} يوم من تاريخ إرسال هذا البريد` : `وقد مضى على انتهائه ${Math.abs(daysLeft)} يوم حتى الآن`;
+
+  const body =
+`السلام عليكم ورحمة الله وبركاته،
+السيد: ${recipient} المحترم
+
+نأمل التكرم بإفادتنا بشأن الرغبة في تجديد ${itemLabel} الموظف ${employeeName}، حيث إن ${itemLabel} المذكور سينتهي بتاريخ ${fmtDate(expiryDate)}، ${daysPhrase}.
+
+نرجو تزويدنا برأيكم في أقرب وقت، سواء بالموافقة على التجديد أو عدم التجديد، حتى نتمكن من استكمال الإجراءات النظامية في الوقت المناسب.
+
+شاكرين لكم تعاونكم،،`;
+
+  const subject = `${subjectLabel} — ${employeeName}`;
+  const to = s.recipientEmail || '';
+  return `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+function mailButton(kind, employeeName, expiryDate){
+  if (!expiryDate) return '';
+  const href = buildRenewalMailto(kind, employeeName, expiryDate);
+  return `<a href="${href}" class="mark-done-btn" style="text-decoration:none; display:inline-block;">✉️ خطاب تجديد</a>`;
+}
 
 let sortState = {};
 function renderTable(tableId, rows, rowTpl, emptyTitle, emptySub){
@@ -1143,6 +1203,7 @@ async function loadFromRepo(isManualRefresh){
 const now = new Date();
 calYear = now.getFullYear(); calMonth = now.getMonth();
 tickClock();
+loadMailSettingsIntoInputs();
 loadFromRepo(false);
 </script>
 </body>
