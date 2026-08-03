@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة متابعة الموظفين</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root{
+    --ink:#0E1B23;
+    --navy:#0F3D3E;
+    --navy-deep:#0A2B2C;
+    --paper:#F5F7F6;
+    --card:#FFFFFF;
+    --line:#E3E8E7;
+    --muted:#5B6B69;
+    --safe:#1E8E5A;
+    --safe-bg:#E7F5EE;
+    --warn:#B8790C;
+    --warn-bg:#FCF1DC;
+    --danger:#C23B33;
+    --danger-bg:#FBE9E7;
+    --accent:#D9A441;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Tajawal', 'Segoe UI', Tahoma, Arial, sans-serif;
+    min-height:100vh;
+  }
+  .mono{font-family:'IBM Plex Mono','Courier New',monospace;}
+
+  header.topbar{
+    background:linear-gradient(135deg, var(--navy-deep), var(--navy));
+    color:#fff;
+    padding:22px 28px;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    border-bottom:3px solid var(--accent);
+  }
+  .brand{display:flex; align-items:center; gap:14px;}
+  .brand .dot{
+    width:12px;height:12px;border-radius:50%;
+    background:var(--accent);
+    box-shadow:0 0 0 5px rgba(217,164,65,.18);
+  }
+  .brand h1{font-size:20px; font-weight:900; margin:0; letter-spacing:.2px;}
+  .brand span{display:block; font-size:12.5px; color:#BFD6D4; margin-top:2px; font-weight:400;}
+
+  .top-controls{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .status-pill{
+    display:flex; align-items:center; gap:8px;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.16);
+    padding:8px 14px; border-radius:999px;
+    font-size:12.5px; color:#DCE9E8;
+  }
+  .status-pill b{color:#fff; font-weight:600;}
+  .live-dot{width:7px;height:7px;border-radius:50%;background:#39D98A; animation:pulse 1.8s infinite;}
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(57,217,138,.55);}
+    70%{box-shadow:0 0 0 7px rgba(57,217,138,0);}
+    100%{box-shadow:0 0 0 0 rgba(57,217,138,0);}
+  }
+
+  button, .file-btn{
+    font-family:inherit;
+    background:#fff; color:var(--navy-deep);
+    border:none; border-radius:8px;
+    padding:9px 16px; font-size:13.5px; font-weight:700;
+    cursor:pointer; transition:transform .12s ease, box-shadow .12s ease;
+  }
+  button:hover, .file-btn:hover{transform:translateY(-1px); box-shadow:0 4px 10px rgba(0,0,0,.15);}
+  button.ghost{
+    background:transparent; color:#fff; border:1px solid rgba(255,255,255,.35);
+  }
+  input[type=number]{
+    width:64px; border:1px solid var(--line); border-radius:8px;
+    padding:8px 10px; font-family:'IBM Plex Mono'; font-size:13px; text-align:center;
+  }
+  label.thresh{
+    color:#DCE9E8; font-size:12.5px; display:flex; align-items:center; gap:8px;
+  }
+
+  main{max-width:1180px; margin:0 auto; padding:26px 20px 60px;}
+
+  .kpi-grid{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:28px;
+  }
+  @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr);}}
+  .kpi{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:18px 20px; position:relative; overflow:hidden;
+  }
+  .kpi::before{
+    content:""; position:absolute; inset-inline-start:0; top:0; bottom:0; width:5px;
+  }
+  .kpi.k-total::before{background:var(--navy);}
+  .kpi.k-leave::before{background:#3E6FB0;}
+  .kpi.k-contract::before{background:var(--warn);}
+  .kpi.k-id::before{background:var(--danger);}
+  .kpi .label{font-size:12.5px; color:var(--muted); font-weight:700;}
+  .kpi .value{font-family:'IBM Plex Mono'; font-size:34px; font-weight:600; margin-top:6px; color:var(--ink);}
+  .kpi .sub{font-size:11.5px; color:var(--muted); margin-top:4px;}
+
+  .panel{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    margin-bottom:22px; overflow:hidden;
+  }
+  .panel-head{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:16px 20px; border-bottom:1px solid var(--line); flex-wrap:wrap;
+  }
+  .panel-head h2{font-size:16px; margin:0; display:flex; align-items:center; gap:10px;}
+  .badge-count{
+    background:var(--paper); border:1px solid var(--line); color:var(--muted);
+    font-family:'IBM Plex Mono'; font-size:12px; padding:2px 9px; border-radius:999px;
+  }
+  .search{
+    border:1px solid var(--line); border-radius:8px; padding:8px 12px; font-size:13px;
+    font-family:inherit; min-width:180px;
+  }
+
+  table{width:100%; border-collapse:collapse; font-size:13.5px;}
+  thead th{
+    text-align:right; padding:10px 20px; background:#FAFBFA; color:var(--muted);
+    font-weight:700; font-size:12px; border-bottom:1px solid var(--line); white-space:nowrap;
+  }
+  tbody td{padding:11px 20px; border-bottom:1px solid var(--line); white-space:nowrap;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#FAFBFA;}
+  .name-cell{font-weight:700;}
+  .muted{color:var(--muted);}
+
+  .chip{
+    display:inline-flex; align-items:center; gap:6px;
+    padding:4px 10px; border-radius:999px; font-family:'IBM Plex Mono'; font-size:12px; font-weight:600;
+  }
+  .chip.safe{background:var(--safe-bg); color:var(--safe);}
+  .chip.warn{background:var(--warn-bg); color:var(--warn);}
+  .chip.danger{background:var(--danger-bg); color:var(--danger);}
+  .chip .d{width:6px;height:6px;border-radius:50%; background:currentColor;}
+
+  .empty{padding:36px 20px; text-align:center; color:var(--muted); font-size:13.5px;}
+  .empty b{display:block; color:var(--ink); font-size:14.5px; margin-bottom:6px;}
+
+  .loading-screen{
+    position:fixed; inset:0; background:var(--paper); z-index:50;
+    display:flex; align-items:center; justify-content:center; flex-direction:column; gap:14px;
+  }
+  .spinner{
+    width:34px; height:34px; border-radius:50%;
+    border:3px solid var(--line); border-top-color:var(--navy);
+    animation:spin 0.9s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loading-screen p{color:var(--muted); font-size:13.5px;}
+
+  .error-banner{
+    background:var(--danger-bg); border:1px solid var(--danger); color:var(--danger);
+    border-radius:10px; padding:14px 18px; margin-bottom:20px; font-size:13.5px; line-height:1.7;
+  }
+  footer{text-align:center; color:var(--muted); font-size:12px; padding:20px 0 40px;}
+</style>
+</head>
+<body>
+
+<div class="loading-screen" id="loadingScreen">
+  <div class="spinner"></div>
+  <p>جارِ تحميل ملف employees.xlsx …</p>
+</div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="dot"></span>
+    <div>
+      <h1>لوحة متابعة الموظفين</h1>
+      <span>الإجازات · نهاية العقود · نهاية الهوية / الإقامة</span>
+    </div>
+  </div>
+  <div class="top-controls">
+    <span class="status-pill" id="lastUpdated"><span class="live-dot"></span> <b>—</b></span>
+    <label class="thresh">حد التنبيه (أيام)
+      <input type="number" id="thresholdInput" value="90" min="1" max="365">
+    </label>
+    <button id="refreshBtn" class="ghost">↻ تحديث</button>
+    <label class="file-btn" for="fileInput">📂 تحميل ملف آخر</label>
+    <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none;">
+  </div>
+</header>
+
+<main>
+  <div id="errorBox"></div>
+
+  <section class="kpi-grid">
+    <div class="kpi k-total">
+      <div class="label">إجمالي الموظفين</div>
+      <div class="value mono" id="kpiTotal">0</div>
+      <div class="sub">في الملف الحالي</div>
+    </div>
+    <div class="kpi k-leave">
+      <div class="label">في إجازة الآن</div>
+      <div class="value mono" id="kpiLeave">0</div>
+      <div class="sub">إجازة سارية اليوم</div>
+    </div>
+    <div class="kpi k-contract">
+      <div class="label">عقود تنتهي قريبًا</div>
+      <div class="value mono" id="kpiContract">0</div>
+      <div class="sub" id="kpiContractSub">خلال 90 يوم</div>
+    </div>
+    <div class="kpi k-id">
+      <div class="label">هويات / إقامات تنتهي قريبًا</div>
+      <div class="value mono" id="kpiId">0</div>
+      <div class="sub" id="kpiIdSub">خلال 90 يوم</div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>🟦 الموظفون في إجازة حاليًا <span class="badge-count" id="countLeave">0</span></h2>
+      <input class="search" data-target="tblLeave" placeholder="بحث بالاسم...">
+    </div>
+    <div class="table-wrap"><table id="tblLeave">
+      <thead><tr>
+        <th>الاسم</th><th>الرقم الوظيفي</th><th>القسم</th>
+        <th>بداية الإجازة</th><th>نهاية الإجازة</th><th>الأيام المتبقية</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>🟧 عقود تنتهي قريبًا <span class="badge-count" id="countContract">0</span></h2>
+      <input class="search" data-target="tblContract" placeholder="بحث بالاسم...">
+    </div>
+    <div class="table-wrap"><table id="tblContract">
+      <thead><tr>
+        <th>الاسم</th><th>الرقم الوظيفي</th><th>القسم</th>
+        <th>تاريخ انتهاء العقد</th><th>الأيام المتبقية</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>🟥 هويات / إقامات تنتهي قريبًا <span class="badge-count" id="countId">0</span></h2>
+      <input class="search" data-target="tblId" placeholder="بحث بالاسم...">
+    </div>
+    <div class="table-wrap"><table id="tblId">
+      <thead><tr>
+        <th>الاسم</th><th>الرقم الوظيفي</th><th>رقم الهوية / الإقامة</th>
+        <th>تاريخ الانتهاء</th><th>الأيام المتبقية</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </section>
+
+  <footer>البيانات تُقرأ مباشرة من ملف employees.xlsx — لتحديثها عدّل الملف وارفعه على GitHub بنفس الاسم.</footer>
+</main>
+
+<script>
+const COLS = {
+  name: "الاسم",
+  empId: "الرقم الوظيفي",
+  dept: "القسم",
+  natId: "رقم الهوية / الإقامة",
+  idExpiry: "تاريخ انتهاء الهوية / الإقامة",
+  contractStart: "تاريخ بداية العقد",
+  contractEnd: "تاريخ انتهاء العقد",
+  status: "حالة الموظف",
+  leaveStart: "تاريخ بداية الإجازة",
+  leaveEnd: "تاريخ نهاية الإجازة",
+};
+
+let rawRows = [];
+let threshold = 90;
+
+function excelDateToJS(val){
+  if (val === undefined || val === null || val === "") return null;
+  if (val instanceof Date) return val;
+  if (typeof val === "number") {
+    const d = XLSX.SSF.parse_date_code(val);
+    if (!d) return null;
+    return new Date(d.y, d.m - 1, d.d);
+  }
+  const parsed = new Date(val);
+  return isNaN(parsed) ? null : parsed;
+}
+
+function daysBetween(a, b){
+  const ms = 24*60*60*1000;
+  const da = new Date(a.getFullYear(), a.getMonth(), a.getDate());
+  const db = new Date(b.getFullYear(), b.getMonth(), b.getDate());
+  return Math.round((db - da) / ms);
+}
+
+function fmtDate(d){
+  if (!d) return "—";
+  return d.toLocaleDateString('ar-SA-u-nu-latn', {year:'numeric', month:'2-digit', day:'2-digit'});
+}
+
+function chipFor(days){
+  let cls = "safe", label = days + " يوم";
+  if (days < 0){ cls = "danger"; label = "منتهي منذ " + Math.abs(days) + " يوم"; }
+  else if (days <= 30){ cls = "danger"; }
+  else if (days <= threshold){ cls = "warn"; }
+  return `<span class="chip ${cls}"><span class="d"></span>${label}</span>`;
+}
+
+function parseWorkbook(workbook){
+  const sheetName = workbook.SheetNames.find(n => n.trim() === "الموظفين") || workbook.SheetNames[0];
+  const sheet = workbook.Sheets[sheetName];
+  const json = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+  rawRows = json.map(r => ({
+    name: r[COLS.name] || "",
+    empId: r[COLS.empId] || "",
+    dept: r[COLS.dept] || "",
+    natId: r[COLS.natId] || "",
+    idExpiry: excelDateToJS(r[COLS.idExpiry]),
+    contractStart: excelDateToJS(r[COLS.contractStart]),
+    contractEnd: excelDateToJS(r[COLS.contractEnd]),
+    status: (r[COLS.status] || "").toString().trim(),
+    leaveStart: excelDateToJS(r[COLS.leaveStart]),
+    leaveEnd: excelDateToJS(r[COLS.leaveEnd]),
+  })).filter(r => r.name);
+  render();
+}
+
+function render(){
+  const today = new Date();
+  threshold = parseInt(document.getElementById('thresholdInput').value, 10) || 90;
+  document.getElementById('kpiContractSub').textContent = `خلال ${threshold} يوم`;
+  document.getElementById('kpiIdSub').textContent = `خلال ${threshold} يوم`;
+
+  const onLeave = rawRows.filter(r =>
+    r.status === "في إجازة" || (r.leaveStart && r.leaveEnd && today >= r.leaveStart && today <= r.leaveEnd)
+  );
+  const contractSoon = rawRows
+    .filter(r => r.contractEnd)
+    .map(r => ({...r, days: daysBetween(today, r.contractEnd)}))
+    .filter(r => r.days <= threshold)
+    .sort((a,b) => a.days - b.days);
+  const idSoon = rawRows
+    .filter(r => r.idExpiry)
+    .map(r => ({...r, days: daysBetween(today, r.idExpiry)}))
+    .filter(r => r.days <= threshold)
+    .sort((a,b) => a.days - b.days);
+
+  document.getElementById('kpiTotal').textContent = rawRows.length;
+  document.getElementById('kpiLeave').textContent = onLeave.length;
+  document.getElementById('kpiContract').textContent = contractSoon.length;
+  document.getElementById('kpiId').textContent = idSoon.length;
+  document.getElementById('countLeave').textContent = onLeave.length;
+  document.getElementById('countContract').textContent = contractSoon.length;
+  document.getElementById('countId').textContent = idSoon.length;
+
+  fillTable('tblLeave', onLeave, r => `
+    <td class="name-cell">${r.name}</td>
+    <td class="muted">${r.empId}</td>
+    <td class="muted">${r.dept}</td>
+    <td>${fmtDate(r.leaveStart)}</td>
+    <td>${fmtDate(r.leaveEnd)}</td>
+    <td>${r.leaveEnd ? chipFor(daysBetween(today, r.leaveEnd)) : '—'}</td>
+  `, "لا يوجد موظفون في إجازة حاليًا", "كل الفريق على رأس العمل اليوم.");
+
+  fillTable('tblContract', contractSoon, r => `
+    <td class="name-cell">${r.name}</td>
+    <td class="muted">${r.empId}</td>
+    <td class="muted">${r.dept}</td>
+    <td>${fmtDate(r.contractEnd)}</td>
+    <td>${chipFor(r.days)}</td>
+  `, "لا توجد عقود قريبة من الانتهاء", `لا يوجد عقود تنتهي خلال ${threshold} يوم.`);
+
+  fillTable('tblId', idSoon, r => `
+    <td class="name-cell">${r.name}</td>
+    <td class="muted">${r.empId}</td>
+    <td class="muted">${r.natId}</td>
+    <td>${fmtDate(r.idExpiry)}</td>
+    <td>${chipFor(r.days)}</td>
+  `, "لا توجد هويات/إقامات قريبة من الانتهاء", `لا يوجد هويات تنتهي خلال ${threshold} يوم.`);
+}
+
+function fillTable(tableId, rows, rowTpl, emptyTitle, emptySub){
+  const tbody = document.querySelector('#' + tableId + ' tbody');
+  if (!rows.length){
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty"><b>${emptyTitle}</b>${emptySub}</div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = rows.map(r => `<tr>${rowTpl(r)}</tr>`).join('');
+}
+
+document.querySelectorAll('.search').forEach(input => {
+  input.addEventListener('input', () => {
+    const q = input.value.trim();
+    const tbody = document.querySelector('#' + input.dataset.target + ' tbody');
+    tbody.querySelectorAll('tr').forEach(tr => {
+      tr.style.display = tr.textContent.includes(q) ? '' : 'none';
+    });
+  });
+});
+
+document.getElementById('thresholdInput').addEventListener('change', render);
+document.getElementById('refreshBtn').addEventListener('click', () => loadFromRepo(true));
+
+document.getElementById('fileInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    const wb = XLSX.read(ev.target.result, { type: 'array', cellDates: true });
+    parseWorkbook(wb);
+    setLastUpdated(`ملف محلي: ${file.name}`);
+    hideLoading();
+  };
+  reader.readAsArrayBuffer(file);
+});
+
+function setLastUpdated(text){
+  document.querySelector('#lastUpdated b').textContent = text;
+}
+function hideLoading(){
+  document.getElementById('loadingScreen').style.display = 'none';
+}
+function showError(msg){
+  document.getElementById('errorBox').innerHTML =
+    `<div class="error-banner"><b>تعذّر تحميل employees.xlsx تلقائيًا.</b><br>${msg}<br>يمكنك استخدام زر "تحميل ملف آخر" أعلى الصفحة لعرض ملفك يدويًا.</div>`;
+  hideLoading();
+}
+
+async function loadFromRepo(isManualRefresh){
+  try{
+    const res = await fetch('./employees.xlsx?t=' + Date.now());
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const buf = await res.arrayBuffer();
+    const wb = XLSX.read(buf, { type: 'array', cellDates: true });
+    parseWorkbook(wb);
+    const lm = res.headers.get('last-modified');
+    setLastUpdated(lm ? new Date(lm).toLocaleString('ar-SA') : 'تم التحميل الآن');
+    hideLoading();
+    document.getElementById('errorBox').innerHTML = '';
+  }catch(err){
+    if (isManualRefresh){
+      alert('تعذر تحديث الملف: ' + err.message);
+    } else {
+      showError('تأكد أن ملف employees.xlsx موجود في نفس مجلد هذه الصفحة داخل المستودع.');
+    }
+  }
+}
+
+loadFromRepo(false);
+</script>
+</body>
+</html>
