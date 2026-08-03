@@ -478,7 +478,7 @@
             <label style="display:flex; flex-direction:column; gap:6px; font-size:13px;">البريد الإلكتروني للمستلم (اختياري — لو تركته فاضي تقدر تكتبه يدويًا وقت الإرسال)
               <input type="email" id="mailRecipientEmail" placeholder="name@company.com" style="border:1px solid var(--border); border-radius:8px; padding:8px 12px; font-size:13px;">
             </label>
-            <span class="empty-note">هذي البيانات تُحفظ بمتصفحك فقط، وتُستخدم بزر "✉️ خطاب تجديد" بصفحتي العقود والهويات — تفتح مسودة بريد جاهزة ببرنامجك الافتراضي (Outlook مثلًا) بعدد أيام التجديد الفعلي وتاريخ الانتهاء الحقيقي، وتقدر تراجعها وتعدّلها قبل الإرسال.</span>
+            <span class="empty-note">هذي البيانات تُحفظ بمتصفحك فقط، وتُستخدم بزر "✉️ خطاب تجديد" بصفحتي العقود والهويات — يفتح تبويبًا جديدًا في Outlook على الويب (outlook.office.com) بمسودة بريد جاهزة فيها عدد أيام التجديد الفعلي وتاريخ الانتهاء الحقيقي، وتقدر تراجعها وتعدّلها قبل الإرسال. لازم تكون مسجّل دخول بحساب Outlook/Microsoft 365 في نفس المتصفح.</span>
           </div>
         </section>
         <section class="panel">
@@ -791,7 +791,7 @@ function loadMailSettingsIntoInputs(){
 document.getElementById('mailRecipientName').addEventListener('input', saveMailSettings);
 document.getElementById('mailRecipientEmail').addEventListener('input', saveMailSettings);
 
-function buildRenewalMailto(kind, employeeName, expiryDate){
+function buildRenewalMailUrl(kind, employeeName, expiryDate){
   const today = new Date();
   const daysLeft = daysBetween(today, expiryDate);
   const s = getMailSettings();
@@ -812,12 +812,15 @@ function buildRenewalMailto(kind, employeeName, expiryDate){
 
   const subject = `${subjectLabel} — ${employeeName}`;
   const to = s.recipientEmail || '';
-  return `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  // Outlook Web compose deep link — opens the browser-based Outlook directly,
+  // bypassing the OS/browser "default mail app" setting entirely.
+  const params = new URLSearchParams({ to, subject, body });
+  return `https://outlook.office.com/mail/deeplink/compose?${params.toString()}`;
 }
 function mailButton(kind, employeeName, expiryDate){
   if (!expiryDate) return '';
-  const href = buildRenewalMailto(kind, employeeName, expiryDate);
-  return `<a href="${href}" class="mark-done-btn" style="text-decoration:none; display:inline-block;">✉️ خطاب تجديد</a>`;
+  const href = buildRenewalMailUrl(kind, employeeName, expiryDate);
+  return `<a href="${href}" target="_blank" rel="noopener" class="mark-done-btn" style="text-decoration:none; display:inline-block;">✉️ خطاب تجديد</a>`;
 }
 
 let sortState = {};
