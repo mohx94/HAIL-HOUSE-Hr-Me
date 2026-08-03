@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.umd.min.js"></script>
 <style>
   :root{
     --ink:#0E1B23;
@@ -927,6 +927,12 @@ function upsertChart(id, config){
 }
 
 function renderCharts(contractsAll, idsAll, onLeaveAll, weekly){
+  if (typeof Chart === 'undefined'){
+    document.querySelectorAll('.chart-card .chart-wrap').forEach(el => {
+      el.innerHTML = '<div class="empty"><b>تعذّر تحميل مكتبة الرسوم البيانية</b>تأكد من اتصال الإنترنت وأعد تحميل الصفحة.</div>';
+    });
+    return;
+  }
   const fontFamily = "'Tajawal', sans-serif";
   Chart.defaults.font.family = fontFamily;
   Chart.defaults.color = '#5B6B69';
@@ -1072,11 +1078,15 @@ document.getElementById('contractDeptFilter').addEventListener('change', render)
 document.getElementById('thresholdInput').addEventListener('change', render);
 document.getElementById('refreshBtn').addEventListener('click', () => loadFromRepo(true));
 
+let loadToken = 0;
+
 document.getElementById('fileInput').addEventListener('change', (e) => {
   const file = e.target.files[0];
   if (!file) return;
+  const myToken = ++loadToken;
   const reader = new FileReader();
   reader.onload = (ev) => {
+    if (myToken !== loadToken) return;
     const wb = XLSX.read(ev.target.result, { type: 'array', cellDates: true });
     parseWorkbook(wb);
     setLastUpdated(`ملف محلي: ${file.name}`);
@@ -1094,16 +1104,19 @@ function showError(msg){
 }
 
 async function loadFromRepo(isManualRefresh){
+  const myToken = ++loadToken;
   try{
     const res = await fetch('./employees.xlsx?t=' + Date.now());
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const buf = await res.arrayBuffer();
     const wb = XLSX.read(buf, { type: 'array', cellDates: true });
+    if (myToken !== loadToken) return;
     parseWorkbook(wb);
     const lm = res.headers.get('last-modified');
     setLastUpdated(lm ? new Date(lm).toLocaleString('ar-SA') : 'تم التحميل الآن');
     hideLoading();
   }catch(err){
+    if (myToken !== loadToken) return;
     if (isManualRefresh){ alert('تعذر تحديث الملف: ' + err.message); }
     else { showError('تأكد أن ملف employees.xlsx موجود في نفس مجلد هذه الصفحة داخل المستودع.'); }
   }
