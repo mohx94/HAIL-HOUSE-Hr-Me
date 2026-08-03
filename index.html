@@ -614,8 +614,8 @@ function renderInsights(today, contractSoon, idSoon, onLeave){
     items.push({
       level: r.days < 0 ? 'urgent' : (r.days<=7?'urgent':'warn'),
       icon: '🪪',
-      title: `يا ${firstName(r.name)}، إقامتك تحتاج تجديد`,
-      desc: r.days < 0 ? `انتهت منذ ${Math.abs(r.days)} يوم — يُنصح بالتجديد فورًا.` : `تنتهي خلال ${r.days} يوم.`
+      title: `إقامة ${r.name} تحتاج تجديد`,
+      desc: r.days < 0 ? `منتهية منذ ${Math.abs(r.days)} يوم — يفضّل المتابعة مع الموظف فورًا.` : `تنتهي خلال ${r.days} يوم — وقت مناسب لبدء إجراءات التجديد.`
     });
   });
 
