@@ -1722,17 +1722,22 @@ document.getElementById('fileInput').addEventListener('change', (e) => {
 });
 function setLastUpdated(text){ document.getElementById('lastUpdated').textContent = text; document.getElementById('settingsLastUpdated').textContent = text; }
 function hideLoading(){ document.getElementById('loadingScreen').style.display = 'none'; }
-function showError(msg){
-  document.getElementById('errorBox').innerHTML = `<div class="error-banner"><b>تعذّر تحميل employees.xlsx تلقائيًا.</b><br>${msg}<br>استخدم "معاينة ملف آخر محليًا" بصفحة الإعدادات.</div>`;
+function showError(msg, technical){
+  document.getElementById('errorBox').innerHTML = `<div class="error-banner"><b>تعذّر تحميل employees.xlsx تلقائيًا.</b><br>${msg}${technical ? `<br><span class="mono" style="font-size:11px; opacity:.8;">تفاصيل تقنية: ${technical}</span>` : ''}<br>استخدم "معاينة ملف آخر محليًا" بصفحة الإعدادات.</div>`;
   hideLoading();
 }
 async function loadFromRepo(isManualRefresh){
   const myToken = ++loadToken;
   try{
     const res = await fetch('./employees.xlsx?t=' + Date.now());
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    if (!res.ok) throw new Error('HTTP ' + res.status + ' — ' + res.statusText);
     const buf = await res.arrayBuffer();
-    const wb = XLSX.read(buf, { type: 'array', cellDates: true });
+    let wb;
+    try{
+      wb = XLSX.read(buf, { type: 'array', cellDates: true });
+    }catch(parseErr){
+      throw new Error('فشل قراءة الملف كإكسل صالح (حجم البيانات المستلمة: ' + buf.byteLength + ' بايت) — ' + parseErr.message);
+    }
     if (myToken !== loadToken) return;
     parseWorkbook(wb);
     const lm = res.headers.get('last-modified');
@@ -1741,7 +1746,7 @@ async function loadFromRepo(isManualRefresh){
   }catch(err){
     if (myToken !== loadToken) return;
     if (isManualRefresh){ alert('تعذر تحديث الملف: ' + err.message); }
-    else { showError('تأكد أن ملف employees.xlsx موجود في نفس مجلد هذه الصفحة داخل المستودع.'); }
+    else { showError('تأكد أن ملف employees.xlsx موجود في نفس مجلد هذه الصفحة داخل المستودع.', err.message); }
   }
 }
 
