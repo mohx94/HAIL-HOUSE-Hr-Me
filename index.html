@@ -501,6 +501,7 @@
             <div class="panel-controls">
               <select class="filter" id="contractDeptFilter"><option value="">كل الأقسام</option></select>
               <select class="filter" id="contractStatusFilter"><option value="">كل الحالات</option><option value="expired">منتهية</option><option value="soon">تنتهي قريبًا</option><option value="safe">آمنة</option></select>
+              <select class="filter" id="contractSortFilter"><option value="asc">الأقرب أولًا</option><option value="desc">الأبعد أولًا</option><option value="name">الاسم (أ-ي)</option></select>
               <input class="search" data-target="contractCards" placeholder="بحث بالاسم...">
             </div>
           </div>
@@ -521,6 +522,7 @@
             <div class="panel-controls">
               <select class="filter" id="idDeptFilter"><option value="">كل الأقسام</option></select>
               <select class="filter" id="idStatusFilter"><option value="">كل الحالات</option><option value="expired">منتهية</option><option value="soon">تجديد قريب</option><option value="safe">صالحة</option></select>
+              <select class="filter" id="idSortFilter"><option value="asc">الأقرب أولًا</option><option value="desc">الأبعد أولًا</option><option value="name">الاسم (أ-ي)</option></select>
               <input class="search" data-target="idCards" placeholder="بحث بالاسم...">
             </div>
           </div>
@@ -1075,6 +1077,7 @@ function render(){
   let contractRows = contractsData.filter(r => r.contractEnd).map(r => ({...r, days: daysBetween(today, r.contractEnd)}));
   contractRows = filterByDept(contractRows, 'contractDeptFilter');
   contractRows = filterByStatus(contractRows, 'contractStatusFilter');
+  contractRows = sortRows(contractRows, 'contractSortFilter');
   renderActionCards('contractCards', contractRows, 'contract', "لا توجد عقود مطابقة");
 
   const idExpired = idsData.filter(r => r.idExpiry && daysBetween(today, r.idExpiry) < 0).length;
@@ -1086,6 +1089,7 @@ function render(){
   let idRows = idsData.filter(r => r.idExpiry).map(r => ({...r, days: daysBetween(today, r.idExpiry)}));
   idRows = filterByDept(idRows, 'idDeptFilter');
   idRows = filterByStatus(idRows, 'idStatusFilter');
+  idRows = sortRows(idRows, 'idSortFilter');
   renderActionCards('idCards', idRows, 'id', "لا توجد هويات مطابقة");
 
   document.getElementById('countActiveLeave').textContent = onLeave.length;
@@ -1135,6 +1139,14 @@ function hasConflict(leaveRow){
 }
 function filterByDept(rows, selectId){ const val = document.getElementById(selectId)?.value; return val ? rows.filter(r => r.dept === val) : rows; }
 function filterByStatus(rows, selectId){ const val = document.getElementById(selectId)?.value; if (!val) return rows; return rows.filter(r => statusOf(r.days) === val); }
+function sortRows(rows, selectId){
+  const mode = document.getElementById(selectId)?.value || 'asc';
+  const sorted = [...rows];
+  if (mode === 'desc') sorted.sort((a,b) => b.days - a.days);
+  else if (mode === 'name') sorted.sort((a,b) => a.name.localeCompare(b.name, 'ar'));
+  else sorted.sort((a,b) => a.days - b.days);
+  return sorted;
+}
 
 function markDoneButton(id){
   const done = isDismissed(id);
@@ -1936,7 +1948,7 @@ document.querySelectorAll('.search').forEach(input => {
     Array.from(items).forEach(el => { el.style.display = el.textContent.includes(q) ? '' : 'none'; });
   });
 });
-['leaveDeptFilter','contractDeptFilter','contractStatusFilter','idDeptFilter','idStatusFilter','empDeptFilter','thresholdInput'].forEach(id => {
+['leaveDeptFilter','contractDeptFilter','contractStatusFilter','contractSortFilter','idDeptFilter','idStatusFilter','idSortFilter','empDeptFilter','thresholdInput'].forEach(id => {
   const el = document.getElementById(id);
   if (el) el.addEventListener('change', render);
 });
