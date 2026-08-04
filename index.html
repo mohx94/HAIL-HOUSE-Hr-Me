@@ -93,7 +93,7 @@
   .page{display:none;}
   .page.active{display:block; animation:fadeIn .2s ease;}
   @keyframes fadeIn{from{opacity:0;} to{opacity:1;}}
-  .page-title{font-size:19px; margin-bottom:18px; display:flex; align-items:center; gap:10px;}
+  .page-title{font-size:20px; margin-bottom:18px; display:flex; align-items:center; gap:10px;}
 
   #errorBox .error-banner{background:var(--danger-100); border:1px solid #F3C7C2; color:#9F1239; border-radius:10px; padding:14px 18px; margin-bottom:20px; font-size:13px; line-height:1.7;}
 
@@ -103,7 +103,7 @@
   @media(max-width:900px){.stat-grid, .stat-grid.cols-6, .stat-grid.cols-3{grid-template-columns:repeat(2,1fr);}}
   .stat-card{background:var(--card); border:1px solid var(--border); border-radius:10px; padding:18px 18px 16px;}
   .stat-card .s-icon{font-size:16px; margin-bottom:10px; opacity:.8;}
-  .stat-card .s-num{font-family:'IBM Plex Mono'; font-size:32px; font-weight:700; color:var(--gray-900); line-height:1;}
+  .stat-card .s-num{font-family:'IBM Plex Mono'; font-size:36px; font-weight:700; color:var(--gray-900); line-height:1;}
   .stat-card .s-num.danger{color:var(--danger);}
   .stat-card .s-label{font-size:12px; color:var(--gray-500); margin-top:7px;}
   .stat-card .s-delta{font-size:11px; margin-top:5px; font-weight:500;}
@@ -118,7 +118,7 @@
 
   .panel{background:var(--card); border:1px solid var(--border); border-radius:10px; margin-bottom:20px; overflow:hidden;}
   .panel-head{padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;}
-  .panel-head h2{font-size:14.5px; display:flex; align-items:center; gap:8px;}
+  .panel-head h2{font-size:16px; display:flex; align-items:center; gap:8px;}
   .panel-body{padding:18px 20px;}
   .badge-count{background:var(--gray-100); border:1px solid var(--border); color:var(--gray-500); font-family:'IBM Plex Mono'; font-size:11.5px; padding:2px 9px; border-radius:999px;}
   .panel-controls{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
@@ -217,12 +217,15 @@
   /* ---------- Action cards (contracts/ids) ---------- */
   .card-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px; padding:16px 20px;}
   .action-card{border:1px solid var(--border); border-radius:10px; padding:14px 16px; background:#fff;}
-  .action-card .ac-name{font-size:14px; font-weight:600; color:var(--gray-900); margin-bottom:6px;}
+  .action-card .ac-name{font-size:16px; font-weight:600; color:var(--gray-900); margin-bottom:6px;}
   .action-card .ac-days{font-size:13px; color:var(--gray-500); margin-bottom:8px;}
   .action-card .ac-stage{font-size:11px; font-weight:600; padding:2px 9px; border-radius:999px; display:inline-block; margin-bottom:10px;}
   .action-card .ac-stage.none{background:var(--gray-100); color:var(--gray-500);}
-  .action-card .ac-stage.sent{background:var(--warn-100); color:#92620A;}
-  .action-card .ac-stage.replied{background:var(--primary-100); color:#4338CA;}
+  .action-card .ac-stage.sent{background:var(--primary-100); color:#4338CA;}
+  .action-card .ac-stage.approved{background:var(--primary-100); color:#4338CA;}
+  .action-card .ac-stage.signed{background:var(--primary-100); color:#4338CA;}
+  .action-card .ac-stage.followup{background:var(--danger-100); color:#9F1239;}
+  .action-card .ac-followup-note{font-size:11px; color:var(--danger); font-weight:600; margin-top:4px;}
   .action-card .ac-btns{display:flex; gap:6px; flex-wrap:wrap;}
 
   /* ---------- Toggle (yes/no) ---------- */
@@ -235,6 +238,44 @@
   .toggle-btn{border:1px solid var(--border); background:#fff; border-radius:7px; padding:5px 12px; font-size:11.5px; font-weight:600; color:var(--gray-600);}
   .toggle-btn.on-yes.active{background:var(--success-100); border-color:var(--success); color:#146534;}
   .toggle-btn.on-no.active{background:var(--danger-100); border-color:var(--danger); color:#9F1239;}
+
+  /* ---------- "Why did this appear" reasons ---------- */
+  .why-details{margin-top:6px; font-size:11.5px; color:var(--primary); cursor:pointer;}
+  .why-details summary{cursor:pointer; font-weight:600;}
+  .ac-reason-list{margin-top:6px; color:var(--gray-600); font-size:12px; line-height:1.9;}
+
+  /* ---------- Inbox Zero hero ---------- */
+  .inbox-zero{background:var(--card); border:1px solid var(--border); border-radius:10px; padding:26px; margin-bottom:20px; text-align:center;}
+  .inbox-zero .iz-label{font-size:12.5px; color:var(--gray-500); font-weight:600;}
+  .inbox-zero .iz-num{font-family:'IBM Plex Mono'; font-size:52px; font-weight:700; color:var(--gray-900); margin:8px 0;}
+  .inbox-zero .iz-num.zero{color:var(--success);}
+  .inbox-zero .iz-track{height:8px; background:var(--gray-100); border-radius:999px; overflow:hidden; max-width:320px; margin:0 auto;}
+  .inbox-zero .iz-fill{height:100%; background:var(--success); border-radius:999px; transition:width .4s ease;}
+  .inbox-zero .iz-celebrate{font-size:15px; font-weight:700; color:var(--success); margin-top:10px;}
+
+  /* ---------- Three-tier stat row ---------- */
+  .tier-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:20px;}
+  @media(max-width:900px){.tier-grid{grid-template-columns:1fr;}}
+  .tier-card{background:var(--card); border:1px solid var(--border); border-radius:10px; padding:20px; text-align:center;}
+  .tier-card .tc-num{font-family:'IBM Plex Mono'; font-size:36px; font-weight:700;}
+  .tier-card .tc-label{font-size:13px; color:var(--gray-500); margin-top:6px;}
+  .tier-card.red .tc-num{color:var(--danger);}
+  .tier-card.orange .tc-num{color:var(--warn);}
+  .tier-card.green .tc-num{color:var(--success);}
+
+  /* ---------- Today checklist ---------- */
+  .checklist-row{display:flex; align-items:center; gap:12px; padding:12px 20px; border-bottom:1px solid var(--border);}
+  .checklist-row:last-child{border-bottom:none;}
+  .checklist-row.checked{opacity:.45;}
+  .checklist-row .cl-box{width:19px; height:19px; border-radius:5px; border:1.5px solid var(--gray-400); flex-shrink:0; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:11px; color:#fff;}
+  .checklist-row .cl-box.checked-box{background:var(--success); border-color:var(--success);}
+  .checklist-row .cl-text{font-size:13px; flex:1;}
+  .checklist-row .cl-text.done-text{text-decoration:line-through;}
+
+  /* ---------- Morning brief (header) ---------- */
+  .morning-brief{font-size:11.5px; color:var(--gray-600); text-align:left; line-height:1.6; white-space:nowrap;}
+  .morning-brief b{color:var(--gray-900); font-weight:600;}
+
 
   .cal-head{display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--border);}
   .cal-nav{display:flex; align-items:center; gap:10px;}
@@ -337,6 +378,7 @@
           <div class="global-search-results" id="globalSearchResults"></div>
         </div>
         <div class="header-right">
+          <span class="morning-brief" id="morningBrief">—</span>
           <span class="header-time" id="lastUpdated">—</span>
           <button class="icon-btn" id="bellBtn">🔔<span class="bell-badge" id="bellBadge" style="display:none;">0</span>
             <div class="bell-panel" id="bellPanel">
@@ -356,6 +398,27 @@
       <section class="page active" id="page-home">
         <h1 class="page-title">مركز العمليات</h1>
 
+        <!-- Inbox Zero -->
+        <div class="inbox-zero">
+          <div class="iz-label">🎯 هدف اليوم — تصفير المهام</div>
+          <div class="iz-num" id="izNum">—</div>
+          <div class="iz-track"><div class="iz-fill" id="izFill" style="width:0%"></div></div>
+          <div class="iz-celebrate" id="izCelebrate" style="display:none;">🎉 تم إنهاء جميع أعمال اليوم</div>
+        </div>
+
+        <!-- Three-tier breakdown -->
+        <div class="tier-grid">
+          <div class="tier-card red"><div class="tc-num mono" id="tierToday">0</div><div class="tc-label">🔴 يحتاج إجراء اليوم</div></div>
+          <div class="tier-card orange"><div class="tc-num mono" id="tierWeek">0</div><div class="tc-label">🟠 خلال 7 أيام</div></div>
+          <div class="tier-card green"><div class="tc-num mono" id="tierSafe">0</div><div class="tc-label">🟢 لا يحتاج إجراء</div></div>
+        </div>
+
+        <!-- Today's checklist -->
+        <section class="panel">
+          <div class="panel-head"><h2>وش لازم أسوي اليوم؟</h2></div>
+          <div id="todayChecklist"></div>
+        </section>
+
         <!-- Widget 1: HR Intelligence -->
         <section class="panel widget-intel">
           <div class="panel-head"><h2>🤖 HR Intelligence</h2></div>
@@ -363,12 +426,6 @@
             <div class="intel-summary" id="intelSummary">جارٍ التحليل…</div>
             <div class="intel-list" id="intelList"></div>
           </div>
-        </section>
-
-        <!-- Widget 2: Actions counts -->
-        <section class="panel">
-          <div class="panel-head"><h2>الإجراءات</h2></div>
-          <div class="action-counts-grid" id="actionCountsGrid"></div>
         </section>
 
         <!-- Widget 3: Workload -->
@@ -541,6 +598,10 @@
         <h1 class="page-title">المتابعات</h1>
         <div class="stat-grid cols-4" id="followupCounts"></div>
         <section class="panel">
+          <div class="panel-head"><h2>Smart Queue</h2></div>
+          <div class="stat-grid cols-3" id="smartQueueGrid" style="padding:0 20px 20px;"></div>
+        </section>
+        <section class="panel">
           <div class="panel-head"><h2>كل المتابعات <span class="badge-count" id="countFollowupList">0</span></h2></div>
           <div id="followupFullList"></div>
         </section>
@@ -601,6 +662,14 @@
               <input type="email" id="mailRecipientEmail" placeholder="name@company.com" style="border:1px solid var(--border); border-radius:8px; padding:8px 12px; font-size:13px;">
             </label>
             <span class="empty-note">هذي البيانات تُحفظ بمتصفحك فقط، وتُستخدم بزر "✉️ خطاب تجديد" بصفحتي العقود والهويات — يفتح تبويبًا جديدًا في Outlook على الويب (outlook.office.com) بمسودة بريد جاهزة فيها عدد أيام التجديد الفعلي وتاريخ الانتهاء الحقيقي، وتقدر تراجعها وتعدّلها قبل الإرسال. لازم تكون مسجّل دخول بحساب Outlook/Microsoft 365 في نفس المتصفح.</span>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><h2>اسمك</h2></div>
+          <div class="panel-body">
+            <label style="display:flex; flex-direction:column; gap:6px; font-size:13px;">يظهر بسجل النشاط عند إغلاق أي إجراء (مثال: "تم بواسطة محمد")
+              <input type="text" id="userNameInput" placeholder="اسمك" style="border:1px solid var(--border); border-radius:8px; padding:8px 12px; font-size:13px; max-width:280px;">
+            </label>
           </div>
         </section>
         <section class="panel">
@@ -762,18 +831,33 @@ function isDismissed(id){ return getDismissed().includes(id); }
 
 /* ---------------- state tracking (device-local) ---------------- */
 function getActionStates(){ try{ return JSON.parse(localStorage.getItem('hrDashActionStates') || '{}'); }catch(e){ return {}; } }
-function setActionState(id, stage){
+function setActionState(id, stage, extra){
   const states = getActionStates();
-  states[id] = { stage, updatedAt: Date.now() };
+  const prev = states[id] || {};
+  const next = { stage, updatedAt: Date.now(), sentAt: prev.sentAt || null, snoozeUntil: prev.snoozeUntil || null };
+  if (stage === 'sent' && !next.sentAt) next.sentAt = Date.now();
+  if (extra) Object.assign(next, extra);
+  states[id] = next;
   try{ localStorage.setItem('hrDashActionStates', JSON.stringify(states)); }catch(e){}
 }
-function getActionState(id){ return getActionStates()[id] || { stage: 'none', updatedAt: null }; }
+function getActionState(id){ return getActionStates()[id] || { stage: 'none', updatedAt: null, sentAt: null, snoozeUntil: null }; }
+function snoozeAction(id, days){
+  const states = getActionStates();
+  const prev = states[id] || { stage:'none', updatedAt: Date.now(), sentAt: null };
+  prev.snoozeUntil = Date.now() + days*86400000;
+  states[id] = prev;
+  try{ localStorage.setItem('hrDashActionStates', JSON.stringify(states)); }catch(e){}
+}
+function isSnoozed(id){
+  const s = getActionState(id);
+  return s.snoozeUntil && s.snoozeUntil > Date.now();
+}
 
 function getActivity(){ try{ return JSON.parse(localStorage.getItem('hrDashActivity') || '[]'); }catch(e){ return []; } }
 function logActivity(text){
   const log = getActivity();
   log.unshift({ ts: Date.now(), text });
-  try{ localStorage.setItem('hrDashActivity', JSON.stringify(log.slice(0, 60))); }catch(e){}
+  try{ localStorage.setItem('hrDashActivity', JSON.stringify(log.slice(0, 80))); }catch(e){}
 }
 
 function getBackupFlags(){ try{ return JSON.parse(localStorage.getItem('hrDashBackupFlags') || '{}'); }catch(e){ return {}; } }
@@ -782,20 +866,67 @@ function setBackupFlag(id, val){ const f = getBackupFlags(); f[id] = val; try{ l
 function getHandoverFlags(){ try{ return JSON.parse(localStorage.getItem('hrDashHandoverFlags') || '{}'); }catch(e){ return {}; } }
 function setHandoverFlag(id, val){ const f = getHandoverFlags(); f[id] = val; try{ localStorage.setItem('hrDashHandoverFlags', JSON.stringify(f)); }catch(e){} }
 
-const STAGE_LABEL = { none:'لم يبدأ', sent:'بانتظار الرد', replied:'تم الرد — بانتظار الإغلاق', done:'مكتمل' };
+function getUserName(){ try{ return localStorage.getItem('hrDashUserName') || ''; }catch(e){ return ''; } }
+
+function getResponseTimes(){ try{ return JSON.parse(localStorage.getItem('hrDashResponseTimes') || '[]'); }catch(e){ return []; } }
+function logResponseTime(type, days){
+  const log = getResponseTimes();
+  log.push({ type, days, ts: Date.now() });
+  try{ localStorage.setItem('hrDashResponseTimes', JSON.stringify(log.slice(-100))); }catch(e){}
+}
+function avgResponseDays(type){
+  const rows = getResponseTimes().filter(r => r.type === type);
+  if (!rows.length) return null;
+  return Math.round(rows.reduce((s,r)=>s+r.days,0) / rows.length);
+}
+
+const STAGE_LABEL_BY_KIND = {
+  contract: { none:'لم يبدأ', sent:'بانتظار رد المدير', approved:'جاهز لإعداد العقد', signed:'بانتظار رفع العقد', done:'مكتمل' },
+  id:       { none:'لم يبدأ', sent:'بانتظار رد المدير', approved:'تمت الموافقة — جاهز للتجديد', signed:'بانتظار رفع الإقامة الجديدة', done:'مكتمل' },
+};
+const STAGE_BTN_BY_KIND = {
+  contract: { none:'طلب رأي المدير', sent:'المدير وافق', approved:'الموظف وقّع', signed:'تم رفع العقد' },
+  id:       { none:'طلب رأي المدير', sent:'المدير وافق', approved:'تمت الموافقة', signed:'تم رفع الإقامة' },
+};
+function stageLabel(kind, stage){ return (STAGE_LABEL_BY_KIND[kind] || STAGE_LABEL_BY_KIND.contract)[stage] || stage; }
+function stageBtnLabel(kind, stage){ return (STAGE_BTN_BY_KIND[kind] || STAGE_BTN_BY_KIND.contract)[stage] || 'التالي'; }
+
+function followupUrgency(state){
+  if (!['sent','approved','signed'].includes(state.stage)) return null;
+  const since = Math.floor((Date.now() - (state.sentAt || state.updatedAt)) / 86400000);
+  if (since >= 7) return { level:'critical', days: since };
+  if (since >= 3) return { level:'warn', days: since };
+  return { level:'ok', days: since };
+}
+
 function advanceStage(id, currentStage, mailKind, employeeName, expiryDate){
+  const kind = mailKind || 'contract';
   if (currentStage === 'none'){
     if (mailKind) window.open(buildRenewalMailUrl(mailKind, employeeName, expiryDate), '_blank');
     setActionState(id, 'sent');
-    logActivity(`✉️ أُرسل بريد بخصوص ${employeeName}`);
+    logActivity(`✉️ طُلب رأي المدير بخصوص ${employeeName}`);
   } else if (currentStage === 'sent'){
-    setActionState(id, 'replied');
-    logActivity(`📩 تم تسجيل رد بخصوص ${employeeName}`);
+    const st = getActionState(id);
+    if (st.sentAt) logResponseTime(kind, Math.floor((Date.now() - st.sentAt) / 86400000));
+    setActionState(id, 'approved');
+    logActivity(`✔ وافق المدير بخصوص ${employeeName}`);
+  } else if (currentStage === 'approved'){
+    setActionState(id, 'signed');
+    logActivity(`✍️ وقّع الموظف ${employeeName}`);
   } else {
-    setActionState(id, 'done');
-    logActivity(`✔ أُغلق الإجراء الخاص بـ ${employeeName}`);
-    dismissAction(id);
+    closeAction(id, employeeName);
+    return;
   }
+  render();
+}
+
+function closeAction(id, employeeName){
+  const ok = confirm('هل أكملت الإجراء؟');
+  if (!ok) return;
+  const name = getUserName();
+  setActionState(id, 'done');
+  logActivity(`✔ تم إغلاق إجراء ${employeeName}${name ? ' — بواسطة ' + name : ''} — ${new Date().toLocaleTimeString('ar-SA-u-nu-latn',{hour:'2-digit',minute:'2-digit'})}`);
+  dismissAction(id);
   render();
 }
 
@@ -814,48 +945,67 @@ function buildScoredActions(today){
   contractsData.forEach(r => {
     if (!r.contractEnd) return;
     const id = `contract-${r.empId}-${r.contractEnd.getTime()}`;
+    if (isSnoozed(id)) return;
     const st = states[id]?.stage || 'none';
     if (st === 'done') return;
     const days = daysBetween(today, r.contractEnd);
     if (days > threshold) return;
-    if (st === 'sent'){
-      const daysSince = Math.floor((Date.now() - (states[id]?.updatedAt || Date.now())) / 86400000);
-      items.push({ id, type:'contract', icon:'📄', name:r.name, title:`متابعة رد — تجديد عقد ${r.name}`, sub:`لم يصل رد منذ ${daysSince} يوم`, score: scoreManagerNoReply(daysSince), stage: st, date:r.contractEnd, mailKind:'contract' });
-    } else {
-      items.push({ id, type:'contract', icon:'📄', name:r.name, title:`تجديد عقد ${r.name}`, sub: days<0?`منتهي منذ ${Math.abs(days)} يوم`:`خلال ${days} يوم`, score: scoreContract(days), stage: st, date:r.contractEnd, mailKind:'contract' });
+    const reasons = [`باقي ${days < 0 ? 'انتهى منذ ' + Math.abs(days) : days} ${days<0?'يوم':'يوم'}`];
+    let score = scoreContract(days);
+    let sub = days<0?`منتهي منذ ${Math.abs(days)} يوم`:`خلال ${days} يوم`;
+    let title = `تجديد عقد ${r.name}`;
+    if (st !== 'none'){
+      const fu = followupUrgency(states[id]);
+      if (fu){
+        reasons.push('لم يتم إرسال طلب التجديد بعد'.replace('لم يتم', st==='sent'?'تم':'لم يتم'));
+        reasons.push(st==='sent' ? `المدير لم يرد منذ ${fu.days} يوم` : `بانتظار ${stageLabel('contract',st)}`);
+        if (fu.level !== 'ok') score = Math.max(score, scoreManagerNoReply(fu.days));
+        title = `${stageLabel('contract', st)} — ${r.name}`;
+        sub = st==='sent' ? `آخر متابعة منذ ${fu.days} يوم${fu.level==='critical'?' — ⚠ يحتاج متابعة ثانية':''}` : `${fmtDate(r.contractEnd)} — ${sub}`;
+      }
     }
+    items.push({ id, type:'contract', icon:'📄', name:r.name, title, sub, score, stage: st, date:r.contractEnd, mailKind:'contract', reasons, followup: st!=='none' ? followupUrgency(states[id]) : null });
   });
 
   idsData.forEach(r => {
     if (!r.idExpiry) return;
     const id = `id-${r.empId}-${r.idExpiry.getTime()}`;
+    if (isSnoozed(id)) return;
     const st = states[id]?.stage || 'none';
     if (st === 'done') return;
     const days = daysBetween(today, r.idExpiry);
     if (days > threshold) return;
-    if (st === 'sent'){
-      const daysSince = Math.floor((Date.now() - (states[id]?.updatedAt || Date.now())) / 86400000);
-      items.push({ id, type:'id', icon:'🪪', name:r.name, title:`متابعة رد — تجديد إقامة ${r.name}`, sub:`لم يصل رد منذ ${daysSince} يوم`, score: scoreManagerNoReply(daysSince), stage: st, date:r.idExpiry, mailKind:'id' });
-    } else {
-      items.push({ id, type:'id', icon:'🪪', name:r.name, title:`تجديد إقامة ${r.name}`, sub: days<0?`منتهية منذ ${Math.abs(days)} يوم`:`خلال ${days} يوم`, score: scoreId(days), stage: st, date:r.idExpiry, mailKind:'id' });
+    const reasons = [`باقي ${days < 0 ? 'منتهية منذ ' + Math.abs(days) : days} يوم`];
+    let score = scoreId(days);
+    let sub = days<0?`منتهية منذ ${Math.abs(days)} يوم`:`خلال ${days} يوم`;
+    let title = `تجديد إقامة ${r.name}`;
+    if (st !== 'none'){
+      const fu = followupUrgency(states[id]);
+      if (fu){
+        reasons.push(st==='sent' ? `المدير لم يرد منذ ${fu.days} يوم` : `بانتظار ${stageLabel('id',st)}`);
+        if (fu.level !== 'ok') score = Math.max(score, scoreManagerNoReply(fu.days));
+        title = `${stageLabel('id', st)} — ${r.name}`;
+        sub = st==='sent' ? `آخر متابعة منذ ${fu.days} يوم${fu.level==='critical'?' — ⚠ يحتاج متابعة ثانية':''}` : `${fmtDate(r.idExpiry)} — ${sub}`;
+      }
     }
+    items.push({ id, type:'id', icon:'🪪', name:r.name, title, sub, score, stage: st, date:r.idExpiry, mailKind:'id', reasons, followup: st!=='none' ? followupUrgency(states[id]) : null });
   });
 
   leavesData.forEach(r => {
     if (!r.leaveStart || !r.leaveEnd) return;
     const dur = daysBetween(r.leaveStart, r.leaveEnd);
     const id = `longleave-${r.empId}-${r.leaveStart.getTime()}`;
-    if (dur >= LONG_LEAVE_DAYS && backups[id] !== true && r.leaveEnd >= today){
-      items.push({ id, type:'longleave', icon:'🚨', name:r.name, title:`إجازة طويلة (${dur} يوم) بدون بديل — ${r.name}`, sub:`${r.dept} — ${fmtDate(r.leaveStart)} → ${fmtDate(r.leaveEnd)}`, score: SCORE_LONG_LEAVE, stage:'none' });
+    if (dur >= LONG_LEAVE_DAYS && backups[id] !== true && r.leaveEnd >= today && !isSnoozed(id)){
+      items.push({ id, type:'longleave', icon:'🚨', name:r.name, title:`إجازة طويلة (${dur} يوم) بدون بديل — ${r.name}`, sub:`${r.dept} — ${fmtDate(r.leaveStart)} → ${fmtDate(r.leaveEnd)}`, score: SCORE_LONG_LEAVE, stage:'none', reasons:[`مدة الإجازة ${dur} يوم (أكثر من الحد ${LONG_LEAVE_DAYS} يوم)`, 'لا يوجد بديل معيّن بعد'] });
     }
     const dReturn = daysBetween(today, r.leaveEnd);
     if (dReturn === 1){
-      items.push({ id:`return-${r.empId}-${r.leaveEnd.getTime()}`, type:'return', icon:'👋', name:r.name, title:`عودة ${r.name} غدًا من الإجازة`, sub:r.dept, score: SCORE_RETURN_TOMORROW, stage:'none' });
+      items.push({ id:`return-${r.empId}-${r.leaveEnd.getTime()}`, type:'return', icon:'👋', name:r.name, title:`عودة ${r.name} غدًا من الإجازة`, sub:r.dept, score: SCORE_RETURN_TOMORROW, stage:'none', reasons:['يعود من الإجازة غدًا'] });
     }
   });
 
   conflicts.forEach((c, i) => {
-    items.push({ id:`conflict-${i}-${c.a.empId}-${c.b.empId}`, type:'conflict', icon:'👥', name:`${c.a.name} / ${c.b.name}`, title:`تعارض إجازات — قسم ${c.dept}`, sub:`${c.a.name} و${c.b.name}`, score: SCORE_CONFLICT, stage:'none' });
+    items.push({ id:`conflict-${i}-${c.a.empId}-${c.b.empId}`, type:'conflict', icon:'👥', name:`${c.a.name} / ${c.b.name}`, title:`تعارض إجازات — قسم ${c.dept}`, sub:`${c.a.name} و${c.b.name}`, score: SCORE_CONFLICT, stage:'none', reasons:[`${c.a.name} و${c.b.name} بإجازة متزامنة بنفس القسم`] });
   });
 
   const dismissed = getDismissed();
@@ -910,6 +1060,7 @@ function render(){
 
   const scoredActions = buildScoredActions(today);
   renderHome(today, scoredActions, contractSoon, idSoon, onLeave, trackedKeys);
+  renderMorningBrief(today, contractSoon, idSoon, leavesData);
 
   renderNotifList('notifFullList', 'countNotifPage', allActions, true);
 
@@ -1011,9 +1162,13 @@ function loadMailSettingsIntoInputs(){
   const s = getMailSettings();
   document.getElementById('mailRecipientName').value = s.recipientName || '';
   document.getElementById('mailRecipientEmail').value = s.recipientEmail || '';
+  document.getElementById('userNameInput').value = getUserName();
 }
 document.getElementById('mailRecipientName').addEventListener('input', saveMailSettings);
 document.getElementById('mailRecipientEmail').addEventListener('input', saveMailSettings);
+document.getElementById('userNameInput').addEventListener('input', (e) => {
+  try{ localStorage.setItem('hrDashUserName', e.target.value.trim()); }catch(err){}
+});
 
 function buildRenewalMailUrl(kind, employeeName, expiryDate){
   const today = new Date();
@@ -1073,15 +1228,23 @@ function renderActionCards(containerId, rows, kind, emptyMsg){
   el.innerHTML = rows.map(r => {
     const date = kind === 'contract' ? r.contractEnd : r.idExpiry;
     const id = `${kind}-${r.empId}-${date.getTime()}`;
-    const st = getActionState(id).stage;
+    const state = getActionState(id);
+    const st = state.stage;
+    const fu = followupUrgency(state);
     let btns = '';
-    if (st === 'none') btns += `<button class="mark-done-btn" data-advance="${id}" data-mailkind="${kind}" data-empname="${r.name}" data-empdate="${date.getTime()}">✉️ إرسال</button>`;
-    if (st === 'sent') btns += `<button class="mark-done-btn" data-advance="${id}">📩 تسجيل الرد</button>`;
-    if (st === 'sent' || st === 'replied') btns += `<button class="mark-done-btn" data-advance="${id}">✔ تم</button>`;
+    if (st === 'none'){
+      btns += `<button class="mark-done-btn" data-advance="${id}" data-mailkind="${kind}" data-empname="${r.name}" data-empdate="${date.getTime()}">${stageBtnLabel(kind, st)}</button>`;
+      btns += `<button class="mark-done-btn" data-snooze="${id}">تأجيل</button>`;
+    } else {
+      btns += `<button class="mark-done-btn" data-advance="${id}" data-mailkind="${kind}" data-empname="${r.name}" data-empdate="${date.getTime()}">${stageBtnLabel(kind, st)}</button>`;
+      if (st === 'sent') btns += `<button class="mark-done-btn" data-snooze="${id}">تأجيل</button>`;
+    }
+    const stageCls = fu && fu.level !== 'ok' ? 'followup' : st;
     return `<div class="action-card">
       <div class="ac-name">${r.name}</div>
       <div class="ac-days">${r.dept ? r.dept + ' — ' : ''}${chipFor(r.days)}</div>
-      <div class="ac-stage ${st}">${STAGE_LABEL[st]}</div>
+      <div class="ac-stage ${stageCls}">${stageLabel(kind, st)}</div>
+      ${fu && fu.level==='critical' ? `<div class="ac-followup-note">⚠ يحتاج متابعة ثانية — آخر متابعة منذ ${fu.days} يوم</div>` : (fu && fu.level==='warn' ? `<div class="ac-followup-note">آخر متابعة منذ ${fu.days} يوم</div>` : '')}
       <div class="ac-btns">${btns}</div>
     </div>`;
   }).join('');
@@ -1093,6 +1256,37 @@ document.addEventListener('click', (e) => {
   const stage = getActionState(id).stage;
   advanceStage(id, stage, btn.dataset.mailkind, btn.dataset.empname, btn.dataset.empdate ? new Date(parseInt(btn.dataset.empdate,10)) : null);
 });
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-snooze]');
+  if (!btn) return;
+  snoozeAction(btn.dataset.snooze, 3);
+  logActivity('⏸ تم تأجيل إجراء لمدة 3 أيام');
+  render();
+});
+document.addEventListener('click', (e) => {
+  const box = e.target.closest('[data-checklist]');
+  if (!box) return;
+  const today = new Date();
+  const dateStr = today.toISOString().slice(0,10);
+  const doneKey = 'hrDashChecklistDone-' + dateStr;
+  let done = []; try{ done = JSON.parse(localStorage.getItem(doneKey) || '[]'); }catch(err){}
+  const id = box.dataset.checklist;
+  if (!done.includes(id)) done.push(id); else done = done.filter(x => x !== id);
+  try{ localStorage.setItem(doneKey, JSON.stringify(done)); }catch(err){}
+  render();
+});
+
+/* ---------------- Morning Brief (header) ---------------- */
+function renderMorningBrief(today, contractSoon, idSoon, leavesAll){
+  const todayContracts = contractSoon.filter(r => r.days >= 0 && r.days <= 0).length;
+  const weekContracts = contractSoon.filter(r => r.days >= 0 && r.days <= 7).length;
+  const weekIds = idSoon.filter(r => r.days >= 0 && r.days <= 7).length;
+  const weekLeaveStarts = leavesAll.filter(r => r.leaveStart && daysBetween(today, r.leaveStart) >= 0 && daysBetween(today, r.leaveStart) <= 7).length;
+  const overdue = [...contractSoon, ...idSoon].filter(r => r.days < 0).length;
+  const parts = [`${weekContracts} عقود`, `${weekIds} إقامات`, `${weekLeaveStarts} إجازة`];
+  const overdueText = overdue ? `⚠ ${overdue} متأخر` : 'ولا يوجد شيء متأخر';
+  document.getElementById('morningBrief').innerHTML = `اليوم عندك <b>${parts.join('، ')}</b><br>${overdueText}`;
+}
 
 /* ---------------- Home: widget renderers ---------------- */
 function renderHome(today, scoredActions, contractSoon, idSoon, onLeave, trackedKeys){
@@ -1105,17 +1299,41 @@ function renderHome(today, scoredActions, contractSoon, idSoon, onLeave, tracked
     return `<div class="intel-row ${sevCls}" data-openemp="${(a.type==='contract'||a.type==='id')? (contractsData.find(c=>keyOf(c)===a.id?.split('-')[1]) ? '' : '') : ''}"><span class="i-dot"></span><span style="flex:1;">${dot} ${a.title}</span><span class="i-score mono">${a.score}</span></div>`;
   }).join('') || `<div class="empty"><b>لا توجد توصيات حاليًا 🎉</b></div>`;
 
-  // Widget 2: Action counts
-  const waiting = Object.values(getActionStates()).filter(s => s.stage === 'sent').length;
-  const overdue = [...contractsData.filter(r=>r.contractEnd && daysBetween(today,r.contractEnd)<0), ...idsData.filter(r=>r.idExpiry && daysBetween(today,r.idExpiry)<0)].length;
-  const completedToday = getActivity().filter(a => { const d = new Date(a.ts); return sameDay(d, today) && a.text.startsWith('✔'); }).length;
-  document.getElementById('actionCountsGrid').innerHTML = `
-    <div class="ac-cell urgent" data-goto="followups"><div class="ac-n mono">${urgentCount}</div><div class="ac-l">🟥 عاجلة</div></div>
-    <div class="ac-cell waiting" data-goto="followups"><div class="ac-n mono">${waiting}</div><div class="ac-l">🟧 تنتظر رد</div></div>
-    <div class="ac-cell done"><div class="ac-n mono">${completedToday}</div><div class="ac-l">🟩 مكتملة اليوم</div></div>
-    <div class="ac-cell overdue" data-goto="contracts"><div class="ac-n mono">${overdue}</div><div class="ac-l">⬛ متأخرة</div></div>
-  `;
-  document.querySelectorAll('#actionCountsGrid [data-goto]').forEach(el => el.addEventListener('click', () => gotoPage(el.dataset.goto)));
+  // Inbox Zero + 3-tier breakdown + daily checklist
+  const tierTodayItems = scoredActions.filter(a => a.score >= 80);
+  const tierWeekItems = scoredActions.filter(a => a.score >= 50 && a.score < 80);
+  const flaggedNames = new Set(scoredActions.map(a => a.name));
+  const tierSafeCount = Math.max(trackedKeys.size - flaggedNames.size, 0);
+  document.getElementById('tierToday').textContent = tierTodayItems.length;
+  document.getElementById('tierWeek').textContent = tierWeekItems.length;
+  document.getElementById('tierSafe').textContent = tierSafeCount;
+
+  const checklistItems = scoredActions.filter(a => a.score >= 50).slice(0, 10);
+  const dateStr = today.toISOString().slice(0,10);
+  const doneKey = 'hrDashChecklistDone-' + dateStr;
+  let checklistDone = []; try{ checklistDone = JSON.parse(localStorage.getItem(doneKey) || '[]'); }catch(e){}
+  const izTotal = checklistItems.length;
+  const izRemaining = checklistItems.filter(a => !checklistDone.includes(a.id)).length;
+  const izEl = document.getElementById('izNum');
+  const izCel = document.getElementById('izCelebrate');
+  if (izTotal === 0){
+    izEl.textContent = '0'; izEl.classList.add('zero');
+    document.getElementById('izFill').style.width = '100%';
+    izCel.style.display = 'block';
+  } else {
+    izEl.textContent = izRemaining;
+    izEl.classList.toggle('zero', izRemaining === 0);
+    document.getElementById('izFill').style.width = Math.round(((izTotal-izRemaining)/izTotal)*100) + '%';
+    izCel.style.display = izRemaining === 0 ? 'block' : 'none';
+  }
+
+  document.getElementById('todayChecklist').innerHTML = checklistItems.length ? checklistItems.map(a => {
+    const checked = checklistDone.includes(a.id);
+    return `<div class="checklist-row ${checked?'checked':''}">
+      <div class="cl-box ${checked?'checked-box':''}" data-checklist="${a.id}">${checked?'✓':''}</div>
+      <div class="cl-text ${checked?'done-text':''}">${a.icon} ${a.title}</div>
+    </div>`;
+  }).join('') : `<div class="empty"><b>لا توجد مهام عاجلة اليوم 🎉</b></div>`;
 
   // Widget 3: Workload
   const contractNeed = contractsData.filter(r => r.contractEnd && daysBetween(today, r.contractEnd) <= threshold).length;
@@ -1269,13 +1487,13 @@ function renderManagerFollowups(today){
   const el = document.getElementById('managerFollowupList');
   if (!pending.length){ el.innerHTML = `<div class="empty"><b>لا توجد متابعات معلّقة</b></div>`; return; }
   el.innerHTML = pending.map(([id, s]) => {
-    const daysSince = Math.floor((Date.now() - s.updatedAt) / 86400000);
+    const fu = followupUrgency(s);
     const empKey = id.split('-')[1];
     const c = contractsData.find(r=>keyOf(r)===empKey) || idsData.find(r=>keyOf(r)===empKey);
     const name = c ? c.name : empKey;
     const itemLabel = id.startsWith('contract') ? 'تجديد عقد' : 'تجديد إقامة';
     return `<div class="toggle-row">
-      <div class="t-body"><div class="t-title">تم إرسال بريد بخصوص ${itemLabel} ${name}</div><div class="t-sub">قبل ${daysSince} يوم — لم يصل رد</div></div>
+      <div class="t-body"><div class="t-title">${fu && fu.level==='critical'?'⚠ ':''}تم إرسال بريد بخصوص ${itemLabel} ${name}</div><div class="t-sub" style="${fu && fu.level!=='ok'?'color:var(--danger); font-weight:600;':''}">${fu ? 'منذ ' + fu.days + ' يوم — لم يصل رد' + (fu.level==='critical'?' — يحتاج متابعة ثانية':'') : ''}</div></div>
       <a href="${buildReminderMailUrl(name, itemLabel)}" target="_blank" rel="noopener" class="mark-done-btn" style="text-decoration:none;">✉️ تذكير</a>
     </div>`;
   }).join('');
@@ -1299,28 +1517,41 @@ function renderDeptImpact(today, onLeave){
 /* ---------------- Follow-ups page ---------------- */
 function renderFollowups(today, scoredActions){
   const states = getActionStates();
-  const waitingReply = Object.entries(states).filter(([id,s]) => s.stage === 'sent').length;
-  const waitingExec = scoredActions.filter(a => a.type === 'longleave').length;
-  const waitingClose = Object.entries(states).filter(([id,s]) => s.stage === 'replied').length;
+  const waitingManager = Object.entries(states).filter(([id,s]) => s.stage === 'sent').length;
+  const waitingEmployee = Object.entries(states).filter(([id,s]) => s.stage === 'approved').length;
+  const waitingHR = Object.entries(states).filter(([id,s]) => s.stage === 'signed').length;
   const waitingHandover = leavesData.filter(r => r.leaveStart && daysBetween(today, r.leaveStart) >= 0 && daysBetween(today, r.leaveStart) <= 7 && getHandoverFlags()[`handover-${r.empId}-${r.leaveStart.getTime()}`] !== true).length;
 
   document.getElementById('followupCounts').innerHTML = `
-    <div class="stat-card"><div class="s-num mono">${waitingReply}</div><div class="s-label">بانتظار رد</div></div>
-    <div class="stat-card"><div class="s-num mono">${waitingExec}</div><div class="s-label">بانتظار تنفيذ (بديل إجازة)</div></div>
-    <div class="stat-card"><div class="s-num mono">${waitingClose}</div><div class="s-label">بانتظار إغلاق</div></div>
+    <div class="stat-card"><div class="s-num mono">${waitingManager}</div><div class="s-label">بانتظار المدير</div></div>
+    <div class="stat-card"><div class="s-num mono">${waitingEmployee}</div><div class="s-label">بانتظار الموظف</div></div>
+    <div class="stat-card"><div class="s-num mono">${waitingHR}</div><div class="s-label">بانتظار الموارد البشرية</div></div>
     <div class="stat-card"><div class="s-num mono">${waitingHandover}</div><div class="s-label">بانتظار تسليم عمل</div></div>
+  `;
+
+  // Smart Queue: اليوم / هذا الأسبوع / هذا الشهر
+  const dayOf = (a) => a.date ? daysBetween(today, a.date) : 0;
+  const smartToday = scoredActions.filter(a => dayOf(a) <= 0).length;
+  const smartWeek = scoredActions.filter(a => dayOf(a) > 0 && dayOf(a) <= 7).length;
+  const smartMonth = scoredActions.filter(a => dayOf(a) > 7 && dayOf(a) <= 30).length;
+  document.getElementById('smartQueueGrid').innerHTML = `
+    <div class="stat-card"><div class="s-num mono">${smartToday}</div><div class="s-label">اليوم</div></div>
+    <div class="stat-card"><div class="s-num mono">${smartWeek}</div><div class="s-label">هذا الأسبوع</div></div>
+    <div class="stat-card"><div class="s-num mono">${smartMonth}</div><div class="s-label">هذا الشهر</div></div>
   `;
 
   document.getElementById('countFollowupList').textContent = scoredActions.length;
   document.getElementById('followupFullList').innerHTML = scoredActions.length ? scoredActions.map(a => {
     let btns = '';
     if (a.type === 'contract' || a.type === 'id'){
-      if (a.stage === 'none') btns = `<button class="mark-done-btn" data-advance="${a.id}" data-mailkind="${a.mailKind}" data-empname="${a.name}" data-empdate="${a.date.getTime()}">✉️ إرسال</button>`;
-      else if (a.stage === 'sent') btns = `<button class="mark-done-btn" data-advance="${a.id}">📩 تسجيل الرد</button> <button class="mark-done-btn" data-advance="${a.id}">✔ تم</button>`;
-      else btns = `<button class="mark-done-btn" data-advance="${a.id}">✔ تم</button>`;
+      btns = `<button class="mark-done-btn" data-advance="${a.id}" data-mailkind="${a.mailKind}" data-empname="${a.name}" data-empdate="${a.date.getTime()}">${stageBtnLabel(a.type, a.stage)}</button>`;
     }
+    const reasonsHtml = a.reasons ? `<div class="ac-reason-list">${a.reasons.map(r=>`<div>✓ ${r}</div>`).join('')}</div>` : '';
     return `<div class="toggle-row">
-      <div class="t-body"><div class="t-title">${a.icon} ${a.title}</div><div class="t-sub">${a.sub}</div></div>
+      <div class="t-body">
+        <div class="t-title">${a.icon} ${a.title}</div><div class="t-sub">${a.sub}</div>
+        <details class="why-details"><summary>لماذا ظهر هذا التنبيه؟</summary>${reasonsHtml}</details>
+      </div>
       <div class="toggle-btns">${btns}</div>
     </div>`;
   }).join('') : `<div class="empty"><b>لا توجد متابعات حاليًا 🎉</b></div>`;
@@ -1454,8 +1685,17 @@ function openEmployeeModal(key){
     leaves.forEach(lv => { html += `<div class="emp-detail-row"><span class="lbl">${fmtDate(lv.leaveStart)} → ${fmtDate(lv.leaveEnd)}</span></div>`; });
   } else { html += `<div class="emp-detail-row"><span class="lbl">لا يوجد سجل إجازات</span></div>`; }
 
-  html += `<div class="emp-section-title">سجل الإجراءات</div>`;
-  html += `<div class="emp-detail-row"><span class="lbl muted">غير متوفر — يحتاج نظام يحفظ تاريخ الإجراءات بدل ملف Excel ثابت.</span></div>`;
+  html += `<div class="emp-section-title">سجل المتابعات</div>`;
+  const empHistory = getActivity().filter(a => a.text.includes(name)).slice(0, 15);
+  if (empHistory.length){
+    empHistory.forEach(a => {
+      const d = new Date(a.ts);
+      html += `<div class="emp-detail-row"><span class="lbl">${d.toLocaleDateString('ar-SA-u-nu-latn',{day:'2-digit',month:'2-digit'})} — ${a.text}</span></div>`;
+    });
+  } else {
+    html += `<div class="emp-detail-row"><span class="lbl muted">لا يوجد سجل متابعات بعد — يظهر هنا كل إجراء يخص هذا الموظف (إرسال، موافقة، إغلاق...).</span></div>`;
+  }
+  html += `<div class="empty-note" style="margin-top:8px;">هذا السجل محفوظ بمتصفحك أنت فقط (Local Storage)، ولا يظهر لأي شخص آخر يفتح نفس الرابط.</div>`;
 
   document.getElementById('empModalBody').innerHTML = html;
   document.getElementById('empModalOverlay').classList.add('open');
@@ -1644,11 +1884,10 @@ function renderWizardStep(){
   const a = wizardQueue[wizardIndex];
   progress.textContent = `${wizardIndex+1} من ${wizardQueue.length} — نقاط الخطورة: ${a.score}`;
 
+  const reasonsHtml = a.reasons ? `<div class="ac-reason-list" style="text-align:right;">${a.reasons.map(r=>`<div>✓ ${r}</div>`).join('')}</div>` : '';
   let actionBtns = `<button class="wizard-skip-btn" id="wizSkip">تخطي</button>`;
   if (a.type === 'contract' || a.type === 'id'){
-    if (a.stage === 'none') actionBtns = `<button class="wizard-done-btn" id="wizPrimary">✉️ إرسال</button>` + actionBtns;
-    else if (a.stage === 'sent') actionBtns = `<button class="wizard-done-btn" id="wizPrimary">📩 تسجيل الرد</button><button class="wizard-done-btn" id="wizClose">✔ إغلاق</button>` + actionBtns;
-    else actionBtns = `<button class="wizard-done-btn" id="wizClose">✔ إغلاق</button>` + actionBtns;
+    actionBtns = `<button class="wizard-done-btn" id="wizPrimary">${stageBtnLabel(a.type, a.stage)}</button>` + actionBtns;
   } else {
     actionBtns = `<button class="wizard-done-btn" id="wizClose">✔ تمت المعالجة</button>` + actionBtns;
   }
@@ -1657,6 +1896,7 @@ function renderWizardStep(){
     <div class="wizard-icon">${a.icon}</div>
     <div class="wizard-title">${a.title}</div>
     <div class="wizard-sub">${a.sub}</div>
+    ${reasonsHtml}
     <div class="wizard-actions">${actionBtns}</div>
   </div>`;
 
@@ -1667,7 +1907,6 @@ function renderWizardStep(){
   });
   const closeBtn = document.getElementById('wizClose');
   if (closeBtn) closeBtn.addEventListener('click', () => {
-    if (a.type === 'contract' || a.type === 'id'){ setActionState(a.id, 'done'); logActivity(`✔ أُغلق الإجراء الخاص بـ ${a.name}`); }
     dismissAction(a.id);
     wizardIndex++; renderWizardStep(); render();
   });
