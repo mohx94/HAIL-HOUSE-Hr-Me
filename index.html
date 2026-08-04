@@ -171,6 +171,71 @@
   .rank-row .r-bar span{display:block; height:100%; background:var(--primary); border-radius:999px;}
   .rank-row .r-count{font-family:'IBM Plex Mono'; font-size:12px; color:var(--gray-500); width:26px; text-align:left;}
 
+  /* ---------- HR Intelligence widget ---------- */
+  .intel-summary{font-size:14px; font-weight:600; color:var(--gray-900); margin-bottom:14px;}
+  .intel-list{display:flex; flex-direction:column; gap:8px;}
+  .intel-row{
+    display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:9px; border:1px solid var(--border);
+    cursor:pointer; font-size:13px; background:#fff; transition:background .15s;
+  }
+  .intel-row:hover{background:var(--gray-100);}
+  .intel-row .i-dot{width:8px; height:8px; border-radius:50%; flex-shrink:0;}
+  .intel-row.sev-100 .i-dot, .intel-row.sev-90 .i-dot, .intel-row.sev-80 .i-dot{background:var(--danger);}
+  .intel-row.sev-70 .i-dot, .intel-row.sev-65 .i-dot, .intel-row.sev-60 .i-dot, .intel-row.sev-75 .i-dot{background:var(--warn);}
+  .intel-row.sev-low .i-dot{background:var(--success);}
+  .intel-row .i-score{font-family:'IBM Plex Mono'; font-size:11px; color:var(--gray-400);}
+
+  /* ---------- Action counts widget ---------- */
+  .action-counts-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--border);}
+  @media(max-width:900px){.action-counts-grid{grid-template-columns:repeat(2,1fr);}}
+  .ac-cell{background:#fff; padding:16px 14px; text-align:center; cursor:pointer;}
+  .ac-cell .ac-n{font-family:'IBM Plex Mono'; font-size:26px; font-weight:700;}
+  .ac-cell .ac-l{font-size:11.5px; color:var(--gray-500); margin-top:3px;}
+  .ac-cell.urgent .ac-n{color:var(--danger);}
+  .ac-cell.waiting .ac-n{color:var(--warn);}
+  .ac-cell.done .ac-n{color:var(--success);}
+  .ac-cell.overdue .ac-n{color:var(--gray-900);}
+
+  /* ---------- Branches widget ---------- */
+  .branch-row{display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--border); font-size:13px;}
+  .branch-row:last-child{border-bottom:none;}
+  .branch-row .b-dot{width:9px; height:9px; border-radius:50%; flex-shrink:0;}
+  .branch-row .b-dot.red{background:var(--danger);} .branch-row .b-dot.orange{background:var(--warn);} .branch-row .b-dot.green{background:var(--success);}
+  .branch-row .b-name{flex:1;}
+  .branch-row .b-count{font-family:'IBM Plex Mono'; font-size:12.5px; color:var(--gray-500);}
+
+  /* ---------- Activity widget ---------- */
+  .activity-list{padding:6px 20px 16px;}
+  .act-row{display:flex; gap:12px; padding:8px 0; border-bottom:1px dashed var(--border); font-size:12.5px;}
+  .act-row:last-child{border-bottom:none;}
+  .act-row .act-time{font-family:'IBM Plex Mono'; color:var(--gray-400); flex-shrink:0; width:44px;}
+
+  /* ---------- Health widget ---------- */
+  .health-score{font-family:'IBM Plex Mono'; font-size:44px; font-weight:700; color:var(--gray-900); text-align:center; margin-bottom:12px;}
+  .health-reasons{margin:0; padding:0 18px 0 0; font-size:13px; color:var(--gray-600); line-height:2;}
+
+  /* ---------- Action cards (contracts/ids) ---------- */
+  .card-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px; padding:16px 20px;}
+  .action-card{border:1px solid var(--border); border-radius:10px; padding:14px 16px; background:#fff;}
+  .action-card .ac-name{font-size:14px; font-weight:600; color:var(--gray-900); margin-bottom:6px;}
+  .action-card .ac-days{font-size:13px; color:var(--gray-500); margin-bottom:8px;}
+  .action-card .ac-stage{font-size:11px; font-weight:600; padding:2px 9px; border-radius:999px; display:inline-block; margin-bottom:10px;}
+  .action-card .ac-stage.none{background:var(--gray-100); color:var(--gray-500);}
+  .action-card .ac-stage.sent{background:var(--warn-100); color:#92620A;}
+  .action-card .ac-stage.replied{background:var(--primary-100); color:#4338CA;}
+  .action-card .ac-btns{display:flex; gap:6px; flex-wrap:wrap;}
+
+  /* ---------- Toggle (yes/no) ---------- */
+  .toggle-row{display:flex; align-items:center; gap:10px; padding:11px 20px; border-bottom:1px solid var(--border); font-size:13px;}
+  .toggle-row:last-child{border-bottom:none;}
+  .toggle-row .t-body{flex:1;}
+  .toggle-row .t-title{font-weight:500;}
+  .toggle-row .t-sub{font-size:11.5px; color:var(--gray-500); margin-top:1px;}
+  .toggle-btns{display:flex; gap:6px;}
+  .toggle-btn{border:1px solid var(--border); background:#fff; border-radius:7px; padding:5px 12px; font-size:11.5px; font-weight:600; color:var(--gray-600);}
+  .toggle-btn.on-yes.active{background:var(--success-100); border-color:var(--success); color:#146534;}
+  .toggle-btn.on-no.active{background:var(--danger-100); border-color:var(--danger); color:#9F1239;}
+
   .cal-head{display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--border);}
   .cal-nav{display:flex; align-items:center; gap:10px;}
   .cal-nav button{background:var(--gray-100); color:var(--gray-800); border:1px solid var(--border); width:30px; height:30px; padding:0; border-radius:8px; font-size:14px;}
@@ -256,6 +321,7 @@
       <button class="nav-item" data-page="ids"><span class="ic">🪪</span> الهويات</button>
       <button class="nav-item" data-page="leaves"><span class="ic">🏖</span> الإجازات</button>
       <button class="nav-item" data-page="notifications"><span class="ic">🔔</span> التنبيهات</button>
+      <button class="nav-item" data-page="followups"><span class="ic">🔁</span> المتابعات</button>
       <button class="nav-item" data-page="reports"><span class="ic">📊</span> التقارير</button>
       <button class="nav-item" data-page="settings"><span class="ic">⚙️</span> الإعدادات</button>
     </nav>
@@ -290,33 +356,61 @@
       <section class="page active" id="page-home">
         <h1 class="page-title">مركز العمليات</h1>
 
-        <div class="ops-hero">
-          <div class="ops-num mono" id="opsToday">0</div>
-          <div class="ops-label">يحتاج إجراء اليوم</div>
-          <button class="ops-start-btn" id="startWorkBtn">ابدأ العمل</button>
-        </div>
-
-        <div class="stat-grid cols-6">
-          <div class="stat-card"><div class="s-icon">📄</div><div class="s-num mono" id="opsContracts">0</div><div class="s-label">عقود</div></div>
-          <div class="stat-card"><div class="s-icon">🪪</div><div class="s-num mono" id="opsIds">0</div><div class="s-label">إقامات</div></div>
-          <div class="stat-card"><div class="s-icon">🏖</div><div class="s-num mono" id="opsReturns">0</div><div class="s-label">عائدون من الإجازة</div></div>
-          <div class="stat-card na" id="opsBirthdayCard"><div class="s-icon">🎂</div><div class="s-num mono" id="opsBirthdays">—</div><div class="s-label">أعياد ميلاد اليوم</div><div class="empty-note" id="opsBirthdayNote">يحتاج عمود تاريخ الميلاد</div></div>
-          <div class="stat-card na"><div class="s-icon">⚠️</div><div class="s-num mono">—</div><div class="s-label">مخالفات</div><div class="empty-note">يحتاج بيانات إضافية</div></div>
-          <div class="stat-card"><div class="s-icon">👥</div><div class="s-num mono" id="opsTotal">0</div><div class="s-label">إجمالي الموظفين</div></div>
-        </div>
-
-        <section class="panel">
-          <div class="panel-head"><h2>العقود</h2><span class="badge-count" id="homeContractCount">0</span></div>
-          <div class="panel-body" style="padding:14px 20px;">
-            <div style="font-size:13px;">إجمالي <b class="mono" id="homeContractTotal">0</b> · تنتهي خلال شهر <b class="mono" id="homeContractMonth">0</b> · منتهية <b class="mono" id="homeContractExpired">0</b></div>
+        <!-- Widget 1: HR Intelligence -->
+        <section class="panel widget-intel">
+          <div class="panel-head"><h2>🤖 HR Intelligence</h2></div>
+          <div class="panel-body">
+            <div class="intel-summary" id="intelSummary">جارٍ التحليل…</div>
+            <div class="intel-list" id="intelList"></div>
           </div>
         </section>
 
+        <!-- Widget 2: Actions counts -->
         <section class="panel">
-          <div class="panel-head"><h2>آخر التنبيهات <span class="badge-count" id="countHomeNotif">0</span></h2>
-            <a href="#" data-goto="notifications" style="font-size:12px; color:var(--primary); text-decoration:none; font-weight:600;">عرض الكل ←</a>
+          <div class="panel-head"><h2>الإجراءات</h2></div>
+          <div class="action-counts-grid" id="actionCountsGrid"></div>
+        </section>
+
+        <!-- Widget 3: Workload -->
+        <section class="panel">
+          <div class="panel-head"><h2>عبء العمل</h2></div>
+          <div class="panel-body" id="workloadBody"></div>
+        </section>
+
+        <!-- Widget 4: Branches -->
+        <section class="panel" id="branchWidget">
+          <div class="panel-head"><h2>الفروع</h2></div>
+          <div class="panel-body" id="branchBody"></div>
+        </section>
+
+        <!-- Widget 5: Suggested pipeline -->
+        <section class="panel">
+          <div class="panel-head"><h2>الإجراءات المقترحة</h2></div>
+          <div class="panel-body" style="text-align:center;">
+            <p class="muted" id="pipelineTopLabel" style="font-size:13px; margin:0 0 14px;">—</p>
+            <button class="ops-start-btn" id="startWorkBtn">ابدأ الآن</button>
           </div>
-          <div id="homeNotifList"></div>
+        </section>
+
+        <!-- Widget 6: Activity -->
+        <section class="panel">
+          <div class="panel-head"><h2>النشاط</h2></div>
+          <div class="activity-list" id="activityList"></div>
+        </section>
+
+        <!-- Widget 7: HR Health -->
+        <section class="panel">
+          <div class="panel-head"><h2>صحة الموارد البشرية</h2></div>
+          <div class="panel-body">
+            <div class="health-score" id="healthScore">—</div>
+            <ul class="health-reasons" id="healthReasons"></ul>
+          </div>
+        </section>
+
+        <!-- Widget 8: Next week -->
+        <section class="panel">
+          <div class="panel-head"><h2>الأسبوع القادم</h2></div>
+          <div class="stat-grid cols-4" id="nextWeekGrid"></div>
         </section>
       </section>
 
@@ -350,13 +444,10 @@
             <div class="panel-controls">
               <select class="filter" id="contractDeptFilter"><option value="">كل الأقسام</option></select>
               <select class="filter" id="contractStatusFilter"><option value="">كل الحالات</option><option value="expired">منتهية</option><option value="soon">تنتهي قريبًا</option><option value="safe">آمنة</option></select>
-              <input class="search" data-target="tblContract" placeholder="بحث بالاسم...">
+              <input class="search" data-target="contractCards" placeholder="بحث بالاسم...">
             </div>
           </div>
-          <div class="table-wrap"><table id="tblContract">
-            <thead><tr><th data-sort="name">الاسم</th><th data-sort="empId">الرقم الوظيفي</th><th data-sort="dept">القسم</th><th data-sort="contractEnd">تاريخ انتهاء العقد</th><th data-sort="days">الأيام المتبقية</th><th>الإجراءات</th></tr></thead>
-            <tbody></tbody>
-          </table></div>
+          <div class="card-grid" id="contractCards"></div>
         </section>
       </section>
 
@@ -373,15 +464,12 @@
             <div class="panel-controls">
               <select class="filter" id="idDeptFilter"><option value="">كل الأقسام</option></select>
               <select class="filter" id="idStatusFilter"><option value="">كل الحالات</option><option value="expired">منتهية</option><option value="soon">تجديد قريب</option><option value="safe">صالحة</option></select>
-              <input class="search" data-target="tblId" placeholder="بحث بالاسم...">
+              <input class="search" data-target="idCards" placeholder="بحث بالاسم...">
             </div>
           </div>
-          <div class="table-wrap"><table id="tblId">
-            <thead><tr><th data-sort="name">الاسم</th><th data-sort="empId">الرقم الوظيفي</th><th data-sort="dept">القسم</th><th data-sort="natId">رقم الهوية / الإقامة</th><th data-sort="idExpiry">تاريخ الانتهاء</th><th data-sort="days">الأيام المتبقية</th><th>الإجراءات</th></tr></thead>
-            <tbody></tbody>
-          </table></div>
+          <div class="card-grid" id="idCards"></div>
         </section>
-        <p class="empty-note" style="text-align:center;">تصنيف "حسب الجنسية" غير متوفر حاليًا — يحتاج إضافة عمود الجنسية بالملف.</p>
+        <p class="empty-note" style="text-align:center;">تصنيف "حسب الجنسية" متوفر بصفحة التقارير إذا عبّيت عمود الجنسية بشيت "بيانات الموظفين".</p>
       </section>
 
       <section class="page" id="page-leaves">
@@ -424,8 +512,37 @@
         </section>
 
         <section class="panel">
+          <div class="panel-head"><h2>إجازات طويلة <span class="badge-count" id="countLongLeave">0</span></h2></div>
+          <div id="longLeaveList" style="padding:6px 0;"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>تسليم الأعمال <span class="badge-count" id="countHandover">0</span></h2></div>
+          <div id="handoverList" style="padding:6px 0;"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>بانتظار رد المدير <span class="badge-count" id="countManagerFollowup">0</span></h2></div>
+          <div id="managerFollowupList" style="padding:6px 0;"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>تأثير الإجازات على الأقسام</h2></div>
+          <div id="deptImpactList" style="padding:6px 0;"></div>
+        </section>
+
+        <section class="panel">
           <div class="panel-head"><h2>أكثر الأقسام إجازات (هذا الشهر)</h2></div>
           <div class="rank-list" id="deptRankList"></div>
+        </section>
+      </section>
+
+      <section class="page" id="page-followups">
+        <h1 class="page-title">المتابعات</h1>
+        <div class="stat-grid cols-4" id="followupCounts"></div>
+        <section class="panel">
+          <div class="panel-head"><h2>كل المتابعات <span class="badge-count" id="countFollowupList">0</span></h2></div>
+          <div id="followupFullList"></div>
         </section>
       </section>
 
@@ -591,7 +708,7 @@ function parseWorkbook(workbook){
     name: r["الاسم"] || "", empId: r["الرقم الوظيفي"] || "",
     branch: r["الفرع"] || "", manager: r["المدير المباشر"] || "",
     hireDate: excelDateToJS(r["تاريخ المباشرة"]), nationality: r["الجنسية"] || "",
-    birthDate: excelDateToJS(r["تاريخ الميلاد"]),
+    birthDate: excelDateToJS(r["تاريخ الميلاد"]), phone: r["الجوال"] || "",
   })).filter(r => r.name);
 
   const deptByKey = {};
@@ -642,6 +759,108 @@ function getDismissed(){ try{ return JSON.parse(localStorage.getItem('hrDashDism
 function dismissAction(id){ const list = getDismissed(); if (!list.includes(id)) list.push(id); try{ localStorage.setItem('hrDashDismissedActions', JSON.stringify(list)); }catch(e){} }
 function isDismissed(id){ return getDismissed().includes(id); }
 
+/* ---------------- state tracking (device-local) ---------------- */
+function getActionStates(){ try{ return JSON.parse(localStorage.getItem('hrDashActionStates') || '{}'); }catch(e){ return {}; } }
+function setActionState(id, stage){
+  const states = getActionStates();
+  states[id] = { stage, updatedAt: Date.now() };
+  try{ localStorage.setItem('hrDashActionStates', JSON.stringify(states)); }catch(e){}
+}
+function getActionState(id){ return getActionStates()[id] || { stage: 'none', updatedAt: null }; }
+
+function getActivity(){ try{ return JSON.parse(localStorage.getItem('hrDashActivity') || '[]'); }catch(e){ return []; } }
+function logActivity(text){
+  const log = getActivity();
+  log.unshift({ ts: Date.now(), text });
+  try{ localStorage.setItem('hrDashActivity', JSON.stringify(log.slice(0, 60))); }catch(e){}
+}
+
+function getBackupFlags(){ try{ return JSON.parse(localStorage.getItem('hrDashBackupFlags') || '{}'); }catch(e){ return {}; } }
+function setBackupFlag(id, val){ const f = getBackupFlags(); f[id] = val; try{ localStorage.setItem('hrDashBackupFlags', JSON.stringify(f)); }catch(e){} }
+
+function getHandoverFlags(){ try{ return JSON.parse(localStorage.getItem('hrDashHandoverFlags') || '{}'); }catch(e){ return {}; } }
+function setHandoverFlag(id, val){ const f = getHandoverFlags(); f[id] = val; try{ localStorage.setItem('hrDashHandoverFlags', JSON.stringify(f)); }catch(e){} }
+
+const STAGE_LABEL = { none:'لم يبدأ', sent:'بانتظار الرد', replied:'تم الرد — بانتظار الإغلاق', done:'مكتمل' };
+function advanceStage(id, currentStage, mailKind, employeeName, expiryDate){
+  if (currentStage === 'none'){
+    if (mailKind) window.open(buildRenewalMailUrl(mailKind, employeeName, expiryDate), '_blank');
+    setActionState(id, 'sent');
+    logActivity(`✉️ أُرسل بريد بخصوص ${employeeName}`);
+  } else if (currentStage === 'sent'){
+    setActionState(id, 'replied');
+    logActivity(`📩 تم تسجيل رد بخصوص ${employeeName}`);
+  } else {
+    setActionState(id, 'done');
+    logActivity(`✔ أُغلق الإجراء الخاص بـ ${employeeName}`);
+    dismissAction(id);
+  }
+  render();
+}
+
+/* ---------------- severity scoring ---------------- */
+const LONG_LEAVE_DAYS = 14;
+function scoreContract(days){ if (days<=7) return 100; if (days<=30) return 70; if (days<=threshold) return 45; return 10; }
+function scoreId(days){ if (days<=15) return 90; if (days<=30) return 60; if (days<=threshold) return 35; return 10; }
+function scoreManagerNoReply(daysSince){ return daysSince>=5 ? 80 : 50; }
+const SCORE_LONG_LEAVE = 75, SCORE_CONFLICT = 65, SCORE_RETURN_TOMORROW = 20;
+
+function buildScoredActions(today){
+  const items = [];
+  const states = getActionStates();
+  const backups = getBackupFlags();
+
+  contractsData.forEach(r => {
+    if (!r.contractEnd) return;
+    const id = `contract-${r.empId}-${r.contractEnd.getTime()}`;
+    const st = states[id]?.stage || 'none';
+    if (st === 'done') return;
+    const days = daysBetween(today, r.contractEnd);
+    if (days > threshold) return;
+    if (st === 'sent'){
+      const daysSince = Math.floor((Date.now() - (states[id]?.updatedAt || Date.now())) / 86400000);
+      items.push({ id, type:'contract', icon:'📄', name:r.name, title:`متابعة رد — تجديد عقد ${r.name}`, sub:`لم يصل رد منذ ${daysSince} يوم`, score: scoreManagerNoReply(daysSince), stage: st, date:r.contractEnd, mailKind:'contract' });
+    } else {
+      items.push({ id, type:'contract', icon:'📄', name:r.name, title:`تجديد عقد ${r.name}`, sub: days<0?`منتهي منذ ${Math.abs(days)} يوم`:`خلال ${days} يوم`, score: scoreContract(days), stage: st, date:r.contractEnd, mailKind:'contract' });
+    }
+  });
+
+  idsData.forEach(r => {
+    if (!r.idExpiry) return;
+    const id = `id-${r.empId}-${r.idExpiry.getTime()}`;
+    const st = states[id]?.stage || 'none';
+    if (st === 'done') return;
+    const days = daysBetween(today, r.idExpiry);
+    if (days > threshold) return;
+    if (st === 'sent'){
+      const daysSince = Math.floor((Date.now() - (states[id]?.updatedAt || Date.now())) / 86400000);
+      items.push({ id, type:'id', icon:'🪪', name:r.name, title:`متابعة رد — تجديد إقامة ${r.name}`, sub:`لم يصل رد منذ ${daysSince} يوم`, score: scoreManagerNoReply(daysSince), stage: st, date:r.idExpiry, mailKind:'id' });
+    } else {
+      items.push({ id, type:'id', icon:'🪪', name:r.name, title:`تجديد إقامة ${r.name}`, sub: days<0?`منتهية منذ ${Math.abs(days)} يوم`:`خلال ${days} يوم`, score: scoreId(days), stage: st, date:r.idExpiry, mailKind:'id' });
+    }
+  });
+
+  leavesData.forEach(r => {
+    if (!r.leaveStart || !r.leaveEnd) return;
+    const dur = daysBetween(r.leaveStart, r.leaveEnd);
+    const id = `longleave-${r.empId}-${r.leaveStart.getTime()}`;
+    if (dur >= LONG_LEAVE_DAYS && backups[id] !== true && r.leaveEnd >= today){
+      items.push({ id, type:'longleave', icon:'🚨', name:r.name, title:`إجازة طويلة (${dur} يوم) بدون بديل — ${r.name}`, sub:`${r.dept} — ${fmtDate(r.leaveStart)} → ${fmtDate(r.leaveEnd)}`, score: SCORE_LONG_LEAVE, stage:'none' });
+    }
+    const dReturn = daysBetween(today, r.leaveEnd);
+    if (dReturn === 1){
+      items.push({ id:`return-${r.empId}-${r.leaveEnd.getTime()}`, type:'return', icon:'👋', name:r.name, title:`عودة ${r.name} غدًا من الإجازة`, sub:r.dept, score: SCORE_RETURN_TOMORROW, stage:'none' });
+    }
+  });
+
+  conflicts.forEach((c, i) => {
+    items.push({ id:`conflict-${i}-${c.a.empId}-${c.b.empId}`, type:'conflict', icon:'👥', name:`${c.a.name} / ${c.b.name}`, title:`تعارض إجازات — قسم ${c.dept}`, sub:`${c.a.name} و${c.b.name}`, score: SCORE_CONFLICT, stage:'none' });
+  });
+
+  const dismissed = getDismissed();
+  return items.filter(it => !dismissed.includes(it.id)).sort((a,b) => b.score - a.score);
+}
+
 function buildActionList(today, contractsAll, idsAll, leavesAll){
   const actions = [];
   contractsAll.forEach(r => {
@@ -688,35 +907,13 @@ function render(){
   const allActions = buildActionList(today, contractsData, idsData, leavesData).filter(a => !dismissed.includes(a.id));
   const todayActions = allActions.filter(a => a.days <= 0);
 
-  document.getElementById('opsToday').textContent = todayActions.length;
-  document.getElementById('opsContracts').textContent = contractSoon.filter(r=>r.days<=7).length;
-  document.getElementById('opsIds').textContent = idSoon.filter(r=>r.days<=7).length;
-  document.getElementById('opsReturns').textContent = leavesData.filter(r => r.leaveEnd && daysBetween(today, r.leaveEnd) >= 0 && daysBetween(today, r.leaveEnd) <= 3).length;
+  const scoredActions = buildScoredActions(today);
+  renderHome(today, scoredActions, contractSoon, idSoon, onLeave, trackedKeys);
 
-  const withBirthdays = infoData.filter(r => r.birthDate);
-  if (withBirthdays.length){
-    const todaysBirthdays = withBirthdays.filter(r => r.birthDate.getMonth() === today.getMonth() && r.birthDate.getDate() === today.getDate());
-    document.getElementById('opsBirthdayCard').classList.remove('na');
-    document.getElementById('opsBirthdays').textContent = todaysBirthdays.length;
-    document.getElementById('opsBirthdayNote').textContent = todaysBirthdays.length ? todaysBirthdays.map(r=>r.name).join('، ') : 'لا أحد اليوم';
-  } else {
-    document.getElementById('opsBirthdayCard').classList.add('na');
-    document.getElementById('opsBirthdays').textContent = '—';
-    document.getElementById('opsBirthdayNote').textContent = 'يحتاج عمود تاريخ الميلاد';
-  }
-  document.getElementById('opsTotal').textContent = trackedKeys.size;
-  document.getElementById('startWorkBtn').disabled = allActions.length === 0;
-  document.getElementById('startWorkBtn').textContent = allActions.length ? 'ابدأ العمل' : 'لا يوجد إجراءات الآن';
+  renderNotifList('notifFullList', 'countNotifPage', allActions, true);
 
   const contractExpired = contractsData.filter(r => r.contractEnd && daysBetween(today, r.contractEnd) < 0).length;
   const contractMonth = contractsData.filter(r => r.contractEnd && daysBetween(today, r.contractEnd) >= 0 && daysBetween(today, r.contractEnd) <= 30).length;
-  document.getElementById('homeContractTotal').textContent = contractsData.length;
-  document.getElementById('homeContractMonth').textContent = contractMonth;
-  document.getElementById('homeContractExpired').textContent = contractExpired;
-  document.getElementById('homeContractCount').textContent = contractsData.length;
-
-  renderNotifList('homeNotifList', 'countHomeNotif', allActions.slice(0, 10));
-  renderNotifList('notifFullList', 'countNotifPage', allActions, true);
 
   document.getElementById('cStatTotal').textContent = contractsData.length;
   document.getElementById('cStatMonth').textContent = contractMonth;
@@ -726,11 +923,7 @@ function render(){
   let contractRows = contractsData.filter(r => r.contractEnd).map(r => ({...r, days: daysBetween(today, r.contractEnd)}));
   contractRows = filterByDept(contractRows, 'contractDeptFilter');
   contractRows = filterByStatus(contractRows, 'contractStatusFilter');
-  renderTable('tblContract', contractRows, r => `
-    <td class="name-cell">${r.name}</td><td class="muted">${r.empId}</td><td class="muted">${r.dept}</td>
-    <td>${fmtDate(r.contractEnd)}</td><td>${chipFor(r.days)}</td>
-    <td style="display:flex; gap:6px;">${markDoneButton('contract-'+r.empId+'-'+r.contractEnd.getTime())}${mailButton('contract', r.name, r.contractEnd)}</td>
-  `, "لا توجد عقود مطابقة", "جرّب تغيير الفلاتر.");
+  renderActionCards('contractCards', contractRows, 'contract', "لا توجد عقود مطابقة");
 
   const idExpired = idsData.filter(r => r.idExpiry && daysBetween(today, r.idExpiry) < 0).length;
   document.getElementById('iStatTotal').textContent = idsData.length;
@@ -741,11 +934,7 @@ function render(){
   let idRows = idsData.filter(r => r.idExpiry).map(r => ({...r, days: daysBetween(today, r.idExpiry)}));
   idRows = filterByDept(idRows, 'idDeptFilter');
   idRows = filterByStatus(idRows, 'idStatusFilter');
-  renderTable('tblId', idRows, r => `
-    <td class="name-cell">${r.name}</td><td class="muted">${r.empId}</td><td class="muted">${r.dept||'—'}</td>
-    <td class="muted">${r.natId}</td><td>${fmtDate(r.idExpiry)}</td><td>${chipFor(r.days)}</td>
-    <td style="display:flex; gap:6px;">${markDoneButton('id-'+r.empId+'-'+r.idExpiry.getTime())}${mailButton('id', r.name, r.idExpiry)}</td>
-  `, "لا توجد هويات مطابقة", "جرّب تغيير الفلاتر.");
+  renderActionCards('idCards', idRows, 'id', "لا توجد هويات مطابقة");
 
   document.getElementById('countActiveLeave').textContent = onLeave.length;
   renderTable('tblActiveLeave', onLeave, r => `
@@ -775,6 +964,12 @@ function render(){
   document.getElementById('deptRankList').innerHTML = rankEntries.length ? rankEntries.map(([dept,count]) => `
     <div class="rank-row"><span class="r-name">${dept}</span><div class="r-bar"><span style="width:${Math.round(count/maxCount*100)}%"></span></div><span class="r-count mono">${count}</span></div>
   `).join('') : `<div class="empty"><b>لا توجد بيانات إجازات كافية</b></div>`;
+
+  renderLongLeaves(today);
+  renderHandover(today);
+  renderManagerFollowups(today);
+  renderDeptImpact(today, onLeave);
+  renderFollowups(today, scoredActions);
 
   renderEmployeesTable(today, onLeave);
   renderBell(allActions);
@@ -849,6 +1044,285 @@ function mailButton(kind, employeeName, expiryDate){
   if (!expiryDate) return '';
   const href = buildRenewalMailUrl(kind, employeeName, expiryDate);
   return `<a href="${href}" target="_blank" rel="noopener" class="mark-done-btn" style="text-decoration:none; display:inline-block;">✉️ خطاب تجديد</a>`;
+}
+
+/* ---------------- generic mail templates ---------------- */
+function buildGenericMailUrl(subject, body){
+  const s = getMailSettings();
+  const to = s.recipientEmail || '';
+  const query = `to=${encodeURIComponent(to)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  return `https://outlook.office.com/mail/deeplink/compose?${query}`;
+}
+function buildReminderMailUrl(employeeName, itemLabel){
+  const s = getMailSettings();
+  const recipient = s.recipientName || '...............';
+  const body = `السلام عليكم ورحمة الله وبركاته،\nالسيد: ${recipient} المحترم\n\nنذكّركم بمتابعة سابقة بخصوص ${itemLabel} ${employeeName}، ولم يصلنا ردكم حتى الآن. نرجو إفادتنا في أقرب وقت ممكن.\n\nشاكرين لكم تعاونكم،،`;
+  return buildGenericMailUrl(`تذكير — ${itemLabel} ${employeeName}`, body);
+}
+function buildHandoverMailUrl(employeeName, managerName, leaveStart, leaveEnd){
+  const mgr = managerName || '...............';
+  const body = `السلام عليكم ورحمة الله وبركاته،\nالسيد: ${mgr} المحترم\n\nالموظف ${employeeName} سيبدأ إجازته بتاريخ ${fmtDate(leaveStart)} حتى ${fmtDate(leaveEnd)}. نرجو التكرم بتأكيد استلام تسليم الأعمال قبل بداية الإجازة.\n\nشاكرين لكم تعاونكم،،`;
+  return buildGenericMailUrl(`تسليم أعمال قبل إجازة — ${employeeName}`, body);
+}
+
+/* ---------------- contract/id action cards ---------------- */
+function renderActionCards(containerId, rows, kind, emptyMsg){
+  const el = document.getElementById(containerId);
+  if (!rows.length){ el.innerHTML = `<div class="empty"><b>${emptyMsg}</b>جرّب تغيير الفلاتر.</div>`; return; }
+  el.innerHTML = rows.map(r => {
+    const date = kind === 'contract' ? r.contractEnd : r.idExpiry;
+    const id = `${kind}-${r.empId}-${date.getTime()}`;
+    const st = getActionState(id).stage;
+    let btns = '';
+    if (st === 'none') btns += `<button class="mark-done-btn" data-advance="${id}" data-mailkind="${kind}" data-empname="${r.name}" data-empdate="${date.getTime()}">✉️ إرسال</button>`;
+    if (st === 'sent') btns += `<button class="mark-done-btn" data-advance="${id}">📩 تسجيل الرد</button>`;
+    if (st === 'sent' || st === 'replied') btns += `<button class="mark-done-btn" data-advance="${id}">✔ تم</button>`;
+    return `<div class="action-card">
+      <div class="ac-name">${r.name}</div>
+      <div class="ac-days">${r.dept ? r.dept + ' — ' : ''}${chipFor(r.days)}</div>
+      <div class="ac-stage ${st}">${STAGE_LABEL[st]}</div>
+      <div class="ac-btns">${btns}</div>
+    </div>`;
+  }).join('');
+}
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-advance]');
+  if (!btn) return;
+  const id = btn.dataset.advance;
+  const stage = getActionState(id).stage;
+  advanceStage(id, stage, btn.dataset.mailkind, btn.dataset.empname, btn.dataset.empdate ? new Date(parseInt(btn.dataset.empdate,10)) : null);
+});
+
+/* ---------------- Home: widget renderers ---------------- */
+function renderHome(today, scoredActions, contractSoon, idSoon, onLeave, trackedKeys){
+  // Widget 1: HR Intelligence
+  const urgentCount = scoredActions.filter(a => a.score >= 65).length;
+  document.getElementById('intelSummary').textContent = `يوجد ${scoredActions.length} إجراء يحتاج اهتمامك.`;
+  document.getElementById('intelList').innerHTML = scoredActions.slice(0, 6).map(a => {
+    const sevCls = a.score>=80?'sev-'+a.score : (a.score>=60?'sev-'+a.score:'sev-low');
+    const dot = a.score>=80?'🔴':(a.score>=60?'🟠':(a.score>=40?'🟡':'🟢'));
+    return `<div class="intel-row ${sevCls}" data-openemp="${(a.type==='contract'||a.type==='id')? (contractsData.find(c=>keyOf(c)===a.id?.split('-')[1]) ? '' : '') : ''}"><span class="i-dot"></span><span style="flex:1;">${dot} ${a.title}</span><span class="i-score mono">${a.score}</span></div>`;
+  }).join('') || `<div class="empty"><b>لا توجد توصيات حاليًا 🎉</b></div>`;
+
+  // Widget 2: Action counts
+  const waiting = Object.values(getActionStates()).filter(s => s.stage === 'sent').length;
+  const overdue = [...contractsData.filter(r=>r.contractEnd && daysBetween(today,r.contractEnd)<0), ...idsData.filter(r=>r.idExpiry && daysBetween(today,r.idExpiry)<0)].length;
+  const completedToday = getActivity().filter(a => { const d = new Date(a.ts); return sameDay(d, today) && a.text.startsWith('✔'); }).length;
+  document.getElementById('actionCountsGrid').innerHTML = `
+    <div class="ac-cell urgent" data-goto="followups"><div class="ac-n mono">${urgentCount}</div><div class="ac-l">🟥 عاجلة</div></div>
+    <div class="ac-cell waiting" data-goto="followups"><div class="ac-n mono">${waiting}</div><div class="ac-l">🟧 تنتظر رد</div></div>
+    <div class="ac-cell done"><div class="ac-n mono">${completedToday}</div><div class="ac-l">🟩 مكتملة اليوم</div></div>
+    <div class="ac-cell overdue" data-goto="contracts"><div class="ac-n mono">${overdue}</div><div class="ac-l">⬛ متأخرة</div></div>
+  `;
+  document.querySelectorAll('#actionCountsGrid [data-goto]').forEach(el => el.addEventListener('click', () => gotoPage(el.dataset.goto)));
+
+  // Widget 3: Workload
+  const contractNeed = contractsData.filter(r => r.contractEnd && daysBetween(today, r.contractEnd) <= threshold).length;
+  const idNeed = idsData.filter(r => r.idExpiry && daysBetween(today, r.idExpiry) <= threshold).length;
+  const followupsPending = Object.values(getActionStates()).filter(s => s.stage === 'sent' || s.stage === 'replied').length;
+  const workloadRows = [
+    { label:'العقود', pct: pct(contractNeed, contractsData.length || 1) },
+    { label:'الإجازات', pct: pct(onLeave.length, trackedKeys.size || 1) },
+    { label:'الهويات', pct: pct(idNeed, idsData.length || 1) },
+    { label:'المتابعات', pct: pct(followupsPending, Math.max(scoredActions.length,1)) },
+  ];
+  document.getElementById('workloadBody').innerHTML = workloadRows.map(r => `
+    <div class="progress-row">
+      <div class="progress-top"><span class="p-label">${r.label}</span><span class="p-count mono">${r.pct}%</span></div>
+      <div class="progress-track"><div class="progress-fill ${r.pct>=60?'danger':r.pct>=30?'warn':'primary'}" style="width:${Math.min(r.pct,100)}%"></div></div>
+    </div>
+  `).join('');
+
+  // Widget 4: Branches
+  const withBranch = infoData.filter(r => r.branch);
+  const branchWidget = document.getElementById('branchWidget');
+  if (!withBranch.length){
+    document.getElementById('branchBody').innerHTML = `<p class="empty-note">غير متوفر حاليًا — يحتاج تعبئة عمود "الفرع" بشيت "بيانات الموظفين".</p>`;
+  } else {
+    const branchByKey = {}; withBranch.forEach(r => branchByKey[keyOf(r)] = r.branch);
+    const urgentByBranch = {};
+    scoredActions.filter(a => a.score >= 65).forEach(a => {
+      const empKey = a.id.split('-')[1];
+      const branch = branchByKey[empKey];
+      if (branch) urgentByBranch[branch] = (urgentByBranch[branch]||0) + 1;
+    });
+    const allBranches = Array.from(new Set(withBranch.map(r=>r.branch)));
+    document.getElementById('branchBody').innerHTML = allBranches.map(b => {
+      const count = urgentByBranch[b] || 0;
+      const cls = count >= 5 ? 'red' : count >= 1 ? 'orange' : 'green';
+      return `<div class="branch-row"><span class="b-dot ${cls}"></span><span class="b-name">${b}</span><span class="b-count mono">${count}</span></div>`;
+    }).join('');
+  }
+
+  // Widget 5: Suggested pipeline
+  document.getElementById('pipelineTopLabel').textContent = scoredActions.length
+    ? `أعلى أولوية الآن: ${scoredActions[0].title}`
+    : 'لا توجد إجراءات عاجلة حاليًا';
+  document.getElementById('startWorkBtn').disabled = scoredActions.length === 0;
+
+  // Widget 6: Activity
+  const activity = getActivity().slice(0, 8);
+  document.getElementById('activityList').innerHTML = activity.length ? activity.map(a => `
+    <div class="act-row"><span class="act-time mono">${new Date(a.ts).toLocaleTimeString('ar-SA-u-nu-latn',{hour:'2-digit',minute:'2-digit'})}</span><span>${a.text}</span></div>
+  `).join('') : `<div class="empty"><b>لا يوجد نشاط بعد</b>سيظهر هنا كل إجراء تسويه (إرسال، تسجيل رد، إغلاق).</div>`;
+
+  // Widget 7: HR Health
+  let health = 100;
+  const reasons = [];
+  const urgentContracts = contractSoon.filter(r=>r.days<=7).length;
+  const urgentIds = idSoon.filter(r=>r.days<=7).length;
+  const noReply = Object.entries(getActionStates()).filter(([id,s]) => s.stage==='sent' && Math.floor((Date.now()-s.updatedAt)/86400000) >= 5).length;
+  const longLeaveNoBackup = scoredActions.filter(a=>a.type==='longleave').length;
+  if (urgentContracts){ health -= urgentContracts*5; reasons.push(`${urgentContracts} عقود تنتهي خلال أسبوع`); }
+  if (urgentIds){ health -= urgentIds*5; reasons.push(`${urgentIds} إقامات تنتهي خلال أسبوع`); }
+  if (noReply){ health -= noReply*5; reasons.push(`${noReply} متابعات لم يصلها رد منذ 5 أيام فأكثر`); }
+  if (conflicts.length){ health -= conflicts.length*5; reasons.push(`${conflicts.length} تعارض إجازات`); }
+  if (longLeaveNoBackup){ health -= longLeaveNoBackup*5; reasons.push(`${longLeaveNoBackup} إجازة طويلة بدون بديل`); }
+  health = Math.max(0, Math.min(100, health));
+  const hEl = document.getElementById('healthScore');
+  hEl.textContent = health + '%';
+  hEl.style.color = health>=80?'var(--success)':health>=50?'var(--warn)':'var(--danger)';
+  document.getElementById('healthReasons').innerHTML = reasons.length ? reasons.map(r=>`<li>${r}</li>`).join('') : '<li>لا توجد أسباب سلبية حاليًا — الوضع مستقر.</li>';
+
+  // Widget 8: Next week
+  const next7 = (d) => d && daysBetween(today,d) >= 0 && daysBetween(today,d) <= 7;
+  const wkContracts = contractsData.filter(r => next7(r.contractEnd)).length;
+  const wkLeaves = leavesData.filter(r => next7(r.leaveStart)).length;
+  const wkIds = idsData.filter(r => next7(r.idExpiry)).length;
+  const wkBirthdays = infoData.filter(r => r.birthDate).filter(r => {
+    const bd = new Date(today.getFullYear(), r.birthDate.getMonth(), r.birthDate.getDate());
+    const d = daysBetween(today, bd);
+    return d >= 0 && d <= 7;
+  }).length;
+  document.getElementById('nextWeekGrid').innerHTML = `
+    <div class="stat-card"><div class="s-num mono">${wkContracts}</div><div class="s-label">عقود</div></div>
+    <div class="stat-card"><div class="s-num mono">${wkLeaves}</div><div class="s-label">إجازات</div></div>
+    <div class="stat-card"><div class="s-num mono">${wkIds}</div><div class="s-label">هويات</div></div>
+    <div class="stat-card ${infoData.some(r=>r.birthDate)?'':'na'}"><div class="s-num mono">${infoData.some(r=>r.birthDate)?wkBirthdays:'—'}</div><div class="s-label">أعياد ميلاد</div></div>
+  `;
+}
+
+/* ---------------- Leaves: new widgets ---------------- */
+function renderLongLeaves(today){
+  const backups = getBackupFlags();
+  const longLeaves = leavesData.filter(r => r.leaveStart && r.leaveEnd && daysBetween(r.leaveStart, r.leaveEnd) >= LONG_LEAVE_DAYS && r.leaveEnd >= today);
+  document.getElementById('countLongLeave').textContent = longLeaves.length;
+  const el = document.getElementById('longLeaveList');
+  if (!longLeaves.length){ el.innerHTML = `<div class="empty"><b>لا توجد إجازات طويلة حاليًا</b></div>`; return; }
+  el.innerHTML = longLeaves.map(r => {
+    const id = `longleave-${r.empId}-${r.leaveStart.getTime()}`;
+    const hasBackup = backups[id];
+    const dur = daysBetween(r.leaveStart, r.leaveEnd);
+    return `<div class="toggle-row">
+      <div class="t-body"><div class="t-title">${r.name} — ${dur} يوم</div><div class="t-sub">${r.dept} — ${fmtDate(r.leaveStart)} → ${fmtDate(r.leaveEnd)}</div></div>
+      <div class="toggle-btns">
+        <span style="font-size:11.5px; color:var(--gray-500); align-self:center; margin-inline-end:4px;">هل يوجد بديل؟</span>
+        <button class="toggle-btn on-yes ${hasBackup===true?'active':''}" data-backup="${id}" data-val="true">نعم</button>
+        <button class="toggle-btn on-no ${hasBackup===false?'active':''}" data-backup="${id}" data-val="false">لا</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-backup]');
+  if (!btn) return;
+  setBackupFlag(btn.dataset.backup, btn.dataset.val === 'true');
+  logActivity(`${btn.dataset.val === 'true' ? '✔ تم تعيين بديل لإجازة' : '⚠️ لا يوجد بديل لإجازة'} (${btn.dataset.backup})`);
+  render();
+});
+
+function renderHandover(today){
+  const flags = getHandoverFlags();
+  const upcoming = leavesData.filter(r => r.leaveStart && daysBetween(today, r.leaveStart) >= 0 && daysBetween(today, r.leaveStart) <= 7);
+  document.getElementById('countHandover').textContent = upcoming.length;
+  const el = document.getElementById('handoverList');
+  if (!upcoming.length){ el.innerHTML = `<div class="empty"><b>لا توجد إجازات قريبة تحتاج تسليم أعمال</b></div>`; return; }
+  el.innerHTML = upcoming.map(r => {
+    const id = `handover-${r.empId}-${r.leaveStart.getTime()}`;
+    const handed = flags[id];
+    const info = infoData.find(x => keyOf(x) === keyOf(r));
+    const mgr = info && info.manager;
+    return `<div class="toggle-row">
+      <div class="t-body"><div class="t-title">${r.name} — إجازته بعد ${daysBetween(today,r.leaveStart)} يوم</div><div class="t-sub">${r.dept}${mgr?' — المدير: '+mgr:''}</div></div>
+      <div class="toggle-btns">
+        <span style="font-size:11.5px; color:var(--gray-500); align-self:center; margin-inline-end:4px;">هل سلّم العمل؟</span>
+        <button class="toggle-btn on-yes ${handed===true?'active':''}" data-handover="${id}" data-val="true">نعم</button>
+        <button class="toggle-btn on-no ${handed===false?'active':''}" data-handover="${id}" data-val="false">لا</button>
+        <a href="${buildHandoverMailUrl(r.name, mgr, r.leaveStart, r.leaveEnd)}" target="_blank" rel="noopener" class="mark-done-btn" style="text-decoration:none;">✉️ إرسال للمدير</a>
+      </div>
+    </div>`;
+  }).join('');
+}
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-handover]');
+  if (!btn) return;
+  setHandoverFlag(btn.dataset.handover, btn.dataset.val === 'true');
+  logActivity(`${btn.dataset.val === 'true' ? '✔ تم تسليم الأعمال' : '⚠️ لم يُسلَّم العمل بعد'} (${btn.dataset.handover})`);
+  render();
+});
+
+function renderManagerFollowups(today){
+  const states = getActionStates();
+  const pending = Object.entries(states).filter(([id,s]) => s.stage === 'sent');
+  document.getElementById('countManagerFollowup').textContent = pending.length;
+  const el = document.getElementById('managerFollowupList');
+  if (!pending.length){ el.innerHTML = `<div class="empty"><b>لا توجد متابعات معلّقة</b></div>`; return; }
+  el.innerHTML = pending.map(([id, s]) => {
+    const daysSince = Math.floor((Date.now() - s.updatedAt) / 86400000);
+    const empKey = id.split('-')[1];
+    const c = contractsData.find(r=>keyOf(r)===empKey) || idsData.find(r=>keyOf(r)===empKey);
+    const name = c ? c.name : empKey;
+    const itemLabel = id.startsWith('contract') ? 'تجديد عقد' : 'تجديد إقامة';
+    return `<div class="toggle-row">
+      <div class="t-body"><div class="t-title">تم إرسال بريد بخصوص ${itemLabel} ${name}</div><div class="t-sub">قبل ${daysSince} يوم — لم يصل رد</div></div>
+      <a href="${buildReminderMailUrl(name, itemLabel)}" target="_blank" rel="noopener" class="mark-done-btn" style="text-decoration:none;">✉️ تذكير</a>
+    </div>`;
+  }).join('');
+}
+
+function renderDeptImpact(today, onLeave){
+  const deptSize = groupCount(contractsData, r => r.dept);
+  const deptOnLeave = groupCount(onLeave, r => r.dept);
+  const rows = Object.entries(deptSize).map(([dept, size]) => ({ dept, size, onLeave: deptOnLeave[dept]||0, pct: pct(deptOnLeave[dept]||0, size) }))
+    .filter(r => r.onLeave > 0).sort((a,b) => b.pct - a.pct);
+  const el = document.getElementById('deptImpactList');
+  if (!rows.length){ el.innerHTML = `<div class="empty"><b>لا يوجد تأثير إجازات حاليًا</b></div>`; return; }
+  el.innerHTML = rows.map(r => `
+    <div class="toggle-row">
+      <div class="t-body"><div class="t-title">${r.dept}</div><div class="t-sub">${r.onLeave} بإجازة من أصل ${r.size} موظف</div></div>
+      <div class="ac-stage ${r.pct>=20?'sent':'none'}" style="${r.pct>=20?'background:var(--danger-100); color:#9F1239;':''}">${r.pct}% من القسم</div>
+    </div>
+  `).join('');
+}
+
+/* ---------------- Follow-ups page ---------------- */
+function renderFollowups(today, scoredActions){
+  const states = getActionStates();
+  const waitingReply = Object.entries(states).filter(([id,s]) => s.stage === 'sent').length;
+  const waitingExec = scoredActions.filter(a => a.type === 'longleave').length;
+  const waitingClose = Object.entries(states).filter(([id,s]) => s.stage === 'replied').length;
+  const waitingHandover = leavesData.filter(r => r.leaveStart && daysBetween(today, r.leaveStart) >= 0 && daysBetween(today, r.leaveStart) <= 7 && getHandoverFlags()[`handover-${r.empId}-${r.leaveStart.getTime()}`] !== true).length;
+
+  document.getElementById('followupCounts').innerHTML = `
+    <div class="stat-card"><div class="s-num mono">${waitingReply}</div><div class="s-label">بانتظار رد</div></div>
+    <div class="stat-card"><div class="s-num mono">${waitingExec}</div><div class="s-label">بانتظار تنفيذ (بديل إجازة)</div></div>
+    <div class="stat-card"><div class="s-num mono">${waitingClose}</div><div class="s-label">بانتظار إغلاق</div></div>
+    <div class="stat-card"><div class="s-num mono">${waitingHandover}</div><div class="s-label">بانتظار تسليم عمل</div></div>
+  `;
+
+  document.getElementById('countFollowupList').textContent = scoredActions.length;
+  document.getElementById('followupFullList').innerHTML = scoredActions.length ? scoredActions.map(a => {
+    let btns = '';
+    if (a.type === 'contract' || a.type === 'id'){
+      if (a.stage === 'none') btns = `<button class="mark-done-btn" data-advance="${a.id}" data-mailkind="${a.mailKind}" data-empname="${a.name}" data-empdate="${a.date.getTime()}">✉️ إرسال</button>`;
+      else if (a.stage === 'sent') btns = `<button class="mark-done-btn" data-advance="${a.id}">📩 تسجيل الرد</button> <button class="mark-done-btn" data-advance="${a.id}">✔ تم</button>`;
+      else btns = `<button class="mark-done-btn" data-advance="${a.id}">✔ تم</button>`;
+    }
+    return `<div class="toggle-row">
+      <div class="t-body"><div class="t-title">${a.icon} ${a.title}</div><div class="t-sub">${a.sub}</div></div>
+      <div class="toggle-btns">${btns}</div>
+    </div>`;
+  }).join('') : `<div class="empty"><b>لا توجد متابعات حاليًا 🎉</b></div>`;
 }
 
 let sortState = {};
@@ -1153,8 +1627,7 @@ function renderForecast(today, contractsAll, idsAll, leavesAll){
 
 function openWizard(){
   const today = new Date();
-  const dismissed = getDismissed();
-  wizardQueue = buildActionList(today, contractsData, idsData, leavesData).filter(a => !dismissed.includes(a.id) && a.days <= 7);
+  wizardQueue = buildScoredActions(today).slice(0, 20);
   wizardIndex = 0;
   document.getElementById('wizardOverlay').classList.add('open');
   renderWizardStep();
@@ -1168,17 +1641,35 @@ function renderWizardStep(){
     return;
   }
   const a = wizardQueue[wizardIndex];
-  progress.textContent = `${wizardIndex+1} من ${wizardQueue.length}`;
+  progress.textContent = `${wizardIndex+1} من ${wizardQueue.length} — نقاط الخطورة: ${a.score}`;
+
+  let actionBtns = `<button class="wizard-skip-btn" id="wizSkip">تخطي</button>`;
+  if (a.type === 'contract' || a.type === 'id'){
+    if (a.stage === 'none') actionBtns = `<button class="wizard-done-btn" id="wizPrimary">✉️ إرسال</button>` + actionBtns;
+    else if (a.stage === 'sent') actionBtns = `<button class="wizard-done-btn" id="wizPrimary">📩 تسجيل الرد</button><button class="wizard-done-btn" id="wizClose">✔ إغلاق</button>` + actionBtns;
+    else actionBtns = `<button class="wizard-done-btn" id="wizClose">✔ إغلاق</button>` + actionBtns;
+  } else {
+    actionBtns = `<button class="wizard-done-btn" id="wizClose">✔ تمت المعالجة</button>` + actionBtns;
+  }
+
   content.innerHTML = `<div class="wizard-card">
     <div class="wizard-icon">${a.icon}</div>
-    <div class="wizard-title">${a.title.replace(/<\/?b>/g,'')}</div>
+    <div class="wizard-title">${a.title}</div>
     <div class="wizard-sub">${a.sub}</div>
-    <div class="wizard-actions">
-      <button class="wizard-done-btn" id="wizDone">تم</button>
-      <button class="wizard-skip-btn" id="wizSkip">تخطي</button>
-    </div>
+    <div class="wizard-actions">${actionBtns}</div>
   </div>`;
-  document.getElementById('wizDone').addEventListener('click', () => { dismissAction(a.id); wizardIndex++; renderWizardStep(); render(); });
+
+  const primary = document.getElementById('wizPrimary');
+  if (primary) primary.addEventListener('click', () => {
+    advanceStage(a.id, a.stage, a.mailKind, a.name, a.date);
+    wizardIndex++; renderWizardStep();
+  });
+  const closeBtn = document.getElementById('wizClose');
+  if (closeBtn) closeBtn.addEventListener('click', () => {
+    if (a.type === 'contract' || a.type === 'id'){ setActionState(a.id, 'done'); logActivity(`✔ أُغلق الإجراء الخاص بـ ${a.name}`); }
+    dismissAction(a.id);
+    wizardIndex++; renderWizardStep(); render();
+  });
   document.getElementById('wizSkip').addEventListener('click', () => { wizardIndex++; renderWizardStep(); });
 }
 document.getElementById('startWorkBtn').addEventListener('click', openWizard);
@@ -1199,7 +1690,10 @@ document.getElementById('sidebarToggle').addEventListener('click', () => documen
 document.querySelectorAll('.search').forEach(input => {
   input.addEventListener('input', () => {
     const q = input.value.trim();
-    document.querySelectorAll('#' + input.dataset.target + ' tbody tr').forEach(tr => { tr.style.display = tr.textContent.includes(q) ? '' : 'none'; });
+    const container = document.getElementById(input.dataset.target);
+    if (!container) return;
+    const items = container.matches('.card-grid') ? container.children : container.querySelectorAll('tbody tr');
+    Array.from(items).forEach(el => { el.style.display = el.textContent.includes(q) ? '' : 'none'; });
   });
 });
 ['leaveDeptFilter','contractDeptFilter','contractStatusFilter','idDeptFilter','idStatusFilter','empDeptFilter','thresholdInput'].forEach(id => {
