@@ -546,7 +546,7 @@
         <section class="panel">
           <div class="panel-head"><h2>الإجازات الحالية <span class="badge-count" id="countActiveLeave">0</span></h2></div>
           <div class="table-wrap"><table id="tblActiveLeave">
-            <thead><tr><th>الاسم</th><th>القسم</th><th>بداية</th><th>نهاية</th><th>يعود بعد</th></tr></thead>
+            <thead><tr><th>الاسم</th><th>النوع</th><th>القسم</th><th>بداية</th><th>نهاية</th><th>يعود بعد</th></tr></thead>
             <tbody></tbody>
           </table></div>
         </section>
@@ -560,7 +560,7 @@
             </div>
           </div>
           <div class="table-wrap"><table id="tblUpcomingLeave">
-            <thead><tr><th data-sort="name">الاسم</th><th data-sort="dept">القسم</th><th data-sort="leaveStart">بداية الإجازة</th><th data-sort="leaveEnd">نهاية الإجازة</th><th data-sort="days">تبدأ بعد</th></tr></thead>
+            <thead><tr><th data-sort="name">الاسم</th><th data-sort="leaveType">النوع</th><th data-sort="dept">القسم</th><th data-sort="leaveStart">بداية الإجازة</th><th data-sort="leaveEnd">نهاية الإجازة</th><th data-sort="days">تبدأ بعد</th></tr></thead>
             <tbody></tbody>
           </table></div>
         </section>
@@ -593,6 +593,11 @@
         <section class="panel">
           <div class="panel-head"><h2>أكثر الأقسام إجازات (هذا الشهر)</h2></div>
           <div class="rank-list" id="deptRankList"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>أنواع الإجازات</h2></div>
+          <div class="rank-list" id="leaveTypeRankList"></div>
         </section>
       </section>
 
@@ -742,6 +747,33 @@ function chipFor(days){
   return `<span class="chip ${cls}"><span class="d"></span>${label}</span>`;
 }
 function statusOf(days){ if (days < 0) return 'expired'; if (days <= threshold) return 'soon'; return 'safe'; }
+
+/* ---------------- leave type colors (auto-assigned, stable per type name) ---------------- */
+const LEAVE_TYPE_PALETTE = [
+  { bg:'#EEF0FC', text:'#4338CA', dot:'#5E6AD2' }, // indigo
+  { bg:'#CCFBF1', text:'#0F766E', dot:'#14B8A6' }, // teal
+  { bg:'#F3E8FF', text:'#7E22CE', dot:'#A855F7' }, // purple
+  { bg:'#FCE7F3', text:'#BE185D', dot:'#EC4899' }, // pink
+  { bg:'#FEF3C7', text:'#92620A', dot:'#F59E0B' }, // amber
+  { bg:'#CFFAFE', text:'#0E7490', dot:'#06B6D4' }, // cyan
+  { bg:'#ECFCCB', text:'#4D7C0F', dot:'#84CC16' }, // lime
+  { bg:'#FFE4E6', text:'#BE123C', dot:'#F43F5E' }, // rose
+  { bg:'#E0F2FE', text:'#075985', dot:'#0EA5E9' }, // sky
+  { bg:'#FFEDD5', text:'#9A3412', dot:'#F97316' }, // orange
+  { bg:'#EDE9FE', text:'#6D28D9', dot:'#8B5CF6' }, // violet
+  { bg:'#F5F5F4', text:'#57534E', dot:'#A8A29E' }, // stone
+];
+function leaveTypeColor(type){
+  if (!type) return { bg:'#F1F5F9', text:'#6B7280', dot:'#9CA3AF' };
+  let hash = 0;
+  for (let i=0;i<type.length;i++) hash = (hash*31 + type.charCodeAt(i)) >>> 0;
+  return LEAVE_TYPE_PALETTE[hash % LEAVE_TYPE_PALETTE.length];
+}
+function leaveTypeChip(type){
+  const c = leaveTypeColor(type);
+  return `<span class="chip" style="background:${c.bg}; color:${c.text};"><span class="d" style="background:${c.dot};"></span>${type || 'غير محدد'}</span>`;
+}
+
 function intervalsOverlap(s1,e1,s2,e2){ return s1 <= e2 && s2 <= e1; }
 function groupCount(arr, keyFn){ const map = {}; arr.forEach(item => { const k = keyFn(item); if (!k) return; map[k] = (map[k]||0)+1; }); return map; }
 function keyOf(r){ return (r.empId || r.name).toString().trim(); }
@@ -767,6 +799,7 @@ function parseWorkbook(workbook){
   leavesData = (sheetToRows(workbook, leaveSheet) || []).map(r => ({
     name: r["الاسم"] || "", empId: r["الرقم الوظيفي"] || "", dept: r["القسم"] || "",
     leaveStart: excelDateToJS(r["تاريخ بداية الإجازة"]), leaveEnd: excelDateToJS(r["تاريخ نهاية الإجازة"]),
+    leaveType: r["نوع الإجازة"] || "",
   })).filter(r => r.name);
 
   idsData = (sheetToRows(workbook, idSheet) || []).map(r => ({
@@ -1095,13 +1128,14 @@ function render(){
   document.getElementById('countActiveLeave').textContent = onLeave.length;
   renderTable('tblActiveLeave', onLeave, r => `
     <td class="name-cell">${r.name}${hasConflict(r) ? '<span class="conflict-tag">تعارض</span>' : ''}</td>
+    <td>${leaveTypeChip(r.leaveType)}</td>
     <td class="muted">${r.dept}</td><td>${fmtDate(r.leaveStart)}</td><td>${fmtDate(r.leaveEnd)}</td>
     <td>${chipFor(daysBetween(today, r.leaveEnd))}</td>
   `, "لا يوجد أحد في إجازة الآن", "");
 
   document.getElementById('countUpcomingLeave').textContent = upcomingLeave.length;
   renderTable('tblUpcomingLeave', filterByDept(upcomingLeave, 'leaveDeptFilter'), r => `
-    <td class="name-cell">${r.name}</td><td class="muted">${r.dept}</td>
+    <td class="name-cell">${r.name}</td><td>${leaveTypeChip(r.leaveType)}</td><td class="muted">${r.dept}</td>
     <td>${fmtDate(r.leaveStart)}</td><td>${fmtDate(r.leaveEnd)}</td><td>${chipFor(r.days)}</td>
   `, "لا توجد إجازات قادمة", "");
 
@@ -1120,6 +1154,14 @@ function render(){
   document.getElementById('deptRankList').innerHTML = rankEntries.length ? rankEntries.map(([dept,count]) => `
     <div class="rank-row"><span class="r-name">${dept}</span><div class="r-bar"><span style="width:${Math.round(count/maxCount*100)}%"></span></div><span class="r-count mono">${count}</span></div>
   `).join('') : `<div class="empty"><b>لا توجد بيانات إجازات كافية</b></div>`;
+
+  const typeCounts = groupCount(leavesData, r => r.leaveType || 'غير محدد');
+  const typeEntries = Object.entries(typeCounts).sort((a,b)=>b[1]-a[1]);
+  const maxTypeCount = typeEntries.length ? typeEntries[0][1] : 1;
+  document.getElementById('leaveTypeRankList').innerHTML = typeEntries.length ? typeEntries.map(([type,count]) => {
+    const c = leaveTypeColor(type === 'غير محدد' ? '' : type);
+    return `<div class="rank-row"><span class="r-name">${leaveTypeChip(type === 'غير محدد' ? '' : type)}</span><div class="r-bar"><span style="width:${Math.round(count/maxTypeCount*100)}%; background:${c.dot};"></span></div><span class="r-count mono">${count}</span></div>`;
+  }).join('') : `<div class="empty"><b>لا توجد بيانات إجازات كافية</b><span class="empty-note">أضف عمود "نوع الإجازة" بشيت الإجازات لتفعيل هذا التصنيف.</span></div>`;
 
   renderLongLeaves(today);
   renderHandover(today);
@@ -1772,7 +1814,7 @@ function renderCalendar(){
     const onThisDay = leavesData.filter(l => l.leaveStart && l.leaveEnd && dateObj >= l.leaveStart && dateObj <= l.leaveEnd);
     const isToday = sameDay(dateObj, today);
     const isSelected = calSelectedDate && sameDay(dateObj, calSelectedDate);
-    let chipsHtml = onThisDay.slice(0,2).map(l => `<div class="cal-chip">${firstName(l.name)}</div>`).join('');
+    let chipsHtml = onThisDay.slice(0,2).map(l => { const c = leaveTypeColor(l.leaveType); return `<div class="cal-chip" style="background:${c.bg}; color:${c.text};">${firstName(l.name)}</div>`; }).join('');
     if (onThisDay.length > 2) chipsHtml += `<div class="cal-more">+${onThisDay.length-2} آخرين</div>`;
     cellsHtml += `<div class="cal-cell ${otherMonth?'other-month':''} ${isToday?'today':''} ${isSelected?'cal-selected':''}" data-date="${dateObj.toISOString()}"><div class="cal-daynum">${dayNum}</div>${chipsHtml}</div>`;
   }
@@ -1786,7 +1828,7 @@ function showDayDetail(date){
   const onThisDay = leavesData.filter(l => l.leaveStart && l.leaveEnd && date >= l.leaveStart && date <= l.leaveEnd);
   box.style.display = 'block';
   box.innerHTML = `<h4>${fmtDate(date)} — ${onThisDay.length ? onThisDay.length + ' موظف في إجازة' : 'لا يوجد أحد في إجازة'}</h4>` +
-    onThisDay.map(l => `<div class="person"><span>${l.name} <span class="muted">— ${l.dept}</span></span><span class="muted mono">${fmtDate(l.leaveStart)} → ${fmtDate(l.leaveEnd)}</span></div>`).join('');
+    onThisDay.map(l => `<div class="person"><span>${l.name} ${leaveTypeChip(l.leaveType)} <span class="muted">— ${l.dept}</span></span><span class="muted mono">${fmtDate(l.leaveStart)} → ${fmtDate(l.leaveEnd)}</span></div>`).join('');
 }
 document.getElementById('calPrev').addEventListener('click', () => { calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCalendar(); });
 document.getElementById('calNext').addEventListener('click', () => { calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderCalendar(); });
