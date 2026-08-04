@@ -674,6 +674,7 @@ function statusOf(days){ if (days < 0) return 'expired'; if (days <= threshold) 
 function intervalsOverlap(s1,e1,s2,e2){ return s1 <= e2 && s2 <= e1; }
 function groupCount(arr, keyFn){ const map = {}; arr.forEach(item => { const k = keyFn(item); if (!k) return; map[k] = (map[k]||0)+1; }); return map; }
 function keyOf(r){ return (r.empId || r.name).toString().trim(); }
+function pct(n, d){ return d ? Math.round((n/d)*100) : 0; }
 
 function findSheet(workbook, wanted){ return workbook.SheetNames.find(n => n.trim() === wanted); }
 function sheetToRows(workbook, sheetName){ if (!sheetName) return null; return XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: "" }); }
